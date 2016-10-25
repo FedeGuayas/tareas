@@ -31,6 +31,11 @@ Route::group(['prefix'=>'admin'],function() {
     Route::resource('/persons', 'PersonsController');
     Route::resource('/areas', 'AreasController');
 
+    Route::post('/task', [
+                'uses' => 'TaskController@getSignin',
+                'as' => 'postTask'
+            ]);
+
 });
 
 

@@ -35,7 +35,7 @@ class Area extends Model
     }
 
     public function persons(){
-        return $this->hasMany('App\Task');
+        return $this->hasMany('App\Person');
     }
     
 }

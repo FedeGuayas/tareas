@@ -1,0 +1,17 @@
+{
+  "name": "tareas",
+  "description": "Admin Task",
+  "main": "",
+  "authors": [
+    "Hector Alvarez <halain80@gmail.com>"
+  ],
+  "license": "MIT",
+  "homepage": "https://github.com/halain/tareas",
+  "ignore": [
+    "**/.*",
+    "node_modules",
+    "bower_components",
+    "test",
+    "tests"
+  ]
+}

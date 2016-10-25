@@ -15,7 +15,7 @@
                     {!! Form::label('description','Descripción') !!}
                     {!! Form::textarea('description',null,['class'=>'form-control','placeholder'=>'Descripción... puede dejarlo vacio','rows'=>'3']) !!}
                 </div>
-                {!! Form::submit('Editar',['class'=>'btn btn-success','type'=>'button']) !!}
+                {!! Form::submit('Actualizar',['class'=>'btn btn-success','type'=>'button']) !!}
                 {!! Form::reset('Cancelar',['class'=>'btn btn-primary']) !!}
                 <a href="{{route('admin.areas.index')}}" >
                     {!! Form::button('Regresar',['class'=>'btn btn-warning']) !!}

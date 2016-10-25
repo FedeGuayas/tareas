@@ -12,34 +12,46 @@
 	<meta content="" name="description"/>
 	<meta content="" name="author"/>
 	{{--Calendar--}}
-	<link rel="stylesheet" href="{{asset('bower_components/bootstrap/dist/css/bootstrap.min.css')}}">
-	<link rel="stylesheet" href="{{asset('bower_components/bootstrap-calendar/css/calendar.css')}}">
 
-	{{--<link rel="stylesheet" href="{{asset('plugins/bootstrap/dist/css/bootstrap.min.css')}}">--}}
-	{{--<link rel="stylesheet" href="{{asset('plugins/fontawesome/css/font-awesome.css')}}">--}}
+	<link rel='stylesheet' href="{{asset('plugins/fullcalendar/fullcalendar.css')}}" />
+
+
+	<link rel="stylesheet" href="{{ asset("plugins/metisMenu/dist/metisMenu.css") }}" />
+
+	<link rel="stylesheet" href="{{asset('plugins/bootstrap/dist/css/bootstrap.min.css')}}">
+	<link rel="stylesheet" href="{{asset('plugins/fontawesome/css/font-awesome.css')}}">
 
 {{--	<link rel="stylesheet" href="{{ asset("plugins/datatables/media/css/jquery.dataTables.min.css") }}" />--}}
-	{{--<link rel="stylesheet" href="{{ asset("plugins/datatables/media/css/dataTables.bootstrap.css") }}" />--}}
-	{{--<link rel="stylesheet" href="{{ asset("assets/stylesheets/styles.css") }}" />--}}
+
+	<link rel="stylesheet" href="{{ asset("assets/stylesheets/styles.css") }}" />
+	<link rel="stylesheet" href="{{ asset("plugins/datatables/media/css/dataTables.bootstrap.css") }}" />
+
 	@yield('style')
 </head>
+
 <body>
 	@yield('body')
-
-	<script src="{{ asset("assets/scripts/frontend.js") }}" type="text/javascript"></script>
-	{{--<script src="{{ asset("plugins/Chart.js/Chart.js") }}" type="text/javascript"></script>--}}
-
-
-	{{--<script src="{{ asset("plugins/datatables/media/js/jquery.dataTables.min.js") }}" type="text/javascript"></script>--}}
-	{{--<script src="{{ asset("plugins/datatables/media/js/dataTables.bootstrap.min.js") }}" type="text/javascript"></script>--}}
-
-	{{--Calendar--}}
-	<script type="text/javascript" src="{{asset('bower_components/jquery/dist/jquery.js')}}"></script>
-	<script type="text/javascript" src="{{asset('bower_components/bootstrap/dist/js/bootstrap.js')}}"></script>
-	<script type="text/javascript" src="{{asset('bower_components/moment/moment.js')}}"></script>
-	<script type="text/javascript" src="{{asset('bower_components/underscore/underscore-min.js')}}"></script>
-	<script type="text/javascript" src="{{asset('bower_components/bootstrap-calendar/js/calendar.js')}}"></script>
-
-	@yield('script')
 </body>
+<script src="{{ asset("assets/scripts/frontend.js") }}" type="text/javascript"></script>
+
+
+{{--<script src="{{asset('plugins/fullcalendar/lib/jquery.min.js')}}"></script>--}}
+
+{{--<script src="{{ asset("plugins/datatables/media/js/jquery.js") }}" type="text/javascript"></script>--}}
+{{--<script src="{{ asset("plugins/datatables/media/js/jquery.dataTables.js") }}" type="text/javascript"></script>--}}
+<script src="{{ asset("plugins/datatables/media/js/jquery.dataTables.min.js") }}" type="text/javascript"></script>
+<script src="{{ asset("plugins/datatables/media/js/dataTables.bootstrap.min.js") }}" type="text/javascript"></script>
+
+
+<script src="{{asset('plugins/fullcalendar/lib/jquery-ui.min.js')}}"></script>
+<script src="{{asset('plugins/fullcalendar/lib/moment.min.js')}}"></script>
+<script src="{{asset('plugins/fullcalendar/fullcalendar.js')}}"></script>
+
+
+
+<script src="{{ asset("plugins/Chart.js/Chart.js") }}" type="text/javascript"></script>
+
+
+@yield('script')
+
 </html>

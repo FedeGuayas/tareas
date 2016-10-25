@@ -23,6 +23,10 @@ class Task extends Model
         'task', 'description', 'start_day','performance_day','end_day','state','area_id','person_id'
     ];
 
+    protected $hidden = [
+        'id'
+    ];
+
     public function person(){
         return $this->belongsTo('App\Person');
     }

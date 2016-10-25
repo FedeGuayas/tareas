@@ -299,7 +299,7 @@
                             <a href="#"><i class="fa fa-lock fa-fw" aria-hidden="true"></i> Administración<span class="fa arrow"></span></a>
                             <ul class="nav nav-second-level">
                                 <li>
-                                    <a href="#!">Tareas</a>
+                                    <a href="{{route('admin.task.index')}}">Tareas</a>
                                 </li>
                                 <li>
                                     <a href="#!">Areas <span class="fa arrow"></span></a>
@@ -318,10 +318,10 @@
                                     <a href="#">Trabajadores <span class="fa arrow"></span></a>
                                     <ul class="nav nav-third-level">
                                         <li>
-                                            <a href="#">Nuevo</a>
+                                            <a href="{{route('admin.persons.create')}}">Nuevo</a>
                                         </li>
                                         <li>
-                                            <a href="#">Todos</a>
+                                            <a href="{{route('admin.persons.index')}}">Todos</a>
                                         </li>
                                     </ul>
                                     <!-- /.nav-third-level -->

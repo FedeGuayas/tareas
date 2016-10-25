@@ -18,7 +18,11 @@ class AreasController extends Controller
      */
     public function index()
     {
+
         $areas=Area::all();
+        foreach ($areas as $area ){
+           $area->persons();
+        }
         return view('areas.index',['areas'=>$areas]);
     }
 
@@ -45,7 +49,7 @@ class AreasController extends Controller
         $area->description=$request->input('description');
         $area->save();
 
-        Session::flash('message','se creo el area correctamente');
+        Session::flash('message','Se creo el área correctamente');
         return redirect()->route('admin.areas.index');
     }
 
@@ -96,8 +100,17 @@ class AreasController extends Controller
     public function destroy($id)
     {
         $area=Area::findOrFail($id);
-        $area->delete();
-        Session::flash('message','Se elimino el área '.  $area->area);
+        $flag=$area->persons;
+        if (count($flag)>0){
+            Session::flash('message_danger','El area '.$area->area.' tiene trabajadores, eliminelos o cambielos de area');
+            return redirect()->back();
+        }else{
+            $area->delete();
+            Session::flash('message','Se elimino el área '.  $area->area);
+
+        }
         return redirect()->route('admin.areas.index');
+
+
     }
 }

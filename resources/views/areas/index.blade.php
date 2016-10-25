@@ -2,6 +2,7 @@
 @section('page_heading','Listado de las áreas')
 
 @section('section')
+
     <div class="col-sm-12">
         <div class="row">
             <div class="col-lg-8 col-lg-offset-1">
@@ -13,6 +14,7 @@
                         {{--<th>id</th>--}}
                         <th>Area</th>
                         <th>Descripción</th>
+                        <th>Trabajadores</th>
                         <th>Acción</th>
                     </tr>
                     </thead>
@@ -21,6 +23,7 @@
                         {{--<th>id</th>--}}
                         <th>Area</th>
                         <th>Descripción</th>
+                        <th>Trabajadores</th>
                         <th>Acción</th>
                     </tr>
                     </tfoot>
@@ -31,9 +34,14 @@
                             <td>{{$area->area}}</td>
                             <td>{{$area->description}}</td>
                             <td>
-                                <a href="{{ route('admin.areas.edit', $area->id )}}" class="btn btn-xs btn-warning" data-toggle="tooltip" data-placement="top" title="Editar"><i class="fa fa-pencil" aria-hidden="true"></i>
+                                @foreach($area->persons as $per)
+                                    {{$per->getFullName()}}<br>
+                                @endforeach
+                            </td>
+                            <td>
+                                <a href="{{ route('admin.areas.edit', $area->id )}}" class="btn btn-xs btn-warning tip" data-placement="top" title="Editar"><i class="fa fa-pencil" aria-hidden="true"></i>
                                 </a>
-                                <a href="" data-target="#modal-delete-{{ $area->id }}" data-toggle="modal" class="btn btn-xs btn-danger" data-toggle="tooltip" data-placement="top" title="Elimminar"><i class="fa fa-trash" aria-hidden="true"></i>
+                                <a href="" data-target="#modal-delete-{{ $area->id }}" data-toggle="modal" class="btn btn-xs btn-danger tip"  data-placement="top" title="Elimminar"><i class="fa fa-trash" aria-hidden="true"></i>
                                 </a>
                             </td>
                         </tr>
@@ -101,7 +109,7 @@
 
 
             $(function () {
-                $('[data-toggle="tooltip"]').tooltip()
+                $('.tip').tooltip()
             });
 
         } );
