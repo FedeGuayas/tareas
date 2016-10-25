@@ -19,9 +19,12 @@
                         {!! Form::textarea('description',null,['class'=>'form-control','placeholder'=>'Descripción... puede dejarlo vacio','rows'=>'3']) !!}
                     </div>
 
-                    {!! Form::submit('Crear!',['class'=>'btn btn-primary']) !!}
-                    {!! Form::reset('Limpias!',['class'=>'btn btn-danger']) !!}
-                    {{--<button type="reset" class="btn btn-danger">Limpiar</button>--}}
+                    {!! Form::submit('Crear',['class'=>'btn btn-success','type'=>'button']) !!}
+
+                    {!! Form::reset('Limpiar',['class'=>'btn btn-danger']) !!}
+                    {{--<a href="#" >--}}
+                        {{--{!! Form::button('Truncate',['class'=>'btn btn-danger']) !!}--}}
+                    {{--</a>--}}
 
                 {!! Form::close() !!}
 
