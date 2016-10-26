@@ -12,15 +12,7 @@ class Area extends Model
      * @var string
      */
     protected $table = 'areas';
-
-    /**
-     * Indicates if the model should be timestamped.
-     *
-     * @var bool
-     */
-    public $timestamps = false;
-
-    
+        
     /**
      * The attributes that are mass assignable.
      *

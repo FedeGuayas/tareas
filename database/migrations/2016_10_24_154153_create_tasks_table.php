@@ -18,11 +18,13 @@ class CreateTasksTable extends Migration
             $table->integer('person_id')->unsigned()->nullable();
 
             $table->string('task');
-            $table->string('description');
+            $table->string('description')->nullable();
             $table->dateTime('start_day');
             $table->dateTime('performance_day');
-            $table->dateTime('end_day');
+            $table->dateTime('end_day')->nullable();
             $table->boolean('state');
+            $table->boolean('allDay')->nullable();
+            $table->string('color')->nullable();
 
             $table->timestamps();
 

@@ -16,7 +16,7 @@ class Persons extends Migration
             $table->increments('id');
             $table->integer('area_id')->unsigned()->nullable();
 
-            $table->string('email');
+            $table->string('email')->unique();
             $table->string('phone');
             $table->string('first_name');
             $table->string('last_name');
