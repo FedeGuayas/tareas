@@ -51,7 +51,7 @@ $factory->define(Person::class, function (Generator $faker) {
         'phone' => $faker->phoneNumber,
         'first_name'=>$faker->firstName($gender = null|'male'|'female'),
         'last_name' => $faker->lastName,
-//        'area_id' => Area::all()->random()->id,//funciona ok
+        'area_id' => Area::all()->random()->id,//funciona ok
          
 ];
      return $array;
