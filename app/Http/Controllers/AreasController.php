@@ -3,6 +3,7 @@
 namespace App\Http\Controllers;
 
 use App\Area;
+use App\Person;
 use Illuminate\Http\Request;
 
 use App\Http\Requests;
@@ -107,10 +108,15 @@ class AreasController extends Controller
         }else{
             $area->delete();
             Session::flash('message','Se elimino el área '.  $area->area);
-
         }
         return redirect()->route('admin.areas.index');
-
-
     }
+
+    public function getPersons(Request $request,$id){
+        if ($request->ajax()){
+            $persons=Person::persons($id);
+            return response()->json($persons);
+        }
+    }
+
 }

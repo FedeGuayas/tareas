@@ -24,12 +24,18 @@ Route::get('/blank',function(){
     return view('blank');
 });
 
+//obtener el id de las personas por area
+Route::get('/persons/{id}','AreasController@getPersons');
+
+
 
 Route::group(['prefix'=>'admin'],function() {
 
-    Route::resource('/task', 'TaskController');
+    Route::resource('/tasks', 'TaskController');
     Route::resource('/persons', 'PersonsController');
     Route::resource('/areas', 'AreasController');
+   
+
 
     Route::post('/task', [
                 'uses' => 'TaskController@getSignin',

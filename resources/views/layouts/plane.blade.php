@@ -23,15 +23,15 @@
 	{{--FullCalendar--}}
 	<link rel='stylesheet' href="{{asset('plugins/fullcalendar/fullcalendar.css')}}" />
 
+	{{--Boostrap DateTimePicker--}}
+	<link rel="stylesheet" href="{{ asset("plugins/bDateTimePicker/css/bootstrap-datetimepicker.css") }}" />
+
 	@yield('style')
 </head>
 
 <body>
 	@yield('body')
 </body>
-
-
-
 
 
 
@@ -43,17 +43,17 @@
 <script src="{{asset('plugins/fullcalendar/lib/moment.min.js')}}"></script>
 <script src="{{asset('plugins/fullcalendar/fullcalendar.js')}}"></script>
 
-
-
-
 {{--<script src="{{ asset("plugins/datatables/media/js/jquery.js") }}" type="text/javascript"></script>--}}
 {{--<script src="{{ asset("plugins/datatables/media/js/jquery.dataTables.js") }}" type="text/javascript"></script>--}}
 <script src="{{ asset("plugins/datatables/media/js/jquery.dataTables.min.js") }}" type="text/javascript"></script>
 <script src="{{ asset("plugins/datatables/media/js/dataTables.bootstrap.min.js") }}" type="text/javascript"></script>
 
-
-
 <script src="{{ asset("plugins/Chart.js/Chart.js") }}" type="text/javascript"></script>
+
+{{--Boostrap DateTimePicker--}}
+<script src="{{ asset("plugins/moment/min/moment-with-locales.min.js") }}" type="text/javascript"></script>
+<script src="{{ asset("plugins/bDateTimePicker/js/bootstrap-datetimepicker.min.js") }}" type="text/javascript"></script>
+
 
 
 @yield('script')

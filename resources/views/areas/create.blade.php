@@ -11,7 +11,6 @@
                     <div class="form-group">
                         {!! Form::label('area','Nombre del Area') !!}
                         {!! Form::text('area',null,['class'=>'form-control','placeholder'=>'Area...']) !!}
-                        <p class="help-block">Ejemplo: Crear este sistema</p>
 
                     </div>
                     <div class="form-group">

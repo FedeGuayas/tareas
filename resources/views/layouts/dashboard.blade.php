@@ -299,7 +299,7 @@
                             <a href="#"><i class="fa fa-lock fa-fw" aria-hidden="true"></i> Administración<span class="fa arrow"></span></a>
                             <ul class="nav nav-second-level">
                                 <li>
-                                    <a href="{{route('admin.task.index')}}">Tareas</a>
+                                    <a href="{{route('admin.tasks.index')}}">Tareas</a>
                                 </li>
                                 <li>
                                     <a href="#!">Areas <span class="fa arrow"></span></a>

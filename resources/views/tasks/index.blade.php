@@ -2,7 +2,7 @@
 @section('page_heading','Listado de las áreas')
 
 @section('section')
-
+@include('alert.success')
     <div class="col-lg-3 col-md-6">
         <div class="panel panel-green">
             <div class="panel-heading">

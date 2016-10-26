@@ -43,5 +43,10 @@ class Person extends Model
     public function getFullName(){
         return $this->first_name.' '.$this->last_name;
     }
+
+    //para acceder a las personas en el dropdown sin necesidad de instanciarlas
+    public static function persons($id){
+        return Person::where('area_id',$id)->get();
+    }
 }
 
