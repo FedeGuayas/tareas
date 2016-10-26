@@ -79,4 +79,24 @@ Route::group(['prefix'=>'user'],function(){
 });
 
 
+//Eventos Calendario
+Route::get('/verEventos',function(){
+    return view('tasks.eventos');
+});
+
+Route::post('/guardaEventos', [
+    'uses' => 'CalendarController@create',
+    'as' => 'guardaEventos'
+]);
+
+Route::get('/cargaEventos{id?}',[
+        'uses'=>'CalendarController@index',
+        'as' => 'cargaEventos'
+]);
+
+Route::post('/actualizaEventos','CalendarController@update');
+Route::post('eliminaEvento','CalendarController@delete');
+
+
+
 

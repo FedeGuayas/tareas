@@ -152,7 +152,7 @@
                 firstDay:1, //primer dia de la semana lunes
                 weekends: false, //ocultar fines de semana
 
-                events: { url:"Eventos"},
+                events: { url:"guardaEventos"},
 
                 editable: true,
                 droppable: true, // this allows things to be dropped onto the calendar !!!
