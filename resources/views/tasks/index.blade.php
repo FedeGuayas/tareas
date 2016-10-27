@@ -1,31 +1,76 @@
 @extends ('layouts.dashboard')
-@section('page_heading','Listado de las áreas')
+@section('page_heading','Listado de Tareas')
 
 @section('section')
-@include('alert.success')
-    <div class="col-lg-3 col-md-6">
-        <div class="panel panel-green">
-            <div class="panel-heading">
-                <div class="row">
-                    <div class="col-xs-3">
-                        <i class="fa fa-tasks fa-5x"></i>
-                    </div>
-                    <div class="col-xs-9 text-right">
-                        <div class="huge">12</div>
-                        <div>Nueva tarea</div>
-                    </div>
-                </div>
-            </div>
-            <a href="#">
-                <div class="panel-footer">
-                    <span class="pull-left">Ver detalles</span>
-                    <span class="pull-right"><i class="fa fa-arrow-circle-right"></i></span>
-                    <div class="clearfix"></div>
-                </div>
-            </a>
+        <a href="{{ route('admin.tasks.create' )}}" class="btn btn-success tip pull-left" data-placement="right" title="Nueva"><i class="fa fa-tasks" aria-hidden="true"></i>
+    Nueva</a>
+<div class="col-sm-12">
+    <div class="row">
+        <div class="col-lg-12">
+            @include('alert.success')
+            <table id="task_table" class="table table-striped table-bordered" cellspacing="0" width="100%"
+                   data-order='[[ 0, "asc" ]]' style="display: none" >
+                <thead>
+                <tr>
+                    {{--<th>id</th>--}}
+                    <th>Tarea</th>
+                    <th>Area</th>
+                    <th>Trabajador</th>
+                    <th>Dia Inicio</th>
+                    <th>Dia Termino</th>
+                    <th>Fin Ejecución</th>
+                    <th>Estado</th>
+                    <th>Acción</th>
+                </tr>
+                </thead>
+                <tfoot>
+                <tr>
+                    {{--<th>id</th>--}}
+                    <th>Tarea</th>
+                    <th>Area</th>
+                    <th>Trabajador</th>
+                    <th>Dia Inicio</th>
+                    <th>Dia Termino</th>
+                    <th>Fin Ejecución</th>
+                    <th>Estado</th>
+                    <th>Acción</th>
+                </tr>
+                </tfoot>
+                <tbody>
+                @foreach($tasks as $task)
+                    <tr>
+                        {{--<td>{{$area->id}}</td>--}}
+                        <td>{{$task->task}}</td>
+                        <td>{{$task->area->area}}</td>
+                        <td>{{$task->person->getFullName()}}</td>
+                        <td>{{$task->start_day}}</td>
+                        <td>{{$task->performance_day}}</td>
+                        <td>{{$task->end_day}}</td>
+                        <td>
+                            @if ($task->state==1)
+                                <span class="label label-success">Act</span>
+
+                            @else
+                                <p>Terminada</p>
+                            @endif
+                        </td>
+
+                        <td>
+                            <a href="{{ route('admin.tasks.edit', $task->id )}}" class="btn btn-xs btn-warning tip1" data-placement="top" title="Editar"><i class="fa fa-pencil" aria-hidden="true"></i>
+                            </a>
+                            <a href="" data-target="#modal-delete-{{ $task->id }}" data-toggle="modal" class="btn btn-xs btn-danger tip"  data-placement="top" title="Elimminar"><i class="fa fa-trash" aria-hidden="true"></i>
+                            </a>
+                        </td>
+                    </tr>
+                    @include('tasks.modal')
+                @endforeach
+                </tbody>
+            </table>
+
+
         </div>
     </div>
-
+</div>
 @endsection
 
 @section('script')
@@ -34,7 +79,7 @@
 
         $(document).ready( function () {
 
-            var table =  $('#area_table').DataTable({
+            var table =  $('#task_table').DataTable({
                 "lengthMenu": [[5, 7, 10, 25], [5, 7, 10, 25]],
                 "processing": true,
 //            "serverSide": false,
@@ -75,15 +120,14 @@
                     }
                 },
                 "fnInitComplete":function(){
-                    $('#area_table').fadeIn();
+                    $('#task_table').fadeIn();
                 }
             });
 
 
             $(function () {
-                $('[data-toggle="tooltip"]').tooltip()
+                $(".tip1").tooltip()
             });
-
         } );
     </script>
 @endsection

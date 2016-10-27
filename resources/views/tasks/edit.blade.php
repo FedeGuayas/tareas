@@ -1,17 +1,16 @@
 @extends('layouts.dashboard')
 
-@section('page_heading','Crear Tarea')
+@section('page_heading','Editar Tarea')
 @section('section')
 
     <div class="col-sm-12">
         <div class="row">
             <div class="col-sm-6">
-                {!! Form::open(['route'=>'admin.tasks.store', 'method'=>'POST','role'=>'form']) !!}
+                {!! Form::model($task,['route'=>['admin.tasks.update',$task->id], 'method'=>'PUT','role'=>'form']) !!}
                 <div class="form-group">
                     <div class="form-group">
                         {!! Form::label('task','Tarea:') !!}
                         {!! Form::text('task',null,['class'=>'form-control','placeholder'=>'Nombre de la tarea','required']) !!}
-                        <p class="help-block">Ejemplo: Crear este sistema</p>
                     </div>
                 </div>
                 <div class="form-group">
@@ -43,20 +42,17 @@
                         </div>
                     </div>
                 </div>
-
-
                 <div class="col-sm-6">
-                <div class="form-group">
-                {!! Form::label('area_id','Area:') !!}
-                {!! Form::select('area_id',$areas,null,['class'=>'form-control','placeholder'=>'Seleccione area']) !!}
+                    <div class="form-group">
+                        {!! Form::label('area_id','Area:') !!}
+                        {!! Form::select('area_id',$areas,null,['class'=>'form-control','placeholder'=>'Seleccione area']) !!}
+                    </div>
                 </div>
-                </div>
-
                 <div class="col-sm-6">
-                <div class="form-group">
-                {!! Form::label('person_id','Trabajador:') !!}
-                {!! Form::select('person_id',['placeholder'=>'Seleccione trabajador'],null,['class'=>'form-control']) !!}
-                </div>
+                    <div class="form-group">
+                        {!! Form::label('person_id','Trabajador:') !!}
+                        {!! Form::select('person_id',$person,null,['class'=>'form-control']) !!}
+                    </div>
                 </div>
                 {!! Form::submit('Crear',['class'=>'btn btn-success','type'=>'button']) !!}
                 {!! Form::reset('Limpiar',['class'=>'btn btn-danger']) !!}
@@ -72,7 +68,7 @@
 @section('script')
 
     {{--Script para select condicional dropdown de personas por areas--}}
-    <script src="{{ asset("assets/scripts/dropdown.js") }}" type="text/javascript"></script>
+{{--    <script src="{{ asset("assets/scripts/dropdown.js") }}" type="text/javascript"></script>--}}
 
     <script type="text/javascript">
         $(function () {

@@ -1,8 +1,9 @@
 /**
- * Created by Programador2 on 26/10/2016.
+ * Created by Hector  on 26/10/2016.
  */
 
 //V1 OK
+
 $("#area_id").change(function(event){
    $.get("/persons/"+event.target.value+"",function(response,state){
        // console.log(response);
@@ -12,6 +13,8 @@ $("#area_id").change(function(event){
        }
    });
 });
+
+
 
 
 //V2
