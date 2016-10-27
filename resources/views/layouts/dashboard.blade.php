@@ -243,7 +243,7 @@
             <!-- /.navbar-top-links -->
 
 
-            <!-BARRA LATERAL-->
+            <!--BARRA LATERAL-->
             <div class="navbar-default sidebar" role="navigation">
                 <div class="sidebar-nav navbar-collapse">
                     <ul class="nav" id="side-menu">
@@ -258,15 +258,19 @@
                             </div>
                             <!-- /input-group -->
                         </li>
-                        <li {{ (Request::is('/') ? 'class="active"' : '') }}>
-                            <a href="{{ url ('') }}"><i class="fa fa-dashboard fa-fw"></i> Dashboard</a>
+                        <li {{ (Request::is('home') ? 'class="active"' : '') }}>
+                            <a href="{{ route ('home') }}"><i class="fa fa-dashboard fa-fw"></i> Dashboard</a>
                         </li>
-                        <li {{ (Request::is('*charts') ? 'class="active"' : '') }}>
-                            <a href="{{ url ('charts') }}"><i class="fa fa-bar-chart-o fa-fw"></i> Charts</a>
+                        {{--<li {{ (Request::is('*charts') ? 'class="active"' : '') }}>--}}
+                            {{--<a href="{{ url ('charts') }}"><i class="fa fa-bar-chart-o fa-fw"></i> Charts</a>--}}
+                            {{--<!-- /.nav-second-level -->--}}
+                        {{--</li>--}}
+                        <li {{ (Request::is('*callendar') ? 'class="active"' : '') }}>
+                            <a href="{{ url ('callendar') }}"><i class="fa fa-calendar fa-fw"></i> Calendario</a>
                             <!-- /.nav-second-level -->
                         </li>
                         <li {{ (Request::is('*tables') ? 'class="active"' : '') }}>
-                            <a href="{{ url ('tables') }}"><i class="fa fa-table fa-fw"></i> Tables</a>
+                            <a href="{{ url ('tables') }}"><i class="fa fa-table fa-fw"></i> Tablas</a>
                         </li>
                         <li {{ (Request::is('*forms') ? 'class="active"' : '') }}>
                             <a href="{{ url ('forms') }}"><i class="fa fa-edit fa-fw"></i> Forms</a>
@@ -355,16 +359,13 @@
         <div id="page-wrapper">
 			 <div class="row">
                 <div class="col-lg-12">
-                    <h1 class="page-header">@yield('page_heading')</h1>
-                </div>
-                <!-- /.col-lg-12 -->
-           </div>
+                    <h2 class="page-header">@yield('page_heading')</h2>
+                </div><!-- /.col-lg-12 -->
+             </div>  <!-- /.row -->
 			<div class="row">  
 				@yield('section')
-
-            </div>
-            <!-- /#page-wrapper -->
-        </div>
+            </div><!-- /.row -->
+        </div> <!-- /#page-wrapper -->
     </div>
 @stop
 

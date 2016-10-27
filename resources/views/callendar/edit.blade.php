@@ -1,27 +1,29 @@
 @extends ('layouts.dashboard')
-@section('page_heading','Eventos')
+@section('page_heading','Tareas')
 
 @section('section')
 
-    <div class="panel panel-default">
+    <div class="panel panel-primary">
         <!-- Content Header (Page header) -->
-        <div class="panel-heading"><h2> Calendario   </h2>  </div>
+        <div class="panel-heading"><h2>Calendario</h2></div>
         <div class="panel-body">
             <!-- Main content -->
             <section class="content">
                 <div class="row">
                     <div class="col-md-3">
+                        {{--Tareas externas--}}
                         <div class="box box-solid">
                             <div class="box-header with-border">
-                                <h4 class="box-title">Eventos</h4>
+                                <h4 class="box-title">Otros eventos</h4>
                             </div>
                             <div class="box-body">
                                 <!-- the events -->
                                 <div id="external-events">
-                                    <div class="external-event bg-green">Evento 1</div>
-                                    <div class="external-event bg-yellow">Evento 2</div>
-                                    <div class="external-event bg-aqua">Evento 3</div>
-                                    <div class="external-event bg-light-blue">Evento 4</div>
+                                    <div class="external-event bg-success">Tarea 1</div>
+                                    <div class="external-event bg-warning">Tarea 2</div>
+                                    <div class="external-event bg-primary">Tarea 3</div>
+                                    <div class="external-event bg-danger">Tarea 4</div>
+                                    <div class="external-event bg-info">Tarea 5</div>
                                     <div class="checkbox">
                                         <label for="drop-remove">
                                             <input type="checkbox" id="drop-remove">
@@ -29,31 +31,39 @@
                                         </label>
                                     </div>
                                 </div>
-                            </div>
-                            <!-- /.box-body -->
-                        </div>
-                        <!-- /. box -->
+                            </div><!-- /.box-body-->
+                        </div><!-- /. box-->
+                        {{--/.Tareas externas--}}
                         <div class="box box-solid">
                             <div class="box-header with-border">
-                                <h3 class="box-title">Crear evento</h3>
+                                <h3 class="box-title">Crear tarea</h3>
                             </div>
                             <div class="box-body">
+
                                 <div class="btn-group" style="width: 100%; margin-bottom: 10px;">
-                                    <!--<button type="button" id="color-chooser-btn" class="btn btn-info btn-block dropdown-toggle" data-toggle="dropdown">Color <span class="caret"></span></button>-->
-                                    <ul class="fc-color-picker" id="color-chooser">
-                                        <li><a class="text-aqua" href="#"><i class="fa fa-square"></i></a></li>
-                                        <li><a class="text-blue" href="#"><i class="fa fa-square"></i></a></li>
-                                        <li><a class="text-light-blue" href="#"><i class="fa fa-square"></i></a></li>
-                                        <li><a class="text-teal" href="#"><i class="fa fa-square"></i></a></li>
-                                        <li><a class="text-yellow" href="#"><i class="fa fa-square"></i></a></li>
-                                        <li><a class="text-orange" href="#"><i class="fa fa-square"></i></a></li>
-                                        <li><a class="text-green" href="#"><i class="fa fa-square"></i></a></li>
-                                        <li><a class="text-lime" href="#"><i class="fa fa-square"></i></a></li>
-                                        <li><a class="text-red" href="#"><i class="fa fa-square"></i></a></li>
-                                        <li><a class="text-purple" href="#"><i class="fa fa-square"></i></a></li>
-                                        <li><a class="text-fuchsia" href="#"><i class="fa fa-square"></i></a></li>
-                                        <li><a class="text-muted" href="#"><i class="fa fa-square"></i></a></li>
-                                        <li><a class="text-navy" href="#"><i class="fa fa-square"></i></a></li>
+
+                                    <button type="button" class="btn btn-primary">Color estado</button>
+                                    <button type="button" id="color-chooser-btn" class="btn btn-primary dropdown-toggle" data-toggle="dropdown" aria-haspopup="true" aria-expanded="false">
+                                        <span class="caret"></span> <span class="sr-only">Toggle Dropdown</span></button>
+                                    <ul class="fc-color-picker dropdown-menu" id="color-chooser">
+                                        <li><a class="label-success" href="#"><i class="fa fa-arrow-circle-o-right"></i></a></li>
+                                        <li><a class="label-info" href="#"><i class="fa fa-arrow-circle-o-right"></i></a></li>
+                                        <li><a class="label-warning" href="#"><i class="fa fa-arrow-circle-o-right"></i></a></li>
+                                        <li><a class="label-danger" href="#"><i class="fa fa-arrow-circle-o-right"></i></a></li>
+                                        <li><a class="label-primary" href="#"><i class="fa fa-arrow-circle-o-right"></i></a></li>
+                                        {{--<li><a class="text-aqua" href="#"><i class="fa fa-square"></i></a></li>--}}
+                                        {{--<li><a class="text-blue" href="#"><i class="fa fa-square"></i></a></li>--}}
+                                        {{--<li><a class="text-light-blue" href="#"><i class="fa fa-square"></i></a></li>--}}
+                                        {{--<li><a class="text-teal" href="#"><i class="fa fa-square"></i></a></li>--}}
+                                        {{--<li><a class="text-yellow" href="#"><i class="fa fa-square"></i></a></li>--}}
+                                        {{--<li><a class="text-orange" href="#"><i class="fa fa-square"></i></a></li>--}}
+                                        {{--<li><a class="text-green" href="#"><i class="fa fa-square"></i></a></li>--}}
+                                        {{--<li><a class="text-lime" href="#"><i class="fa fa-square"></i></a></li>--}}
+                                        {{--<li><a class="text-red" href="#"><i class="fa fa-square"></i></a></li>--}}
+                                        {{--<li><a class="text-purple" href="#"><i class="fa fa-square"></i></a></li>--}}
+                                        {{--<li><a class="text-fuchsia" href="#"><i class="fa fa-square"></i></a></li>--}}
+                                        {{--<li><a class="text-muted" href="#"><i class="fa fa-square"></i></a></li>--}}
+                                        {{--<li><a class="text-navy" href="#"><i class="fa fa-square"></i></a></li>--}}
                                     </ul>
                                 </div>
                                 <!-- /btn-group -->
@@ -89,11 +99,6 @@
             <!-- /.content -->
         </div><!-- /.panel-body -->
     </div><!-- /.panel -->
-    </div>
-    </div>
-
-
-
 
 @section('script')
     <script>
@@ -127,28 +132,49 @@
              -----------------------------------------------------------------*/
             //Date for the calendar events (dummy data)
             var date = new Date();
-            var d = date.getDate(),
+            var     d = date.getDate(),
                     m = date.getMonth(),
                     y = date.getFullYear();
             //while(reload==false){
+
             $('#calendar').fullCalendar({
                 header: {
                     left: 'prev,next today',
                     center: 'title',
                     right: 'month,agendaWeek,agendaDay'
                 },
+                businessHours: [ // specify an array instead
+                    {
+                        dow: [ 1,2,3,4,5], // Lunes, Martes, Miercoles, Jueves y Viernes
+                        start: '09:00', // 9am
+                        end: '18:00' // 6pm
+                    },
+                    {
+                        dow: [ 6,7], //   Domingo Sabado
+                        start: '10:00', // 10am
+                        end: '11:00' // 4pm
+                    }
+                ],
+                locale:'es',
+
+                eventTextColor:'#030414',
+                slotDuration:'00:30:00',// (30 minutes) intervalos de tiempo en la vista del dia
                 buttonText: {
                     today: 'hoy',
                     month: 'mes',
                     week: 'semana',
                     day: 'dia'
                 },
-                allDay:false,
-                events: { url:"cargaEventos"},
+                displayEventEnd:true,
 
-                editable: true,
+//                weekends: false, // will hide Saturdays and Sundays
+
+                events: { url:"getTasks"},
+
+                editable: false,//true para permitir editar en el calendario
                 droppable: true, // this allows things to be dropped onto the calendar !!!
 
+                //acion al ser arrastrado un evento sobre el calendario
                 drop: function (date, allDay) { // this function is called when something is dropped
                     // retrieve the dropped element's stored Event Object
                     var originalEventObject = $(this).data('eventObject');
@@ -159,6 +185,7 @@
                     copiedEventObject.start = date;
                     copiedEventObject.allDay = allDay;
                     copiedEventObject.backgroundColor = $(this).css("background-color");
+//                    alert("Dropped on " + date.format());
 //                    copiedEventObject.borderColor = $(this).css("border-color");
 
                     // render the event on the calendar
@@ -170,13 +197,13 @@
                         $(this).remove();
                     }
                     //Guardamos el evento creado en base de datos
-                    var title=copiedEventObject.title;
-                    var start=copiedEventObject.start.format("YYYY-MM-DD HH:mm");
-                    var back=copiedEventObject.backgroundColor;
+//                    var title=copiedEventObject.title;
+//                    var start=copiedEventObject.start.format("YYYY-MM-DD HH:mm");
+//                    var back=copiedEventObject.backgroundColor;
 
                     crsfToken = document.getElementsByName("_token")[0].value;
                     $.ajax({
-                        url: 'guardaEventos',//la URI definida en la ruta la ruta
+                        url: 'guardaEventos',//la URI definida en la ruta
                         data: 'title='+ title+'&start='+ start+'&allday='+allDay+'&background='+back,//parametros pasados en el head al controlador al metodo create
                         type: "POST",
                         headers: {
@@ -259,7 +286,7 @@
                         var allDay = "Si";
                     }else{var allDay="No";
                     }
-                    var tooltip = '<div class="tooltipevent" style="width:200px;height:100px;color:white;background:'+back+';position:absolute;z-index:10001;">'+'<center>'+ event.title +'</center>'+'Todo el dia: '+allDay+'<br>'+ 'Inicio: '+start+'<br>'+ 'Fin: '+ end +'</div>';
+                    var tooltip = '<div class="tooltipevent" style="width:200px;height:100px;color:#030414;background:'+back+';position:absolute;z-index:10001;">'+'<center>'+ event.title +'</center>'+'Todo el dia: '+allDay+'<br>'+ 'Inicio: '+start+'<br>'+ 'Fin: '+ end +'</div>';
                     $("body").append(tooltip);
                     $(this).mouseover(function(e) {
                         $(this).css('z-index', 10000);
@@ -339,4 +366,5 @@
             });
         });
     </script>
+@endsection
 @endsection

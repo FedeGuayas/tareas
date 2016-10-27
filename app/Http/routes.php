@@ -105,4 +105,14 @@ Route::post('eliminaEvento','CalendarController@delete');
 
 
 
+//Calendario Task
+Route::get('callendar',function(){
+    return view('callendar.index');
+});
+Route::get('/getTasks{id?}',[
+    'uses'=>'TaskController@getTasks',
+    'as' => 'task.show'
+]);
+
+
 

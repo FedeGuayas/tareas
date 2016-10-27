@@ -42,9 +42,10 @@
 <script src="{{asset('plugins/fullcalendar/lib/jquery-ui.min.js')}}"></script>
 <script src="{{asset('plugins/fullcalendar/lib/moment.min.js')}}"></script>
 <script src="{{asset('plugins/fullcalendar/fullcalendar.js')}}"></script>
+<script src="{{asset('plugins/fullcalendar/locale/es.js')}}"></script>
 
 {{--<script src="{{ asset("plugins/datatables/media/js/jquery.js") }}" type="text/javascript"></script>--}}
-{{--<script src="{{ asset("plugins/datatables/media/js/jquery.dataTables.js") }}" type="text/javascript"></script>--}}
+<script src="{{ asset("plugins/datatables/media/js/jquery.dataTables.js") }}" type="text/javascript"></script>
 <script src="{{ asset("plugins/datatables/media/js/jquery.dataTables.min.js") }}" type="text/javascript"></script>
 <script src="{{ asset("plugins/datatables/media/js/dataTables.bootstrap.min.js") }}" type="text/javascript"></script>
 

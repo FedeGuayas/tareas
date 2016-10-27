@@ -23,7 +23,7 @@
                         <div class="form-group">
                             {!! Form::label('start_day','Dia inicio') !!}
                             <div class='input-group date' id='start_day_datetimepicker'>
-                                {!! Form::text('start_day',null,['class'=>'form-control','required']) !!}
+                                {!! Form::text('start_day',$task->start_day,['class'=>'form-control','required']) !!}
                                 <span class="input-group-addon">
                                     <span class="glyphicon glyphicon-calendar"></span>
                                 </span>
@@ -34,7 +34,7 @@
                         <div class="form-group">
                             {!! Form::label('performance_day','Dia de termino') !!}
                             <div class='input-group date' id='performance_day_datetimepicker'>
-                                {!! Form::text('performance_day',null,['class'=>'form-control','required']) !!}
+                                {!! Form::text('performance_day',$task->performance_day,['class'=>'form-control','required']) !!}
                                 <span class="input-group-addon">
                                     <span class="glyphicon glyphicon-calendar"></span>
                                 </span>
@@ -45,7 +45,7 @@
                 <div class="col-sm-6">
                     <div class="form-group">
                         {!! Form::label('area_id','Area:') !!}
-                        {!! Form::select('area_id',$areas,null,['class'=>'form-control','placeholder'=>'Seleccione area']) !!}
+                        {!! Form::select('area_id',$areas,null,['class'=>'form-control']) !!}
                     </div>
                 </div>
                 <div class="col-sm-6">
@@ -54,8 +54,11 @@
                         {!! Form::select('person_id',$person,null,['class'=>'form-control']) !!}
                     </div>
                 </div>
-                {!! Form::submit('Crear',['class'=>'btn btn-success','type'=>'button']) !!}
-                {!! Form::reset('Limpiar',['class'=>'btn btn-danger']) !!}
+                {!! Form::submit('Atualizar',['class'=>'btn btn-success','type'=>'button']) !!}
+                {!! Form::reset('Cancelar',['class'=>'btn btn-danger']) !!}
+                <a href="{{route('admin.tasks.index')}}" >
+                    {!! Form::button('Regresar',['class'=>'btn btn-warning']) !!}
+                </a>
                 {!! Form::close() !!}
 
             </div>
@@ -68,7 +71,7 @@
 @section('script')
 
     {{--Script para select condicional dropdown de personas por areas--}}
-{{--    <script src="{{ asset("assets/scripts/dropdown.js") }}" type="text/javascript"></script>--}}
+    <script src="{{ asset("assets/scripts/dropdown.js") }}" type="text/javascript"></script>
 
     <script type="text/javascript">
         $(function () {
@@ -76,6 +79,7 @@
                 daysOfWeekDisabled: [0, 6],
                 showClear:true,
                 showClose:true,
+                useCurrent: false,
                 locale:'es',
                 format:'YYYY-MM-DD HH:mm:ss'
 
