@@ -12,63 +12,13 @@
                     <span class="icon-bar"></span>
                     <span class="icon-bar"></span>
                 </button>
-                <a class="navbar-brand" href="{{ url ('/') }}">Control de Tareas. V 1.0</a>
+                <a class="navbar-brand" href="{{ url ('/') }}">Control de Tareas. V1.0</a>
             </div>
             <!-- /.navbar-header -->
 
             <!--MEN MENSAJES DROPDOWN-->
             <ul class="nav navbar-top-links navbar-right">
-                <li class="dropdown">
-                    <a class="dropdown-toggle" data-toggle="dropdown" href="#">
-                        <i class="fa fa-envelope fa-fw"></i>  <i class="fa fa-caret-down"></i>
-                    </a>
-                    <ul class="dropdown-menu dropdown-messages">
-                        <li>
-                            <a href="#">
-                                <div>
-                                    <strong>John Smith</strong>
-                                    <span class="pull-right text-muted">
-                                        <em>Yesterday</em>
-                                    </span>
-                                </div>
-                                <div>Lorem ipsum dolor sit amet, consectetur adipiscing elit. Pellentesque eleifend...</div>
-                            </a>
-                        </li>
-                        <li class="divider"></li>
-                        <li>
-                            <a href="#">
-                                <div>
-                                    <strong>John Smith</strong>
-                                    <span class="pull-right text-muted">
-                                        <em>Yesterday</em>
-                                    </span>
-                                </div>
-                                <div>Lorem ipsum dolor sit amet, consectetur adipiscing elit. Pellentesque eleifend...</div>
-                            </a>
-                        </li>
-                        <li class="divider"></li>
-                        <li>
-                            <a href="#">
-                                <div>
-                                    <strong>John Smith</strong>
-                                    <span class="pull-right text-muted">
-                                        <em>Yesterday</em>
-                                    </span>
-                                </div>
-                                <div>Lorem ipsum dolor sit amet, consectetur adipiscing elit. Pellentesque eleifend...</div>
-                            </a>
-                        </li>
-                        <li class="divider"></li>
-                        <li>
-                            <a class="text-center" href="#">
-                                <strong>Read All Messages</strong>
-                                <i class="fa fa-angle-right"></i>
-                            </a>
-                        </li>
-                    </ul>
-                    <!-- /.dropdown-messages -->
-                </li>
-                <!-- /.dropdown -->
+
 
 
                <!--MENU DROPDOWN TAREAS-->
@@ -81,13 +31,13 @@
                             <a href="#">
                                 <div>
                                     <p>
-                                        <strong>Task 1</strong>
-                                        <span class="pull-right text-muted">40% Complete</span>
+                                        <strong>Trea 1</strong>
+                                        <span class="pull-right text-muted">40%</span>
                                     </p>
                                    
                                         <div>
                                         @include('widgets.progress', array('animated'=> true, 'class'=>'success', 'value'=>'40'))
-                                            <span class="sr-only">40% Complete (success)</span>
+                                            <span class="sr-only">40%</span>
                                         </div>
                                    
                                 </div>
@@ -98,13 +48,13 @@
                             <a href="#">
                                 <div>
                                     <p>
-                                        <strong>Task 2</strong>
-                                        <span class="pull-right text-muted">20% Complete</span>
+                                        <strong>Tarea 2</strong>
+                                        <span class="pull-right text-muted">20%</span>
                                     </p>
                                    
                                         <div>
                                         @include('widgets.progress', array('animated'=> true, 'class'=>'info', 'value'=>'20'))
-                                            <span class="sr-only">20% Complete</span>
+                                            <span class="sr-only">20% </span>
                                         </div>
                                    
                                 </div>
@@ -115,13 +65,13 @@
                             <a href="#">
                                 <div>
                                     <p>
-                                        <strong>Task 3</strong>
-                                        <span class="pull-right text-muted">60% Complete</span>
+                                        <strong>Tarea 3</strong>
+                                        <span class="pull-right text-muted">60%</span>
                                     </p>
                                     
                                         <div>
                                         @include('widgets.progress', array('animated'=> true, 'class'=>'warning', 'value'=>'60'))
-                                            <span class="sr-only">60% Complete (warning)</span>
+                                            <span class="sr-only">60%</span>
                                         </div>
                                    
                                 </div>
@@ -132,13 +82,13 @@
                             <a href="#">
                                 <div>
                                     <p>
-                                        <strong>Task 4</strong>
-                                        <span class="pull-right text-muted">80% Complete</span>
+                                        <strong>Tarea 4</strong>
+                                        <span class="pull-right text-muted">80%</span>
                                     </p>
                                     
                                         <div>
                                         @include('widgets.progress', array('animated'=> true,'class'=>'danger', 'value'=>'80'))
-                                            <span class="sr-only">80% Complete (danger)</span>
+                                            <span class="sr-only">80% </span>
                                         </div>
                                     
                                 </div>
@@ -147,7 +97,7 @@
                         <li class="divider"></li>
                         <li>
                             <a class="text-center" href="#">
-                                <strong>See All Tasks</strong>
+                                <strong>Ver Todas las Tareas</strong>
                                 <i class="fa fa-angle-right"></i>
                             </a>
                         </li>
@@ -164,54 +114,20 @@
                         <i class="fa fa-bell fa-fw"></i>  <i class="fa fa-caret-down"></i>
                     </a>
                     <ul class="dropdown-menu dropdown-alerts">
+
                         <li>
                             <a href="#">
                                 <div>
-                                    <i class="fa fa-comment fa-fw"></i> New Comment
-                                    <span class="pull-right text-muted small">4 minutes ago</span>
+                                    <i class="fa fa-tasks fa-fw"></i> Nueva Tarea
+                                    <span class="pull-right text-muted small">hace 4 minutos</span>
                                 </div>
                             </a>
                         </li>
                         <li class="divider"></li>
-                        <li>
-                            <a href="#">
-                                <div>
-                                    <i class="fa fa-twitter fa-fw"></i> 3 New Followers
-                                    <span class="pull-right text-muted small">12 minutes ago</span>
-                                </div>
-                            </a>
-                        </li>
-                        <li class="divider"></li>
-                        <li>
-                            <a href="#">
-                                <div>
-                                    <i class="fa fa-envelope fa-fw"></i> Message Sent
-                                    <span class="pull-right text-muted small">4 minutes ago</span>
-                                </div>
-                            </a>
-                        </li>
-                        <li class="divider"></li>
-                        <li>
-                            <a href="#">
-                                <div>
-                                    <i class="fa fa-tasks fa-fw"></i> New Task
-                                    <span class="pull-right text-muted small">4 minutes ago</span>
-                                </div>
-                            </a>
-                        </li>
-                        <li class="divider"></li>
-                        <li>
-                            <a href="#">
-                                <div>
-                                    <i class="fa fa-upload fa-fw"></i> Server Rebooted
-                                    <span class="pull-right text-muted small">4 minutes ago</span>
-                                </div>
-                            </a>
-                        </li>
-                        <li class="divider"></li>
+
                         <li>
                             <a class="text-center" href="#">
-                                <strong>See All Alerts</strong>
+                                <strong>Ver Todas</strong>
                                 <i class="fa fa-angle-right"></i>
                             </a>
                         </li>
@@ -228,12 +144,10 @@
                         <i class="fa fa-user fa-fw"></i>  <i class="fa fa-caret-down"></i>
                     </a>
                     <ul class="dropdown-menu dropdown-user">
-                        <li><a href="#"><i class="fa fa-user fa-fw"></i> User Profile</a>
-                        </li>
-                        <li><a href="#"><i class="fa fa-gear fa-fw"></i> Settings</a>
+                        <li><a href="#"><i class="fa fa-user fa-fw"></i> Perfil</a>
                         </li>
                         <li class="divider"></li>
-                        <li><a href="{{ url ('login') }}"><i class="fa fa-sign-out fa-fw"></i> Logout</a>
+                        <li><a href="{{ route('user.logout') }}"><i class="fa fa-sign-out fa-fw"></i> Salir</a>
                         </li>
                     </ul>
                     <!-- /.dropdown-user -->
@@ -259,52 +173,47 @@
                             <!-- /input-group -->
                         </li>
                         <li {{ (Request::is('home') ? 'class="active"' : '') }}>
-                            <a href="{{ route ('home') }}"><i class="fa fa-dashboard fa-fw"></i> Dashboard</a>
+                            <a href="{{ route ('home') }}"><i class="fa fa-home fa-fw"></i> Home</a>
                         </li>
-                        {{--<li {{ (Request::is('*charts') ? 'class="active"' : '') }}>--}}
-                            {{--<a href="{{ url ('charts') }}"><i class="fa fa-bar-chart-o fa-fw"></i> Charts</a>--}}
-                            {{--<!-- /.nav-second-level -->--}}
-                        {{--</li>--}}
-                        <li {{ (Request::is('*callendar') ? 'class="active"' : '') }}>
-                            <a href="{{ url ('callendar') }}"><i class="fa fa-calendar fa-fw"></i> Calendario</a>
+                        <li {{ (Request::is('*charts') ? 'class="active"' : '') }}>
+                            <a href="#!"><i class="fa fa-bar-chart-o fa-fw"></i> Gráficas</a>
+                            <ul class="nav nav-second-level">
+                                <li>
+                                    <a href="#!">Grafica tipo 1</a>
+                                </li>
+                                <li>
+                                    <a href="#!">Grafica tipo 2</a>
+                                </li>
+                                <li>
+                                    <a href="#!">Grafica tipo 3</a>
+                                </li>
+                            </ul>
                             <!-- /.nav-second-level -->
                         </li>
-                        <li {{ (Request::is('*tables') ? 'class="active"' : '') }}>
-                            <a href="{{ url ('tables') }}"><i class="fa fa-table fa-fw"></i> Tablas</a>
-                        </li>
-                        <li {{ (Request::is('*forms') ? 'class="active"' : '') }}>
-                            <a href="{{ url ('forms') }}"><i class="fa fa-edit fa-fw"></i> Forms</a>
-                        </li>
+                        {{--<li {{ (Request::is('*tables') ? 'class="active"' : '') }}>--}}
+                            {{--<a href="{{ url ('tables') }}"><i class="fa fa-table fa-fw"></i> Tablas</a>--}}
+                        {{--</li>--}}
+                        {{--<li {{ (Request::is('*forms') ? 'class="active"' : '') }}>--}}
+                            {{--<a href="{{ url ('forms') }}"><i class="fa fa-edit fa-fw"></i> Forms</a>--}}
+                        {{--</li>--}}
                         <li >
-                            <a href="#"><i class="fa fa-wrench fa-fw"></i> UI Elements<span class="fa arrow"></span></a>
+                            <a href="#"><i class="fa fa-files-o" aria-hidden="true"></i> Reportes<span class="fa arrow"></span></a>
                             <ul class="nav nav-second-level">
-                                <li {{ (Request::is('*panels') ? 'class="active"' : '') }}>
-                                    <a href="{{ url ('panels') }}">Panels and Collapsibles</a>
+                                <li>
+                                    <a href="#!">Informe tipo 1</a>
                                 </li>
-                                <li {{ (Request::is('*buttons') ? 'class="active"' : '') }}>
-                                    <a href="{{ url ('buttons' ) }}">Buttons</a>
+                                <li>
+                                    <a href="#!">Informe tipo 2</a>
                                 </li>
-                                <li {{ (Request::is('*notifications') ? 'class="active"' : '') }}>
-                                    <a href="{{ url('notifications') }}">Alerts</a>
-                                </li>
-                                <li {{ (Request::is('*typography') ? 'class="active"' : '') }}>
-                                    <a href="{{ url ('typography') }}">Typography</a>
-                                </li>
-                                <li {{ (Request::is('*icons') ? 'class="active"' : '') }}>
-                                    <a href="{{ url ('icons') }}"> Icons</a>
-                                </li>
-                                <li {{ (Request::is('*grid') ? 'class="active"' : '') }}>
-                                    <a href="{{ url ('grid') }}">Grid</a>
+                                <li>
+                                    <a href="#!">Informe tipo 3</a>
                                 </li>
                             </ul>
                             <!-- /.nav-second-level -->
                         </li>
                         <li>
-                            <a href="#"><i class="fa fa-lock fa-fw" aria-hidden="true"></i> Administración<span class="fa arrow"></span></a>
+                            <a href="#"><i class="fa fa-cogs" aria-hidden="true"></i> Gestión<span class="fa arrow"></span></a>
                             <ul class="nav nav-second-level">
-                                <li>
-                                    <a href="{{route('admin.tasks.index')}}">Tareas</a>
-                                </li>
                                 <li>
                                     <a href="#!">Areas <span class="fa arrow"></span></a>
                                     <ul class="nav nav-third-level">
@@ -334,20 +243,51 @@
                             <!-- /.nav-second-level -->
                         </li>
                         <li>
-                            <a href="#"><i class="fa fa-files-o fa-fw"></i> Sample Pages<span class="fa arrow"></span></a>
+                            <a href="#"><i class="fa fa-lock fa-fw" aria-hidden="true"></i> Administración<span class="fa arrow"></span></a>
                             <ul class="nav nav-second-level">
-                                <li {{ (Request::is('*blank') ? 'class="active"' : '') }}>
-                                    <a href="{{ url ('blank') }}">Blank Page</a>
-                                </li>
                                 <li>
-                                    <a href="{{ url ('login') }}">Login Page</a>
+                                    <a href="#!">Areas <span class="fa arrow"></span></a>
+                                    <ul class="nav nav-third-level">
+                                        <li>
+                                            <a href="#!">Nueva</a>
+                                        </li>
+                                        <li>
+                                            <a href="#!">Todas</a>
+                                        </li>
+                                    </ul>
+                                    <!-- /.nav-third-level -->
+                                </li>
+
+                                <li>
+                                    <a href="#">Trabajadores <span class="fa arrow"></span></a>
+                                    <ul class="nav nav-third-level">
+                                        <li>
+                                            <a href="{{route('admin.persons.create')}}">Nuevo</a>
+                                        </li>
+                                        <li>
+                                            <a href="{{route('admin.persons.index')}}">Todos</a>
+                                        </li>
+                                    </ul>
+                                    <!-- /.nav-third-level -->
                                 </li>
                             </ul>
                             <!-- /.nav-second-level -->
                         </li>
-                        <li {{ (Request::is('*documentation') ? 'class="active"' : '') }}>
-                            <a href="{{ url ('documentation') }}"><i class="fa fa-file-word-o fa-fw"></i> Documentation</a>
+                        <li>
+                            <a href="#"><i class="fa fa-tasks fa-fw"></i> Tareas<span class="fa arrow"></span></a>
+                            <ul class="nav nav-second-level">
+                                <li {{ (Request::is('*tarea') ? 'class="active"' : '') }}>
+                                    <a href="{{route('admin.tasks.index')}}"><i class="fa fa-table fa-fw"></i> Tabla</a>
+                                </li>
+                                <li>
+                                    <a href="{{ url ('callendar') }}"><i class="fa fa-calendar fa-fw"></i> Calendario</a>
+                                </li>
+                            </ul>
+                            <!-- /.nav-second-level -->
                         </li>
+                        {{--<li {{ (Request::is('*documentation') ? 'class="active"' : '') }}>--}}
+                            {{--<a href="{{ url ('documentation') }}"><i class="fa fa-file-word-o fa-fw"></i> Documentation</a>--}}
+                        {{--</li>--}}
                     </ul>
                 </div>
                 <!-- /.sidebar-collapse -->

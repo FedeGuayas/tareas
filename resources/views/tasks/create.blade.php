@@ -45,6 +45,8 @@
                 </div>
 
 
+
+
                 <div class="col-sm-6">
                 <div class="form-group">
                 {!! Form::label('area_id','Area:') !!}

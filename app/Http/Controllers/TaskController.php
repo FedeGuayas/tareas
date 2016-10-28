@@ -15,47 +15,50 @@ class TaskController extends Controller
 {
     /**
      * Colores de estado de la tarea
-     * "bg-primary"=>rgb(66,139,202),#428bca
-     * "bg-success" => rgb(92,184,92), #5cb85c
-     * "bg-info" =>rgb(91,192,222) #5bc0de
-     * "bg-warning"=>rgb(255,127,80), #FF7F50
-     * "bg-danger"=> rgb(217,83,79), 	#d9534f
+     * "bg-primary"=>#337ab7
+     * "bg-success" =>#5cb85c
+     * "bg-info" => #5bc0de
+     * "bg-warning"=>#f0ad4e
+     * "bg-danger"=> #d9534f
      */
 
-    public function index(){
+    /*muestra el calenadrio con todas las tareas*/
+    public function index()
+    {
 
-        $tasks=Task::all();
+        $tasks = Task::all();
 
         $tasks->each(function ($tasks) {
-             $tasks->person;
+            $tasks->person;
             $tasks->area;
         });
-        return view('tasks.index',['tasks'=>$tasks]);
+        return view('tasks.index', ['tasks' => $tasks]);
     }
 
     public function create()
     {
-        $areas_coll=Area::all();
+        $areas_coll = Area::all();
         $list_areas = $areas_coll->pluck('area', 'id');
-        return view('tasks.create',['areas'=>$list_areas]);
+        return view('tasks.create', ['areas' => $list_areas]);
     }
 
-    public function store(Request $request){
-        $task=new Task;
-        $task->task=$request->get('task');
-        $task->description=$request->get('description');
-        $task->start_day=$request->get('start_day');
-        $task->performance_day=$request->get('performance_day');
-        $task->performance_day=$request->get('performance_day');
-        $task->state=true;
-        $task->end_day=null;
-        $task->area_id=$request->get('area_id');
-        $task->person_id=$request->get('person_id');
-        $task->allDay=false;
-        $task->color="rgb(92,184,92)";
+    public function store(Request $request)
+    {
+        $task = new Task;
+        $task->task = $request->get('task');
+        $task->description = $request->get('description');
+        $task->start_day = $request->get('start_day');
+        $task->performance_day = $request->get('performance_day');
+        $task->performance_day = $request->get('performance_day');
+        $task->state = true;
+        $task->end_day = null;
+        $task->area_id = $request->get('area_id');
+        $task->person_id = $request->get('person_id');
+        $task->allDay = false;
+        $task->color = "#337ab7";
 
         $task->save();
-        Session::flash('message','Tarea creada correctamente');
+        Session::flash('message', 'Tarea creada correctamente');
         return redirect()->route('admin.tasks.index');
 
     }
@@ -63,48 +66,48 @@ class TaskController extends Controller
     public function edit($id)
     {
         $task = Task::findOrFail($id);
-        
+
         $areas_coll = Area::all();
         $list_areas = $areas_coll->pluck('area', 'id');
 
-        $persons_coll = Person::select(DB::raw('CONCAT(first_name, " ", last_name) AS name'), 'id')->where('id',$task->person_id);
+        $persons_coll = Person::select(DB::raw('CONCAT(first_name, " ", last_name) AS name'), 'id')->where('id', $task->person_id);
         $list_persons = $persons_coll->pluck('name', 'id');
-        
 
-       
-        return view('tasks.edit',['task'=>$task,'areas'=>$list_areas,'person'=>$list_persons]);
+
+        return view('tasks.edit', ['task' => $task, 'areas' => $list_areas, 'person' => $list_persons]);
 
     }
 
+    public function update(Request $request, $id)
+    {
 
-
-    public function update(Request $request, $id){
-
-        $task=Task::findOrFail($id);
-        $task->task=$request->get('task');
-        $task->description=$request->get('description');
-        $task->start_day=$request->get('start_day');
-        $task->performance_day=$request->get('performance_day');
-        $task->performance_day=$request->get('performance_day');
+        $task = Task::findOrFail($id);
+        $task->task = $request->get('task');
+        $task->description = $request->get('description');
+        $task->start_day = $request->get('start_day');
+        $task->performance_day = $request->get('performance_day');
+        $task->performance_day = $request->get('performance_day');
 //        $task->state=true;
 //        $task->end_day=null;
-        $task->area_id=$request->get('area_id');
-        $task->person_id=$request->get('person_id');
+        $task->area_id = $request->get('area_id');
+        $task->person_id = $request->get('person_id');
 //        $task->allDay=true;
 //        $task->color="rgb(92,184,92)";
 
         $task->update();
-        Session::flash('message','Tarea actualizada correctamente');
+        Session::flash('message', 'Tarea actualizada correctamente');
         return redirect()->route('admin.tasks.index');
 
 
     }
 
-    public function delete(){
-        
+    public function delete()
+    {
+
     }
 
-    public function show($id){
+    public function show($id)
+    {
 
     }
 
@@ -112,35 +115,35 @@ class TaskController extends Controller
     /**
      * Cargar tareas en el calendario por ajax
      */
-    public function getTasks(){
-        
-        $tasks=Task::all();
-        
+    public function getTasks()
+    {
+
+        $tasks = Task::all();
+
         $tasks->each(function ($tasks) {
             $tasks->person;
             $tasks->area;
         });
 
-        $data=[];
-        foreach ($tasks as $task){
-            $data[]=[
-                'id'=>$task->id,
-                'title'=>$task->task,
-                'description'=>$task->description,
-                'start'=>$task->start_day,
-                'end'=>$task->performance_day,
-                'end_day'=>$task->end_day,
-                'state'=>$task->state,
-                'area_id'=>$task->area->area,
-                'person_id'=>$task->person->getFullName(),
-                'allDay'=>$task->allDay,
-                'color'=>$task->color,
-                "url"=>"getTasks"."/".$task->id,
+        $data = [];
+        foreach ($tasks as $task) {
+            $data[] = [
+                'id' => $task->id,
+                'title' => $task->task,
+                'description' => $task->description,
+                'start' => $task->start_day,
+                'end' => $task->performance_day,
+                'end_day' => $task->end_day,
+                'state' => $task->state,
+                'area_id' => $task->area->area,
+                'person_id' => $task->person->getFullName(),
+                'allDay' => $task->allDay,
+                'color' => $task->color,
+                "url" => "getTasks" . "/" . $task->id,
             ];
         }
 
         json_encode($data);
-         //convertimos el array principal $data a un objeto Json
         return $data;
 
     }
@@ -149,30 +152,26 @@ class TaskController extends Controller
     /**
      * Cargar datos del trabajador en la ventana modal en el calendario por ajax
      */
-    public function getDataModal(){
-
+    public function getDataModal()
+    {
         $id = $_POST['id'];
 
-        $task=Task::findOrFail($id);
-        $person=$task->person;//responsable de la tarea
-        $asignadas=$person->tasks->count();//cantidad de tareas asignadas a este trabajador
-        $terminadas=Task::where('person_id',$person->id)
-            ->where('state',false)->count();
-        $pendientes=$asignadas-$terminadas;//tareas pendientes
-        $cumplimiento=round((($terminadas*100)/$asignadas),2);//%de tareas cumplidas
+        $task = Task::findOrFail($id);
+        $person = $task->person;//responsable de la tarea
+        $asignadas = $person->tasks->count();//cantidad de tareas asignadas a este trabajador
+        $terminadas = Task::where('person_id', $person->id)
+            ->where('state', false)->count();
+        $pendientes = $asignadas - $terminadas;//tareas pendientes
+        $cumplimiento = round((($terminadas * 100) / $asignadas), 2);//%de tareas cumplidas
 
-        $data[]=[
-            'asignadas'=>$asignadas,
-            'terminadas'=>$terminadas,
-            'pendientes'=>$pendientes,
-            'cumplimiento'=>$cumplimiento
+        $data[] = [
+            'asignadas' => $asignadas,
+            'terminadas' => $terminadas,
+            'pendientes' => $pendientes,
+            'cumplimiento' => $cumplimiento
         ];
 
         json_encode($data);
         return $data;
     }
-
-
-
-
 }

@@ -32,32 +32,33 @@
 
 <body>
 <!-- Header -->
-<a name="about"></a>
+
 <div class="intro-header">
     <div class="container">
-
         <div class="row">
             <div class="col-lg-12 col-md-6">
                 <div class="intro-message">
                     <h1>Gestion de Tareas</h1>
                     <h3>Planifica tu tiempo</h3>
+                    <a href="{{url('callendar') }}" class="btn btn-info btn-outline"><i class="fa fa-eye fa-fw" aria-hidden="true"></i> <span class="network-name">Calendario</span></a>
                     <hr class="intro-divider">
+
                     <ul class="list-inline intro-social-buttons">
                         <li>
-                            <form role="form">
+
                                 <div class="form-group">
-                                    <input class="form-control" placeholder="E-mail" name="email" type="email" autofocus>
+                                    {!! Form::email('email',null,['class'=>'form-control','placeholder'=>'Correo','autofocus']) !!}
                                 </div>
                                 <div class="form-group">
-                                    <input class="form-control" placeholder="Password" name="password" type="password" value="">
+                                    {!! Form::password('password',['class'=>'form-control','placeholder'=>'Contraseña']) !!}
                                 </div>
-                                </form>
-                                <div class="checkbox">
-                                    <label>
-                                        <input name="remember" type="checkbox" value="Remember Me">Recordarme
-                                    </label>
+                                <div class="form-inline">
+                                    <div class="form-group">
+                                        {!! Form::checkbox('remember',null) !!}
+                                        {!! Form::label('remember','Recordarme') !!}
+                                    </div>
                                 </div>
-                            <a href="{{route ('home') }}" class="btn btn-success btn-lg"><i class="fa fa-sign-in fa-fw"></i> <span class="network-name">Entrar</span></a>
+
                         </li>
 
                     </ul>

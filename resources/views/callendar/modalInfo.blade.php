@@ -9,25 +9,25 @@
 
                 <div class="row">
                     <div class="form-horizontal">
-                        <div class="form-group">
+                        <div class="form-group has-success">
                             {!! Form::label('area_id','Area',['class'=>'col-sm-3 control-label']) !!}
                             <div class="col-sm-6">
                                 {!! Form::text('area_id',null,['class'=>'form-control', 'disabled']) !!}
                             </div>
                         </div>
-                        <div class="form-group">
-                            {!! Form::label('start','Fecha Inicio',['class'=>'col-sm-3 control-label']) !!}
+                        <div class="form-group  has-success">
+                            {!! Form::label('start','Fecha Inicio',['class'=>'col-sm-3 control-label ']) !!}
                             <div class="col-sm-4">
                                 {!! Form::text('start',null,['class'=>'form-control', 'disabled']) !!}
                             </div>
                         </div>
-                        <div class="form-group">
+                        <div class="form-group  has-success">
                             {!! Form::label('end','Fecha Fin',['class'=>'col-sm-3 control-label']) !!}
                             <div class="col-sm-4">
                                 {!! Form::text('end',null,['class'=>'form-control', 'disabled']) !!}
                             </div>
                         </div>
-                        <div class="form-group">
+                        <div class="form-group  has-success">
                             {!! Form::label('person_id','Responsable',['class'=>'col-sm-3 control-label']) !!}
                             <div class="col-sm-6">
                                 {!! Form::text('person_id',null,['class'=>'form-control', 'disabled']) !!}
@@ -39,7 +39,7 @@
                {{--<div class="divider"></div>--}}
                 <table id="modal_table" class="table table-bordered" cellspacing="0" width="100%"
                        data-order='[[ 1, "asc" ]]'>
-                    <thead class="info">
+                    <thead class="text-info">
                     <tr>
                         {{--<th>id</th>--}}
                         <th>Tareas asignadas:</th>
@@ -60,7 +60,7 @@
                 </table>
             </div>
             <div class="modal-footer bg-success">
-                <button type="button" class="btn btn-default" data-dismiss="modal">Cerrar</button>
+                <button type="button" class="btn btn-success" data-dismiss="modal">Cerrar</button>
                 {{--<button class="btn btn-primary"><a id="eventUrl" target="_blank">Event Page</a></button>--}}
             </div>
         </div>

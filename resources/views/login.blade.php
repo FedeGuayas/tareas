@@ -25,7 +25,7 @@
                         </form>
                     
                 @endsection
-                @include('widgets.panel', array('as'=>'login', 'header'=>true))
+                @include('widgets.panel', array('as'=>'backup.login', 'header'=>true))
             </div>
         </div>
     </div>

@@ -12,17 +12,18 @@
 */
 
 Route::get('/home',[
-        'uses'=>'HomeController@index',
-        'as'=> 'home'
+    'uses'=>'HomeController@index',
+    'as'=> 'home'
     ]);
 
-Route::get('/',function(){
+Route::get('/', function(){
     return view('welcome');
 });
 
-Route::get('/blank',function(){
-    return view('blank');
-});
+//Route::get('/',function(){
+//    return view('welcome');
+//});
+
 
 //obtener el id de las personas por area
 Route::get('/persons/{id}','AreasController@getPersons');
@@ -34,21 +35,9 @@ Route::group(['prefix'=>'admin'],function() {
     Route::resource('/tasks', 'TaskController');
     Route::resource('/persons', 'PersonsController');
     Route::resource('/areas', 'AreasController');
-   
-
-
-    Route::post('/task', [
-                'uses' => 'TaskController@getSignin',
-                'as' => 'postTask'
-            ]);
-
 });
 
 
-
-
-
-Route::group(['prefix'=>'user'],function(){
 
 //    //middleware para los k no estan autenticado
 //    Route::group(['middleware'=>'guest'],function() {
@@ -82,7 +71,7 @@ Route::group(['prefix'=>'user'],function(){
 //        ]);
     });
 
-});
+
 
 
 //Eventos Calendario
@@ -106,9 +95,7 @@ Route::group(['prefix'=>'user'],function(){
 
 
 //Calendario Task
-Route::get('callendar',function(){
-    return view('callendar.index');
-});
+
 Route::get('/getTasks{id?}',[
     'uses'=>'TaskController@getTasks',
     'as' => 'task.show'
@@ -122,3 +109,44 @@ Route::post('/getDataModal{id?}',[
 
 
 
+
+
+
+
+
+Route::group(['prefix'=>'user'],function(){
+
+    //middleware para los k no estan autenticado
+    Route::group(['middleware'=>'guest'],function() {
+        
+        //cargar el form para login
+        Route::get('/signin', [
+            'uses' => 'UsersController@getSignin',
+            'as' => 'user.signin'
+        ]);
+
+        //enviar los datos datas del form de login 
+        Route::post('/signin', [
+            'uses' => 'UsersController@postSignin',
+            'as' => 'user.signin'
+        ]);
+    });
+
+    //solo los autenticados pueden acceder al perfil y a deslogearse
+    Route::group(['middleware'=>'auth'],function() {
+
+        //acceso al perfil de usuarios
+        Route::get('/profile', [
+            'uses' => 'UsersController@getProfile',
+            'as' => 'user.profile'
+        ]);
+
+        //salir del sistema
+        Route::get('/', [
+            'uses' => 'UsersController@getLogout',
+            'as' => 'user.logout'
+        ]);
+    });
+
+
+});

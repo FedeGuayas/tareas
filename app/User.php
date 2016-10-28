@@ -3,9 +3,16 @@
 namespace App;
 
 use Illuminate\Foundation\Auth\User as Authenticatable;
+use Zizaco\Entrust\Traits\EntrustUserTrait;
 
 class User extends Authenticatable
 {
+    /**
+     * Este trait habilita las relaciones del modelo User con el modelo Role, adicionando los siguientes metodos
+     * roles(), hasRole($name), can($permission), and ability($roles, $permissions, $options)
+     */
+    use EntrustUserTrait;
+
     /**
      * The attributes that are mass assignable.
      *
