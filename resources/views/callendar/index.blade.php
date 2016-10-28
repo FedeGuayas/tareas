@@ -15,7 +15,6 @@
                             <div class="box-body no-padding">
                                 <!-- THE CALENDAR -->
                                 <div id="calendar"></div>
-
                             </div>
                             <!-- /.box-body -->
                         </div>
@@ -25,12 +24,13 @@
                 </div>
                 <!-- /.row -->
             </section>
+
             <!-- /.content -->
         </div><!-- /.panel-body -->
         {!! Form::open(['id' =>'form-calendario']) !!}
         {!! Form::close() !!}
     </div><!-- /.panel -->
-
+   @include('callendar.modalInfo')
 @section('script')
     <script>
         $(function () {
@@ -68,11 +68,11 @@
                         start: '09:00', // 9am
                         end: '18:00' // 6pm
                     },
-                    {
-                        dow: [ 6,7], //   Domingo Sabado
-                        start: '10:00', // 10am
-                        end: '11:00' // 4pm
-                    }
+//                    {
+//                        dow: [6,7 ], //   Domingo Sabado
+//                        start: '10:00', // 10am
+//                        end: '11:00' // 4pm
+//                    }
                 ],
                 locale:'es',
 
@@ -84,11 +84,13 @@
                     week: 'semana',
                     day: 'dia'
                 },
-                displayEventEnd:true,
+//                displayEventEnd:true,
 
 //                weekends: false, // will hide Saturdays and Sundays
 
-                events: { url:"getTasks"},
+                events: {
+                    url:"getTasks"
+                },
 
                 editable: false,//true para permitir editar en el calendario
 
@@ -99,7 +101,6 @@
                     var start = (event.start.format("YYYY-MM-DD HH:mm"));
                     var back=event.color;
                     var area=event.area_id;
-                    var borderColor=event.color;
                     var resp=event.person_id;
 
                     if(event.end){
@@ -107,11 +108,11 @@
                     }else{var end="No definido";
                     }
 
-                    var tooltip = '<div class="tooltipevent" style="border: #030414 2px solid;padding:10px;border-radius: 10px 10px 10px 10px; width:auto;height:auto;color:#030414;background:'+back+';position:absolute; placement:top;z-index:10001;">' +
+                    var tooltip = '<div class="tooltipevent" style="padding:10px;border-radius: 10px 10px 10px 10px; width:auto;height:auto;color:#030414;background:'+back+';position:absolute; placement:top;z-index:10001;">' +
                             ''+'<b><center> '+ event.title +' </center></b>'+
+                            ''+ 'Area '+area+'<br>' +
                             ''+ 'Inicio: '+start+'<br>' +
                             ''+ 'Fin: '+ end +'<br>' +
-                            ''+'Area: '+area+'' +'<br>'+
                             ''+'Responsable: '+'<b>'+resp+'</b></div>';
                     $("body").append(tooltip);
                     $(this).mouseover(function(e) {
@@ -131,9 +132,60 @@
                 //evento para eliminar una tarea al dar click sobre ella
                 eventClick: function (event, jsEvent, view) {
 
-                event.url.show;
+                    var start = (event.start.format("YYYY-MM-DD HH:mm"));
+                    var back=event.color;
+                    var area=event.area_id;
+                    var resp=event.person_id;
+
+                    if(event.end){
+                        var end = event.end.format("YYYY-MM-DD HH:mm");
+                    }else{var end="No definido";
+                    }
+
+                    //limpio los datos de la tabla
+                    $("#asignadas").empty();
+                    $("#terminadas").empty();
+                    $("#pendientes").empty();
+                    $("#cumplimiento").empty();
+//                    $('#terminadas ').html('<h3 id="terminadas"><span class="label label-success"></span></h3>');
+//                    //set the values and open the modal
+                    $('#modalTitle').html(event.title);
+                    $('#area_id').val(area);
+                    $('#start').val(start);
+                    $('#end').val(end);
+                    $('#person_id').val(resp);
+
+                    $("#modalInfo").modal()
+                    crsfToken = document.getElementsByName("_token")[0].value;
+                    $.ajax({
+                        url: 'getDataModal',
+                        dataType: 'json',
+                        data: 'id=' + event.id,
+                        headers: {
+                            "X-CSRF-TOKEN": crsfToken
+                        },
+                        type: "POST",
+                        success: function (data) {
+//
+//                            console.log(data.asignada);//no funciona asi
+                            var asignadas=data[0].asignadas,
+                                terminadas=data[0].terminadas,
+                                pendientes=data[0].pendientes,
+                                cumplimiento=data[0].cumplimiento;
+                            $("#asignadas").text(asignadas);
+                            $("#terminadas").text(terminadas);
+                            $("#pendientes").text(pendientes);
+                            $("#cumplimiento").text(cumplimiento);
 
 
+                        },
+                        error: function(json){
+                            console.log("Error en conexion");
+                        }
+                    });
+//
+                    return false;
+//
                 },
                 //entra en determinado dia al dar click en el calendario
 

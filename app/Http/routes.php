@@ -86,22 +86,22 @@ Route::group(['prefix'=>'user'],function(){
 
 
 //Eventos Calendario
-Route::get('/verEventos',function(){
-    return view('tasks.eventos');
-});
-
-Route::post('/guardaEventos', [
-    'uses' => 'CalendarController@create',
-    'as' => 'guardaEventos'
-]);
-
-Route::get('/cargaEventos{id?}',[
-        'uses'=>'CalendarController@index',
-        'as' => 'cargaEventos'
-]);
-
-Route::post('/actualizaEventos','CalendarController@update');
-Route::post('eliminaEvento','CalendarController@delete');
+//Route::get('/verEventos',function(){
+//    return view('tasks.eventos');
+//});
+//
+//Route::post('/guardaEventos', [
+//    'uses' => 'CalendarController@create',
+//    'as' => 'guardaEventos'
+//]);
+//
+//Route::get('/cargaEventos{id?}',[
+//        'uses'=>'CalendarController@index',
+//        'as' => 'cargaEventos'
+//]);
+//
+//Route::post('/actualizaEventos','CalendarController@update');
+//Route::post('eliminaEvento','CalendarController@delete');
 
 
 
@@ -113,6 +113,12 @@ Route::get('/getTasks{id?}',[
     'uses'=>'TaskController@getTasks',
     'as' => 'task.show'
 ]);
+
+Route::post('/getDataModal{id?}',[
+    'uses'=>'TaskController@getDataModal',
+    'as' => 'callendar.person'
+]);
+
 
 
 

@@ -104,9 +104,13 @@ class TaskController extends Controller
         
     }
 
+    public function show($id){
+
+    }
+
 
     /**
-     * Cargar tareas en el calendario
+     * Cargar tareas en el calendario por ajax
      */
     public function getTasks(){
         
@@ -139,51 +143,36 @@ class TaskController extends Controller
          //convertimos el array principal $data a un objeto Json
         return $data;
 
-
-//        $data = array(); //declaramos un array principal que va contener los datos
-//        $id = Task::all()->pluck('id'); //listo todos los id de los eventos
-//        $task = Task::all()->pluck('task');
-//        $description = Task::all()->pluck('description');
-//        $start_day = Task::all()->pluck('start_day');
-//        $performance_day = Task::all()->pluck('performance_day');
-//        $end_day= Task::all()->pluck('end_day');
-//        $state= Task::all()->pluck('state');
-//        $area_id= Task::all()->pluck('area_id');
-//        $person_id= Task::all()->pluck('person_id');
-//        $allDay= Task::all()->pluck('allDay');
-//        $background= Task::all()->pluck('color');
-//        $count = count($id); //contamos los ids obtenidos para saber el numero exacto de eventos
-//
-//        //hacemos un ciclo para anidar los valores obtenidos a nuestro array principal $data
-//        for($i=0;$i<$count;$i++){
-//            $data[$i] = array(
-//                //obligatoriamente "title", "start" y "url" son campos requeridos por el plugin, asi que asignamos a cada uno el valor correspondiente
-//                "id"=>$id[$i],
-//                "title"=>$task[$i],
-//                "description"=>$description[$i],
-//                "start"=>$start_day[$i],
-//                "performance_day"=>$performance_day[$i],//dia programado para termino
-//                "end_day"=>$end_day[$i],//dia real de termino
-//                "state"=>$state[$i],
-//                "area_id"=>$area_id[$i],
-//                "person_id"=>$person_id[$i],
-//                "allDay"=>$allDay[$i],
-//                "backgroundColor"=>$background[$i],
-////               "borderColor"=>$borde[$i],
-//
-//               "url"=>"getTasks".$id[$i]
-//                //en el campo "url" concatenamos el el URL con el id del evento para luego
-//                //en el evento onclick de JS hacer referencia a este y usar el método show
-//                //para mostrar los datos completos de un evento
-//            );
-//        }
-
-//        json_encode($data); //convertimos el array principal $data a un objeto Json
-//        return $data; //para luego retornarlo y estar listo para consumirlo
     }
 
-    public function show($id){
 
+    /**
+     * Cargar datos del trabajador en la ventana modal en el calendario por ajax
+     */
+    public function getDataModal(){
+
+        $id = $_POST['id'];
+
+        $task=Task::findOrFail($id);
+        $person=$task->person;//responsable de la tarea
+        $asignadas=$person->tasks->count();//cantidad de tareas asignadas a este trabajador
+        $terminadas=Task::where('person_id',$person->id)
+            ->where('state',false)->count();
+        $pendientes=$asignadas-$terminadas;//tareas pendientes
+        $cumplimiento=round((($terminadas*100)/$asignadas),2);//%de tareas cumplidas
+
+        $data[]=[
+            'asignadas'=>$asignadas,
+            'terminadas'=>$terminadas,
+            'pendientes'=>$pendientes,
+            'cumplimiento'=>$cumplimiento
+        ];
+
+        json_encode($data);
+        return $data;
     }
+
+
+
 
 }
