@@ -147,7 +147,7 @@
                         <li><a href="#"><i class="fa fa-user fa-fw"></i> Perfil</a>
                         </li>
                         <li class="divider"></li>
-                        <li><a href="{{ route('user.logout') }}"><i class="fa fa-sign-out fa-fw"></i> Salir</a>
+                        <li><a href="{{ url('/logout') }}"><i class="fa fa-sign-out fa-fw"></i> Salir</a>
                         </li>
                     </ul>
                     <!-- /.dropdown-user -->
@@ -173,7 +173,7 @@
                             <!-- /input-group -->
                         </li>
                         <li {{ (Request::is('home') ? 'class="active"' : '') }}>
-                            <a href="{{ route ('home') }}"><i class="fa fa-home fa-fw"></i> Home</a>
+                            <a href="{{ url ('/home') }}"><i class="fa fa-home fa-fw"></i> Home</a>
                         </li>
                         <li {{ (Request::is('*charts') ? 'class="active"' : '') }}>
                             <a href="#!"><i class="fa fa-bar-chart-o fa-fw"></i> Gráficas</a>
@@ -280,7 +280,7 @@
                                     <a href="{{route('admin.tasks.index')}}"><i class="fa fa-table fa-fw"></i> Tabla</a>
                                 </li>
                                 <li>
-                                    <a href="{{ url ('callendar') }}"><i class="fa fa-calendar fa-fw"></i> Calendario</a>
+                                    <a href="{{url('callendar')}}"><i class="fa fa-calendar fa-fw"></i> Calendario</a>
                                 </li>
                             </ul>
                             <!-- /.nav-second-level -->

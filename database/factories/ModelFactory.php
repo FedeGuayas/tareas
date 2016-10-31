@@ -29,7 +29,6 @@ use Illuminate\Database\Eloquent\Model;
 
 $factory->define(User::class, function (Generator $faker) {
     $array= [
-        'name' => $faker->name,
         'email' => $faker->safeEmail,
         'password' => bcrypt(str_random(10)),
         'remember_token' => str_random(10),
@@ -51,7 +50,8 @@ $factory->define(Person::class, function (Generator $faker) {
         'phone' => $faker->phoneNumber,
         'first_name'=>$faker->firstName($gender = null|'male'|'female'),
         'last_name' => $faker->lastName,
-        'area_id' => Area::all()->random()->id,//funciona ok
+        'area_id' => Area::all()->random()->id,
+        'user_id' => User::all()->random()->id,
          
 ];
      return $array;

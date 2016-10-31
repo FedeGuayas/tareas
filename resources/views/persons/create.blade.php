@@ -3,6 +3,8 @@
 
 @section('section')
     <div class="col-sm-12">
+        @include('alert.success')
+        @include('alert.request')
         <div class="row">
             <div class="col-sm-6">
                 {!! Form::open(['route'=>'admin.persons.store', 'method'=>'POST','role'=>'form']) !!}

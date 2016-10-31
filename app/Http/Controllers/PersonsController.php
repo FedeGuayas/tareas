@@ -3,10 +3,14 @@
 namespace App\Http\Controllers;
 
 use App\Area;
+use App\Events\UserCreated;
 use App\Person;
+use App\User;
 use Illuminate\Http\Request;
-
+use DB;
 use App\Http\Requests;
+use App\Http\Requests\PersonStoreRequest;
+use Event;
 
 use Session;
 
@@ -19,6 +23,7 @@ class PersonsController extends Controller
      */
     public function index()
     {
+        
         $persons=Person::all();
         return view('persons.index',['persons'=>$persons]);
     }
@@ -41,20 +46,39 @@ class PersonsController extends Controller
      * @param  \Illuminate\Http\Request  $request
      * @return \Illuminate\Http\Response
      */
-    public function store(Request $request)
+    public function store(PersonStoreRequest $request)
     {
+        Session::forget('message_danger');
+        try {
+            DB::beginTransaction();
 
-
+            $user=new User();
+            $user->email=$request->input('email');
+//            $user->password=str_random(6);
+            $user->password=bcrypt('123456');
+            $user->activated=false;
+            $user->save();
+            Event::fire(new UserCreated($user));
+        
         $person=new Person();
+        $person->user()->associate($user);
         $area_id=$request->input('area_id');
         $area=Area::findOrFail($area_id);
-
         $person->first_name=$request->input('first_name');
         $person->last_name=$request->input('last_name');
         $person->phone=$request->input('phone');
-        $person->email=$request->input('email');
+
         //Agrega el id del area a la persona y lo salva, por las relaciones
         $area->persons()->save($person);
+
+            DB::commit();
+
+        } catch (\Exception $e) {
+            DB::rollback();
+
+            Session::flash('message_danger','Error'.$e->getMessage());
+            return redirect()->route('admin.persons.create');
+        }
 
          Session::flash('message','Trabajador agregado correctamente');
          return redirect()->route('admin.persons.index');
@@ -120,7 +144,10 @@ class PersonsController extends Controller
     public function destroy($id)
     {
         $person=Person::findOrFail($id);
-        $person->delete();
+        $user=$person->user()->delete();
+
+
+//        $person->delete();
         Session::flash('message','Se elimino el trabajador '.  $person->getFullName());
         return redirect()->route('admin.persons.index');
     }

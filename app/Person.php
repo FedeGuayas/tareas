@@ -48,5 +48,9 @@ class Person extends Model
     public static function persons($id){
         return Person::where('area_id',$id)->get();
     }
+
+    public function user(){
+        return $this->belongsTo('App\User');
+    }
 }
 

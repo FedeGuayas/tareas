@@ -35,7 +35,7 @@
                             {{--<td>{{$area->id}}</td>--}}
                             <td>{{$person->getFullName()}}</td>
                             <td>{{$person->phone}}</td>
-                            <td>{{$person->email}}</td>
+                            <td>{{$person->user->email}}</td>
                             <td>{{$person->area->area}}</td>
                             <td>
                                 <a href="{{ route('admin.persons.edit', $person->id )}}" class="btn btn-xs btn-warning" data-toggle="tooltip" data-placement="top" title="Editar"><i class="fa fa-pencil" aria-hidden="true"></i>

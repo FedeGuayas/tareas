@@ -3,9 +3,12 @@
 namespace App\Http\Controllers;
 
 use Illuminate\Http\Request;
-use Illuminate\Support\Facades\Auth;
 
 use App\Http\Requests;
+use Auth;
+use Session;
+use App\User;
+
 
 class UsersController extends Controller
 {
@@ -86,25 +89,24 @@ class UsersController extends Controller
     }
 
 
-    public function getSignin(){
-        return view('users.signin');
-    }
+//    public function getSignin(){
+//        return view('users.login');
+//    }
+//
+//    public function postSignin(Request $request){
+//        
+//        if (Auth::attempt(['email'=>$request->input('email'),'password'=>$request->input('password')])){
+//            //redirecciono a la pagina k intentaba entrar sino al perfil
+//            return redirect()->intended('user/profile');
+//        }
+//        
+//        return redirect()->route('user.signin')->withInput();
+//    }
 
-    public function postSignin(Request $request){
-        
-        if (Auth::attempt(['email'=>$request->input('email'),'password'=>$request->input('password')])){
-            return redirect()->route('user.profile');
-        }
-        return redirect()->back();
-    }
 
     public function getProfile(){
         return view('users.profile');
     }
-
-    public function getLogout(){
-        Auth::logout();
-        return redirect()->back();
-    }
+    
 
 }

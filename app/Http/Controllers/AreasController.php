@@ -112,6 +112,7 @@ class AreasController extends Controller
         return redirect()->route('admin.areas.index');
     }
 
+    
     public function getPersons(Request $request,$id){
         if ($request->ajax()){
             $persons=Person::persons($id);

@@ -14,15 +14,17 @@ class Persons extends Migration
     {
         Schema::create('persons', function (Blueprint $table) {
             $table->increments('id');
-            $table->integer('area_id')->unsigned()->nullable();
-
-            $table->string('email')->unique();
+            $table->integer('area_id')->unsigned();
+            $table->integer('user_id')->unsigned()->unique();
+            
             $table->string('phone');
             $table->string('first_name');
             $table->string('last_name');
             
             $table->foreign('area_id')->references('id')->on('areas')
                 ->onUpdate('cascade')->onDelete('no action');
+            $table->foreign('user_id')->references('id')->on('users')
+                ->onUpdate('cascade')->onDelete('cascade');
 
             
         });

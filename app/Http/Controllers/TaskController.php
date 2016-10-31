@@ -22,7 +22,7 @@ class TaskController extends Controller
      * "bg-danger"=> #d9534f
      */
 
-    /*muestra el calenadrio con todas las tareas*/
+    /*muestra tabla con todas las tareas*/
     public function index()
     {
 
@@ -171,7 +171,7 @@ class TaskController extends Controller
             'cumplimiento' => $cumplimiento
         ];
 
-        json_encode($data);
-        return $data;
+
+        return response()->json($data);
     }
 }

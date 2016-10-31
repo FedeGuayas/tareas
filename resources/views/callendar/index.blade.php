@@ -22,22 +22,22 @@
                     </div>
                     <!-- /.col 9-->
 
-                   {{--LEYENDA--}}
-                        <div class="col-md-3">
-                            <div class="box box-solid">
-                                <div class="box-header with-border"><br><br><br>
-                                    <h4 class="box-title">Leyenda</h4>
-                                </div>
-                                <div class="box-body">
-                                           <ul class="list-group">
-                                                <li class="list-group-item"><h4><i style="color: #337ab7;" class="fa fa-square" aria-hidden="true"></i> Tareas asignada</h4></li>
-                                               <li class="list-group-item"><h4><i style="color: #5cb85c;" class="fa fa-square" aria-hidden="true"></i> Tareas terminadas</h4></li>
-                                                <li class="list-group-item"><h4><i style="color: #f0ad4e;" class="fa fa-square" aria-hidden="true"></i> Próximas a vencer</h4></li>
-                                                <li class="list-group-item"><h4><i style="color: #d9534f;" class="fa fa-square" aria-hidden="true"></i> Tareas incumplidas</h4></li>
-                                            </ul>
-                                </div><!-- /.box-body-->
-                            </div><!-- /. box-->
-                        </div>
+                    {{--LEYENDA--}}
+                    <div class="col-md-3">
+                        <div class="box box-solid">
+                            <div class="box-header with-border"><br><br><br>
+                                <h4 class="box-title">Leyenda</h4>
+                            </div>
+                            <div class="box-body">
+                                <ul class="list-group">
+                                    <li class="list-group-item"><h4><i style="color: #337ab7;" class="fa fa-square" aria-hidden="true"></i> Tareas asignada</h4></li>
+                                    <li class="list-group-item"><h4><i style="color: #5cb85c;" class="fa fa-square" aria-hidden="true"></i> Tareas terminadas</h4></li>
+                                    <li class="list-group-item"><h4><i style="color: #f0ad4e;" class="fa fa-square" aria-hidden="true"></i> Próximas a vencer</h4></li>
+                                    <li class="list-group-item"><h4><i style="color: #d9534f;" class="fa fa-square" aria-hidden="true"></i> Tareas incumplidas</h4></li>
+                                </ul>
+                            </div><!-- /.box-body-->
+                        </div><!-- /. box-->
+                    </div>
                 </div>
                 <!-- /.row -->
             </section>
@@ -47,7 +47,10 @@
         {!! Form::open(['id' =>'form-calendario']) !!}
         {!! Form::close() !!}
     </div><!-- /.panel -->
+
+
    @include('callendar.modalInfo')
+
 @section('script')
     <script>
         $(function () {
