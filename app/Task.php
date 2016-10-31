@@ -39,5 +39,8 @@ class Task extends Model
     public function area(){
         return $this->belongsTo('App\Area');
     }
+    public function tasks(){
+        return $this->hasMany('app\Task');
+    }
     
 }

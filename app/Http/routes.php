@@ -88,6 +88,9 @@ Route::group(['prefix'=>'admin'],function() {
     Route::resource('/tasks', 'TaskController');
     Route::resource('/persons', 'PersonsController');
     Route::resource('/areas', 'AreasController');
+    Route::resource('/permissions', 'PermissionsController');
+    Route::resource('/roles', 'RolesController');
+    
 
 });
 

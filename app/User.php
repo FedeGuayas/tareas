@@ -3,6 +3,8 @@
 namespace App;
 
 use Illuminate\Foundation\Auth\User as Authenticatable;
+use Illuminate\Support\Facades\Crypt;
+//use Illuminate\Support\Facades\Hash;
 use Zizaco\Entrust\Traits\EntrustUserTrait;
 
 class User extends Authenticatable
@@ -19,7 +21,7 @@ class User extends Authenticatable
      * @var array
      */
     protected $fillable = [
-        'email', 'password','activated'
+        'name','email', 'password','activated'
     ];
 
     /**
@@ -33,5 +35,12 @@ class User extends Authenticatable
 
     public function person(){
         return $this->hasOne('App\Person');
+    }
+
+//    //setear el password, ya no es necesario encriptar pass en controlador
+    public function setPasswordAttribute($value){
+        if (!empty ($value)) {
+            $this->attributes['password'] =bcrypt($value);
+        }
     }
 }

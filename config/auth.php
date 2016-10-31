@@ -104,4 +104,8 @@ return [
         ],
     ],
 
+    
+    /*Entrust Zizaco*/
+    'model' => 'App\User', 'table' => 'users',
+
 ];

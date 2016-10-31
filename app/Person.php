@@ -27,7 +27,7 @@ class Person extends Model
      * @var array
      */
     protected $fillable = [
-        'first_name', 'last_name','phone','email','area_id',
+        'first_name', 'last_name','phone','area_id',
     ];
 
     public function tasks()

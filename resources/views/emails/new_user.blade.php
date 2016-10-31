@@ -3,6 +3,7 @@
         <div>
             <p>
 
+
                Ha sido creada una cuenta en el sistema de ADministración de Tares Para ud.
             </p>
             <p>

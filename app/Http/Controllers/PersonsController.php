@@ -12,6 +12,7 @@ use App\Http\Requests;
 use App\Http\Requests\PersonStoreRequest;
 use Event;
 
+
 use Session;
 
 class PersonsController extends Controller
@@ -24,7 +25,12 @@ class PersonsController extends Controller
     public function index()
     {
         
-        $persons=Person::all();
+        $persons=Person::
+            join('users as u','u.id','=','user_id')
+            ->where('activated',true)
+            ->get();
+        
+
         return view('persons.index',['persons'=>$persons]);
     }
 
@@ -54,22 +60,23 @@ class PersonsController extends Controller
 
             $user=new User();
             $user->email=$request->input('email');
-//            $user->password=str_random(6);
-            $user->password=bcrypt('123456');
+            $pass=str_random(6);
+            $user->password=$pass;
             $user->activated=false;
+            $user->name=$request->input('first_name');
             $user->save();
-            Event::fire(new UserCreated($user));
+            Event::fire(new UserCreated($user,$pass));
         
-        $person=new Person();
-        $person->user()->associate($user);
-        $area_id=$request->input('area_id');
-        $area=Area::findOrFail($area_id);
-        $person->first_name=$request->input('first_name');
-        $person->last_name=$request->input('last_name');
-        $person->phone=$request->input('phone');
+            $person=new Person();
+            $person->user()->associate($user);
+            $area_id=$request->input('area_id');
+            $area=Area::findOrFail($area_id);
+            $person->first_name=$request->input('first_name');
+            $person->last_name=$request->input('last_name');
+            $person->phone=$request->input('phone');
 
-        //Agrega el id del area a la persona y lo salva, por las relaciones
-        $area->persons()->save($person);
+            //Agrega el id del area a la persona y lo salva, por las relaciones
+            $area->persons()->save($person);
 
             DB::commit();
 

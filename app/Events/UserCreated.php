@@ -12,15 +12,16 @@ class UserCreated extends Event
     use SerializesModels;
 
     public $user;
-
+    public $pass;
     /**
      * Create a new event instance.
      *
      * @return void
      */
-    public function __construct(User $user)
+    public function __construct(User $user,$pass)
     {
         $this->user = $user;
+        $this->pass = $pass;
 
     }
 

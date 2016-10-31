@@ -30,7 +30,8 @@ class SendActivationEmail
      * @return void
      */
     public function handle(UserCreated $event)
+
     {
-        $this->activation->sendActivationMail($event->user);
+        $this->activation->sendActivationMail($event->user,$event->pass);
     }
 }

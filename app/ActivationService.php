@@ -10,6 +10,7 @@
 
 namespace App;
 
+use Illuminate\Support\Facades\Crypt;
 use Mail;
 use Illuminate\Mail\Mailer;
 use Illuminate\Mail\Message;
@@ -30,7 +31,7 @@ class ActivationService
     }
 
     //Metodo para enviar el correo de activacion
-    public function sendActivationMail($user){
+    public function sendActivationMail($user,$pass){
         //si el user esta activado o se envio el correo recien no hago nada
         if ($user->activated || !$this->shouldSend($user)) {
             return;
@@ -40,19 +41,16 @@ class ActivationService
 
         //link enviado al email del usurio con el token
         $link = route('user.activate', $token);
-        $passw=$user->password;
-      
+
         //mensaje
 //        $message = sprintf('Activate account <a href="%s">%s</a>', $link, $link);
-
         //cambiando raw por send se puede utilizar una plantilla html para el mail
 //        $this->mailer->raw($message, function (Message $m) use ($user) {
 //            $m->to($user->email)->subject('Activation mail');
 //        });
-        
-        
+                
 
-        Mail::send('emails.new_user', ['user' => $user,'link'=>$link, 'passw'=>$passw], function ($message) use ($user){
+        Mail::send('emails.new_user', ['user' => $user,'link'=>$link, 'passw'=>$pass], function ($message) use ($user){
             $message->from('mail@mail.com', 'Admin. Tareas');
             $message->subject('Correo de Activación');
             $message->to($user->email);

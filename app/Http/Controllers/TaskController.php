@@ -6,6 +6,7 @@ use App\Person;
 use App\Task;
 use Illuminate\Http\Request;
 use App\Area;
+use Illuminate\Queue\SerializesModels;
 use Session;
 use DB;
 
@@ -13,6 +14,7 @@ use App\Http\Requests;
 
 class TaskController extends Controller
 {
+    
     /**
      * Colores de estado de la tarea
      * "bg-primary"=>#337ab7
