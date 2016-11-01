@@ -83,6 +83,7 @@ Route::post('/getDataModal{id?}',[
 Route::get('/persons/{id}','AreasController@getPersons');
 
 
+
 Route::group(['prefix'=>'admin'],function() {
 
     Route::resource('/tasks', 'TaskController');
@@ -90,7 +91,20 @@ Route::group(['prefix'=>'admin'],function() {
     Route::resource('/areas', 'AreasController');
     Route::resource('/permissions', 'PermissionsController');
     Route::resource('/roles', 'RolesController');
-    
+
+    //Usuarios
+    Route::get('users', ['as' => 'admin.users.index','uses'=>'UsersController@index' ]);
+
 
 });
 
+
+
+
+//asignar permisos a los roles
+Route::get('rol/{id}/permisos', ['as' => 'admin.roles.permisos','uses'=>'RolesController@permisos' ]);
+Route::post('rol/set-permisos', ['as' => 'admin.roles.setpermisos','uses'=>'RolesController@setPermisos' ]);
+
+//adicionar roles a los usuarios
+Route::get('user/{id}/roles', ['as' => 'admin.users.roles','uses'=>'UsersController@roles' ]);
+Route::POST('user/setroles', ['as' => 'admin.users.setroles','uses'=>'UsersController@setRoles' ]);

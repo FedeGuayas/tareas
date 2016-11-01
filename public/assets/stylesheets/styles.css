@@ -28,6 +28,16 @@ section,
 summary {
   display: block;
 }
+
+.go-up{
+  background:#76aadb;
+  bottom:0px;
+  display: block;
+  height: 50px;
+  position: fixed;
+  right:0px;
+  width:50px;
+}
 audio,
 canvas,
 progress,

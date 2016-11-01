@@ -158,4 +158,5 @@ class PersonsController extends Controller
         Session::flash('message','Se elimino el trabajador '.  $person->getFullName());
         return redirect()->route('admin.persons.index');
     }
+    
 }

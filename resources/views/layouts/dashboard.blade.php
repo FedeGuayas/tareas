@@ -247,26 +247,23 @@
                             <a href="#"><i class="fa fa-lock fa-fw" aria-hidden="true"></i> Administración<span class="fa arrow"></span></a>
                             <ul class="nav nav-second-level">
                                 <li>
-                                    <a href="#!">Areas <span class="fa arrow"></span></a>
+                                    <a href="#!">Usuarios <span class="fa arrow"></span></a>
                                     <ul class="nav nav-third-level">
                                         <li>
-                                            <a href="#!">Nueva</a>
-                                        </li>
-                                        <li>
-                                            <a href="#!">Todas</a>
+                                            <a href="{{route('admin.users.index')}}">Todos</a>
                                         </li>
                                     </ul>
                                     <!-- /.nav-third-level -->
                                 </li>
 
                                 <li>
-                                    <a href="#">Trabajadores <span class="fa arrow"></span></a>
+                                    <a href="#">Accesos <span class="fa arrow"></span></a>
                                     <ul class="nav nav-third-level">
                                         <li>
-                                            <a href="{{route('admin.persons.create')}}">Nuevo</a>
+                                            <a href="{{route('admin.roles.create')}}">Roles</a>
                                         </li>
                                         <li>
-                                            <a href="{{route('admin.persons.index')}}">Todos</a>
+                                            <a href="{{route('admin.permissions.create')}}">Permisos</a>
                                         </li>
                                     </ul>
                                     <!-- /.nav-third-level -->

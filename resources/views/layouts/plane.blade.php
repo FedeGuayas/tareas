@@ -30,12 +30,15 @@
 </head>
 
 <body>
+
 	@yield('body')
+
 </body>
 
 
 
 <script src="{{ asset("assets/scripts/frontend.js") }}" type="text/javascript"></script>
+
 
 {{--FullCalendar--}}
 {{--<script src="{{asset('plugins/fullcalendar/lib/jquery.min.js')}}"></script>--}}

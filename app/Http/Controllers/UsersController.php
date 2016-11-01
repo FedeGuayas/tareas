@@ -2,6 +2,7 @@
 
 namespace App\Http\Controllers;
 
+use App\Role;
 use Illuminate\Http\Request;
 
 use App\Http\Requests;
@@ -19,7 +20,12 @@ class UsersController extends Controller
      */
     public function index()
     {
-        //
+        $usuarios=User::all();
+        $usuarios->each(function ($usuarios) {
+            $usuarios->person;
+        });
+//        dd($usuarios);
+        return view('users.index',['usuarios'=>$usuarios]);
     }
 
     /**
@@ -106,6 +112,41 @@ class UsersController extends Controller
 
     public function getProfile(){
         return view('users.profile');
+    }
+
+
+    public  function roles($id)
+    {
+        $user=User::findOrFail($id);
+        $nombre=$user->person->first_name.' '.$user->person->last_name ;
+//        $roles= [''=>'Seleccione roles'] + Role::lists('display_name', 'id')->all();
+        $roles=Role::all();
+        return view('users.set-roles',compact('user','roles','nombre'));
+    }
+
+    /**
+     * Addiconar o kitar los roles del usuario.
+     *
+     * $id de usuario
+     *
+     */
+    public  function setRoles(Request $request)
+    {
+        $user_id=$request->get('user_id');
+        $user=User::findOrFail($user_id);
+        $roles=$request->get('roles');
+
+        if ($roles) {
+            // El usuario marcó checkbox
+            foreach ($roles as $rol){
+                $user->attachRole($rol);
+            }
+
+        } else {
+            // El usuario no marcó checkbox
+            $user->detachRole($roles);
+        }
+        return redirect()->route('admin.users.index');
     }
     
 

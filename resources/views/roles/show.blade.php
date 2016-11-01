@@ -18,12 +18,12 @@
                     <th>Opciones</th>
                     </thead>
                         <tr>
-                            <td>{{ $rol->id }}</td>
-                            <td>{{ $rol->name }}</td>
-                            <td>{{ $rol->display_name }}</td>
-                            <td>{{ $rol->description }}</td>
-                            <td>{{ $rol->created_at }}</td>
-                            <td>{{ $rol->updated_at }}</td>
+                            {{--<td>{{ $rol->id }}</td>--}}
+                            {{--<td>{{ $rol->name }}</td>--}}
+                            {{--<td>{{ $rol->display_name }}</td>--}}
+                            {{--<td>{{ $rol->description }}</td>--}}
+                            {{--<td>{{ $rol->created_at }}</td>--}}
+                            {{--<td>{{ $rol->updated_at }}</td>--}}
                             <td>
                                 <a href="{{ route('admin.roles.index') }}">
                                     {!! Form::button('<i class="fa fa-undo"></i>',['class'=>'btn ']) !!}

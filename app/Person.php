@@ -6,28 +6,13 @@ use Illuminate\Database\Eloquent\Model;
 
 class Person extends Model
 {
-    /**
-     * The table associated with the model.
-     *
-     * @var string
-     */
+    
     protected $table = 'persons';
-
-    /**
-     * Indicates if the model should be timestamped.
-     *
-     * @var bool
-     */
+    
     public $timestamps = false;
-   
-
-    /**
-     * The attributes that are mass assignable.
-     *
-     * @var array
-     */
+ 
     protected $fillable = [
-        'first_name', 'last_name','phone','area_id',
+        'first_name', 'last_name','phone','area_id','user_id'
     ];
 
     public function tasks()

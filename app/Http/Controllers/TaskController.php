@@ -9,6 +9,7 @@ use App\Area;
 use Illuminate\Queue\SerializesModels;
 use Session;
 use DB;
+use Auth;
 
 use App\Http\Requests;
 
@@ -39,30 +40,40 @@ class TaskController extends Controller
 
     public function create()
     {
-        $areas_coll = Area::all();
-        $list_areas = $areas_coll->pluck('area', 'id');
-        return view('tasks.create', ['areas' => $list_areas]);
+        if(Auth::check()){
+            $areas_coll = Area::all();
+            $list_areas = $areas_coll->pluck('area', 'id');
+            return view('tasks.create', ['areas' => $list_areas]);
+        }else{
+            return "Inicie sesión para poder crear Tareas";
+        }
     }
 
     public function store(Request $request)
     {
-        $task = new Task;
-        $task->task = $request->get('task');
-        $task->description = $request->get('description');
-        $task->start_day = $request->get('start_day');
-        $task->performance_day = $request->get('performance_day');
-        $task->performance_day = $request->get('performance_day');
-        $task->state = true;
-        $task->end_day = null;
-        $task->area_id = $request->get('area_id');
-        $task->person_id = $request->get('person_id');
-        $task->allDay = false;
-        $task->color = "#337ab7";
+        //hacemos uso de las funciones para verificar el rol del usuario
+        if(Auth::user()->hasRole('administrador')) {
+            
+            $task = new Task;
+            $task->task = $request->get('task');
+            $task->description = $request->get('description');
+            $task->start_day = $request->get('start_day');
+            $task->performance_day = $request->get('performance_day');
+            $task->performance_day = $request->get('performance_day');
+            $task->state = true;
+            $task->end_day = null;
+            $task->area_id = $request->get('area_id');
+            $task->person_id = $request->get('person_id');
+            $task->allDay = false;
+            $task->color = "#337ab7";
 
-        $task->save();
-        Session::flash('message', 'Tarea creada correctamente');
-        return redirect()->route('admin.tasks.index');
-
+            $task->save();
+            Session::flash('message', 'Tarea creada correctamente');
+            return redirect()->route('admin.tasks.index');
+        }else{
+            //si el usuario no cumple con los requisitos, retornamos un error 403
+            return abort(403);
+        }
     }
 
     public function edit($id)
@@ -84,6 +95,8 @@ class TaskController extends Controller
     {
 
         $task = Task::findOrFail($id);
+        if(Auth::user()->hasRole(['administrador','gestor'])){//verificamos los roles
+
         $task->task = $request->get('task');
         $task->description = $request->get('description');
         $task->start_day = $request->get('start_day');
@@ -99,7 +112,9 @@ class TaskController extends Controller
         $task->update();
         Session::flash('message', 'Tarea actualizada correctamente');
         return redirect()->route('admin.tasks.index');
-
+        } else{
+            return "usted no tiene permisos para actualizar esta tarea";
+        }
 
     }
 

@@ -121,7 +121,7 @@
     </div>    <!-- /.container -->
 </div><!-- /.callendar -section -->
 
-
+<div class="go-up"></div>
 {{--modal info--}}
 @include('callendar.modalInfo')
 
@@ -138,6 +138,8 @@
 <script src="{{asset('plugins/fullcalendar/lib/moment.min.js')}}"></script>
 <script src="{{asset('plugins/fullcalendar/fullcalendar.js')}}"></script>
 <script src="{{asset('plugins/fullcalendar/locale/es.js')}}"></script>
+
+<script src="{{ asset("assets/scripts/go-up.js") }}" type="text/javascript"></script>
 
 
 <script>
