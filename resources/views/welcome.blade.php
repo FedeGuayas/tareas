@@ -11,6 +11,7 @@
 
     <title>Gestion de Tareas</title>
 
+
     <!-- Bootstrap Core CSS -->
     <link href="{{asset('assets/landing/css/bootstrap.min.css')}}" rel="stylesheet">
 
@@ -25,6 +26,8 @@
     {{--FullCalendar--}}
     <link rel='stylesheet' href="{{asset('plugins/fullcalendar/fullcalendar.css')}}" />
 
+
+
     <!-- HTML5 Shim and Respond.js IE8 support of HTML5 elements and media queries -->
     <!-- WARNING: Respond.js doesn't work if you view the page via file:// -->
     <!--[if lt IE 9]>
@@ -32,9 +35,46 @@
     <script src="https://oss.maxcdn.com/libs/respond.js/1.4.2/respond.min.js"></script>
     <![endif]-->
 
+    <!-- jQuery -->
+    <script src="{{asset('assets/landing/js/jquery.js')}}"></script>
+    <link href="{{asset('assets/stylesheets/go-top.css')}}" rel="stylesheet">
+
+    <script type="text/javascript">
+        $(document).ready(function(){
+
+//            $('.go-top').on('click','.go-top',function(){
+//                $('.go-top').addClass('disabled');
+//                alert('ok');
+                //                    $('html, body').animate({ scrollTop: 0 }, 600);
+                //                    return false;
+//            });
+
+            $(window).scroll(function(){
+                if ($(this).scrollTop() > 250) {
+                    $('.go-top').slideDown(300);
+                    $('.go-top').on('click','.go-top',function(){
+                        $('html, body').animate({ scrollTop: 0 }, 600);
+                                            return false;
+                    });
+
+                } else {
+                    $('.go-top').slideUp(300);
+                }
+            });
+
+
+
+        });
+
+
+    </script>
+
 </head>
 
 <body>
+<!-- BackToTop Button -->
+<a href="#" class="go-top" title="Scroll to Top" style="display: none"><span></span></a>
+
 <!-- Header -->
 <div class="intro-header">
     <div class="container">
@@ -121,14 +161,13 @@
     </div>    <!-- /.container -->
 </div><!-- /.callendar -section -->
 
-<div class="go-up"></div>
+
 {{--modal info--}}
 @include('callendar.modalInfo')
 
 
 
-<!-- jQuery -->
-<script src="{{asset('assets/landing/js/jquery.js')}}"></script>
+
 
 <!-- Bootstrap Core JavaScript -->
 <script src="{{asset('assets/landing/js/bootstrap.min.js')}}"></script>
@@ -139,11 +178,15 @@
 <script src="{{asset('plugins/fullcalendar/fullcalendar.js')}}"></script>
 <script src="{{asset('plugins/fullcalendar/locale/es.js')}}"></script>
 
-<script src="{{ asset("assets/scripts/go-up.js") }}" type="text/javascript"></script>
+
 
 
 <script>
+
+
     $(function () {
+
+
         /* initialize the external events
          -----------------------------------------------------------------*/
         function ini_events(ele) {
@@ -307,8 +350,9 @@
         });
 
     });
-</script>
 
+
+</script>
 
 </body>
 

@@ -2,17 +2,19 @@
     <body>
         <div>
             <p>
-
-
-               Ha sido creada una cuenta en el sistema de ADministración de Tares Para ud.
+               Estimado, se le ha creado una cuenta en el sistema de Gestión de Tareas.
             </p>
             <p>
-                Siga el siguent elink para activarla
+                Debe dar clic en el siguiente link para activar su cuenta
                 {{$link}}
-
             </p>
             <p>
-                Su passw es : {{$passw}}
+                Este enlace será de un solo uso
+            </p>
+            <p>
+                Sus datos de acceso son: <br>
+                usuario: {{$user->email}} <br>
+                contraseña: {{$passw}} <br>
             </p>
 
         </div>

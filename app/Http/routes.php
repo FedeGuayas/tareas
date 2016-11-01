@@ -45,6 +45,12 @@ Route::group(['prefix'=>'user'],function(){
             'uses' => 'UsersController@getProfile',
             'as' => 'user.profile'
         ]);
+
+        //acceso al perfil de usuarios
+        Route::get('{id}/profile/', [
+            'uses' => 'UsersController@getProfileEdit',
+            'as' => 'user.profile.edit'
+        ]);
         
     });
 

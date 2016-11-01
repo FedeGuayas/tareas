@@ -57,7 +57,7 @@ return [
     */
 
 //    'from' => ['address' => null, 'name' => null],
-    'from' => ['address' => 'nialah80@gmail.com', 'name' => 'Admin Tareas'],
+    'from' => ['address' => 'admin@fedeguayas.com.ec', 'name' => 'Gestion de Tareas'],
 
     /*
     |--------------------------------------------------------------------------
