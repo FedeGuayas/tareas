@@ -86,7 +86,7 @@ Route::post('/getDataModal{id?}',[
 
 
 //obtener el id de las personas por area
-Route::get('/persons/{id}','AreasController@getPersons');
+Route::get('/users/{id}','AreasController@getUsers');
 
 
 

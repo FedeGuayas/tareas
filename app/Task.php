@@ -25,22 +25,21 @@ class Task extends Model
      * @var array
      */
     protected $fillable = [
-        'task', 'description', 'start_day','performance_day','end_day','state','area_id','person_id','allDay','color'
+        'task', 'description', 'start_day','performance_day','end_day','state','user_id','allDay','color','weekday','repeats','repeats_freq'
+
     ];
 
     protected $hidden = [
         'id'
     ];
 
-    public function person(){
+    public function user(){
         return $this->belongsTo('App\Person');
     }
 
-    public function area(){
-        return $this->belongsTo('App\Area');
+    public function events(){
+        return $this->hasMany('App\Event');
     }
-    public function tasks(){
-        return $this->hasMany('app\Task');
-    }
+
     
 }

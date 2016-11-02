@@ -5,11 +5,11 @@
 //V1 OK
 
 $("#area_id").change(function(event){
-   $.get("/persons/"+event.target.value+"",function(response,state){
+   $.get("/users/"+event.target.value+"",function(response,state){
        // console.log(response);
-       $("#person_id").empty();
+       $("#user_id").empty();
        for (i=0; i<response.length; i++){
-           $("#person_id").append("<option value='"+response[i].id+"'>"+response[i].first_name+' ' +response[i].last_name+"</option>");
+           $("#user_id").append("<option value='"+response[i].id+"'>"+response[i].first_name+' ' +response[i].last_name+"</option>");
        }
    });
 });

@@ -4,6 +4,7 @@ namespace App\Http\Controllers;
 
 use App\Area;
 use App\Person;
+use App\User;
 use Illuminate\Http\Request;
 
 use App\Http\Requests;
@@ -112,11 +113,11 @@ class AreasController extends Controller
         return redirect()->route('admin.areas.index');
     }
 
-    
-    public function getPersons(Request $request,$id){
+    //obtener todos los usuarios apar un area y devolver un json
+    public function getUsers(Request $request,$id){
         if ($request->ajax()){
-            $persons=Person::persons($id);
-            return response()->json($persons);
+            $users=User::users($id);
+            return response()->json($users);
         }
     }
 

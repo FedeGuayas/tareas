@@ -22,12 +22,13 @@ class Area extends Model
         'area', 'description'
     ];
 
-    public function task(){
-        return $this->hasMany('App\Task');
+    //accedo a las tareas a traves del usuario
+    public function tasks(){
+        return $this->hasManyThrough('App\Task','App\User');
     }
 
-    public function persons(){
-        return $this->hasMany('App\Person');
+    public function users(){
+        return $this->hasMany('App\User');
     }
     
 }

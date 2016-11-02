@@ -38,3 +38,24 @@
 /*!*-ms-filter:"alpha(opacity=100)";*!*/
 /*}*/
 
+.event-success {
+    background-color: #dff0d8;
+    color: #3c763d;
+}
+.event-primary {
+    background-color: rgba(60, 146, 219, 0.77);
+    color: #286090;
+}
+.event-info {
+    background-color: #d9edf7;
+    color: #46b8da;
+}
+
+.event-warning {
+    background-color: #fcf8e3;
+    color: #ec971f;
+}
+.event-danger {
+    background-color: #f2dede;
+    color: #d9534f;
+}

@@ -8,7 +8,7 @@ class Notification extends Model
 {
 
     protected $fillable = [
-        'notification','state'
+        'title','description'
     ];
 
     /**
@@ -20,7 +20,7 @@ class Notification extends Model
 
     ];
 
-    public function tasks(){
-        return $this->hasMany('app\Task');
+    public function users(){
+        return $this->belongsToMany('app\User');
     }
 }

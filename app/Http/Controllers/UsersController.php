@@ -117,17 +117,19 @@ class UsersController extends Controller
 
     public function getProfile(Request $request){
 
-        $tasks=Task::
-            join('persons as p','p.id','=','t.person_id','as t')
-            ->join('users as u','u.id','=','p.user_id')
-                ->select( 't.area_id','t.person_id','t.task','t.description','t.start_day','t.performance_day','t.state','t.end_day',
-                    't.color','t.created_at','t.updated_at',
-                    'u.name','u.email','u.activated','p.phone','p.first_name','p.last_name')
-            ->where('user_id',$request->user()->id)
-//            ->where('state',true)
-            ->orderBy('t.created_at','desc')->paginate(5);
+        $tasks=Task::all();
+
+
+
+//            join('persons as p','p.id','=','t.person_id','as t')
+//            ->join('users as u','u.id','=','p.user_id')
+//                ->select( 't.area_id','t.person_id','t.task','t.description','t.start_day','t.performance_day','t.state','t.end_day',
+//                    't.color','t.created_at','t.updated_at',
+//                    'u.name','u.email','u.activated','p.phone','p.first_name','p.last_name')
+//            ->where('user_id',$request->user()->id)
+//            ->orderBy('t.created_at','desc')->paginate(5);
 //            ->get();
-//dd($tasks);
+dd($tasks);
 
 //         $tasks->each(function ($tasks) {
 //             $tasks->person;

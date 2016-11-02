@@ -21,7 +21,7 @@ class User extends Authenticatable
      * @var array
      */
     protected $fillable = [
-        'name','email', 'password','activated'
+        'name','email','activated','area_id','first_name','last_name','phone'
     ];
 
     /**
@@ -33,14 +33,36 @@ class User extends Authenticatable
         'password', 'remember_token',
     ];
 
-    public function person(){
-        return $this->hasOne('App\Person');
-    }
-
-//    //setear el password, ya no es necesario encriptar pass en controlador
+   //    //setear el password, ya no es necesario encriptar pass en controlador
     public function setPasswordAttribute($value){
         if (!empty ($value)) {
             $this->attributes['password'] =bcrypt($value);
         }
     }
+
+    //para acceder a las personas en el dropdown sin necesidad de instanciarlas
+    public static function users($id){
+        return User::where('area_id',$id)->get();
+    }
+
+    public function getFullName(){
+        return $this->first_name.' '.$this->last_name;
+    }
+
+    public function tasks()
+    {
+        return $this->hasMany('App\Task');
+    }
+
+    public function area()
+    {
+        return $this->belongsTo('App\Area');
+    }
+
+    public function notifications()
+    {
+        return $this->belongsToMany('App\Notification');
+    }
 }
+
+

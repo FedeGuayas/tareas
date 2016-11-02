@@ -3,7 +3,7 @@
 use Illuminate\Database\Schema\Blueprint;
 use Illuminate\Database\Migrations\Migration;
 
-class CreateNotificationsTasks extends Migration
+class CreateTableNotificationUser extends Migration
 {
     /**
      * Run the migrations.
@@ -12,16 +12,16 @@ class CreateNotificationsTasks extends Migration
      */
     public function up()
     {
-        Schema::create('notification_task', function (Blueprint $table) {
-            $table->integer('task_id')->unsigned();
+        Schema::create('notification_user', function (Blueprint $table) {
+            $table->integer('user_id')->unsigned();
             $table->integer('notification_id')->unsigned();
 
-            $table->foreign('task_id')->references('id')->on('tasks')
+            $table->foreign('user_id')->references('id')->on('users')
                 ->onUpdate('cascade')->onDelete('cascade');
             $table->foreign('notification_id')->references('id')->on('notifications')
                 ->onUpdate('cascade')->onDelete('cascade');
 
-            $table->primary(['task_id', 'notification_id']);
+            $table->primary(['user_id', 'notification_id']);
         });
     }
 
@@ -32,6 +32,6 @@ class CreateNotificationsTasks extends Migration
      */
     public function down()
     {
-        Schema::drop('notification_task');
+        Schema::drop('notification_user');
     }
 }

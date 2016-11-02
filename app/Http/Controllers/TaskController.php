@@ -2,6 +2,7 @@
 
 namespace App\Http\Controllers;
 
+use App\Event;
 use App\Person;
 use App\Task;
 use Illuminate\Http\Request;
@@ -40,40 +41,80 @@ class TaskController extends Controller
 
     public function create()
     {
-        if(Auth::check()){
+//        if(Auth::check()){
             $areas_coll = Area::all();
             $list_areas = $areas_coll->pluck('area', 'id');
             return view('tasks.create', ['areas' => $list_areas]);
-        }else{
-            return "Inicie sesión para poder crear Tareas";
-        }
+//        }else{
+//            return "Inicie sesión para poder crear Tareas";
+//        }
     }
 
     public function store(Request $request)
     {
-        //hacemos uso de las funciones para verificar el rol del usuario
-        if(Auth::user()->hasRole('administrador')) {
-            
-            $task = new Task;
-            $task->task = $request->get('task');
-            $task->description = $request->get('description');
-            $task->start_day = $request->get('start_day');
-            $task->performance_day = $request->get('performance_day');
-            $task->performance_day = $request->get('performance_day');
-            $task->state = true;
-            $task->end_day = null;
-            $task->area_id = $request->get('area_id');
-            $task->person_id = $request->get('person_id');
-            $task->allDay = false;
-            $task->color = "#337ab7";
 
+        //hacemos uso de las funciones para verificar el rol del usuario
+//        if(Auth::user()->hasRole('administrador')) {
+
+        $task = new Task;
+        $task->task = $request->input('task');
+        $task->description = $request->input('description');
+        $task->start_day = $request->input('start_day');
+        $task->performance_day = $request->input('performance_day');
+        $task->end_day = null;
+        $task->state = false;//no terminada
+        $task->user_id = $request->input('user_id');
+        $task->allDay = false;
+        $task->color = "#337ab7";
+        $repeats = $request->input('repeats');
+        $weekday = date('N', strtotime($request->input('start_day')));
+
+
+        if (!$repeats) {
+            // El usuario no marcó checkbox tarearecurrente
+            $task->repeats = 0;
+            $task->repeats_freq = 0;
+            $task->weekday=$weekday;
             $task->save();
-            Session::flash('message', 'Tarea creada correctamente');
-            return redirect()->route('admin.tasks.index');
-        }else{
-            //si el usuario no cumple con los requisitos, retornamos un error 403
-            return abort(403);
+            $event=new Event([
+                'start' =>$task->start_day,
+                'end' =>$task->performance_day,
+                'title' =>$task->task
+            ]);
+            $event->task()->associate($task);
+            $event->save();
+        } else {
+            // El usuario marcó checkbox tarea recurrente
+            $repeats = $request->input('repeats');
+            $repeats_freq= $request->input('repeat-freq');
+            $until = (365/$repeats_freq);
+            if ($repeats_freq == 1){
+                $weekday = 0;
+            }
+            $task->repeats = $repeats;
+            $task->repeats_freq =$repeats_freq;
+            $task->weekday=$weekday;
+            $task->save();
+            for ($i=0; $i<$until; $i++){
+                $event=new Event([
+                    'start' =>$task->start_day,
+                    'end' =>$task->performance_day,
+                    'title' =>$task->task
+                ]);
+                $event->task()->associate($task);
+                $event->save();
+            }
         }
+        
+        
+
+//            $task->save();
+//            Session::flash('message', 'Tarea creada correctamente');
+//            return redirect()->route('admin.tasks.index');
+//        }else{
+//            //si el usuario no cumple con los requisitos, retornamos un error 403
+//            return abort(403);
+//        }
     }
 
     public function edit($id)

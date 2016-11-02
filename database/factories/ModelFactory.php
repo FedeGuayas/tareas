@@ -2,7 +2,7 @@
 
 use App\User;
 use App\Area;
-use App\Person;
+use Illuminate\Support\Facades\DB;
 use Faker\Generator;
 use Illuminate\Database\Eloquent\Model;
 
@@ -18,43 +18,27 @@ use Illuminate\Database\Eloquent\Model;
 |
 */
 
-//$factory->define(App\User::class, function (Faker\Generator $faker) {
-//    return [
-//        'name' => $faker->name,
-//        'email' => $faker->safeEmail,
-//        'password' => bcrypt(str_random(10)),
-//        'remember_token' => str_random(10),
-//    ];
-//});
-
-$factory->define(User::class, function (Generator $faker) {
-    $array= [
-        'email' => $faker->safeEmail,
-        'password' => bcrypt(str_random(10)),
-        'remember_token' => str_random(10),
-    ];
-    return $array;
-});
-
 $factory->define(Area::class, function (Generator $faker) {
     $array= [
-        'area' => $faker->sentence($nbWords = 3, $variableNbWords = true),
+        'area' => $faker->sentence($nbWords = 2, $variableNbWords = true),
         'description' => $faker->text($maxNbChars = 100)
     ];
     return $array;
 });
 
-$factory->define(Person::class, function (Generator $faker) {
+$factory->define(User::class, function (Generator $faker) {
+    $area_ids = DB::table('areas')->select('id')->get();
+    $area_id = $faker->randomElement($area_ids)->id;
     $array= [
-        'email' => $faker->email ,
-        'phone' => $faker->phoneNumber,
+        'email' => $faker->email,
+        'password' => bcrypt($faker->password),
+        'remember_token' => str_random(10),
+        'name'=> $faker->userName,
         'first_name'=>$faker->firstName($gender = null|'male'|'female'),
-        'last_name' => $faker->lastName,
-        'area_id' => Area::all()->random()->id,
-        'user_id' => User::all()->random()->id,
-         
-];
-     return $array;
+        'last_name'=>$faker->lastName,
+        'phone'=>$faker->phoneNumber,
+        'activated'=>true,
+        'area_id' => $area_id,
+    ];
+    return $array;
 });
-
-
