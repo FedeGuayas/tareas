@@ -6,6 +6,7 @@
     <div class="col-sm-12">
         <div class="row">
             <div class="col-sm-6">
+                @include('alert.request')
                 {!! Form::open(['route'=>'admin.tasks.store', 'method'=>'POST','role'=>'form', 'id'=>'add-event-form']) !!}
                 <div class="form-group">
                     <div class="form-group">
@@ -52,14 +53,14 @@
                             </label>
                         </div>
                         <div id="repeat-options col-lg-4" >
+                            {{--<label class="radio-inline">--}}
+                                {{--<input type="radio" value="1" name="repeat-freq" id="1" align="bottom" disabled> diario--}}
+                            {{--</label>--}}
                             <label class="radio-inline">
-                                <input type="radio" value="1" name="repeat-freq" id="1" align="bottom" disabled> diario
+                                <input type="radio" value="7" name="repeat-freq" align="bottom" disabled> semanal
                             </label>
                             <label class="radio-inline">
-                                <input type="radio" value="7" name="repeat-freq" align="bottom" disabled> semana
-                            </label>
-                            <label class="radio-inline">
-                                <input type="radio" value="28" name="repeat-freq" align="bottom" disabled> mensual
+                                <input type="radio" value="30" name="repeat-freq" align="bottom" disabled> mensual
                             </label>
                         </div>
                     </div>
@@ -109,6 +110,8 @@
                 daysOfWeekDisabled: [0, 6],
                 showClear:true,
                 showClose:true,
+                minDate: moment(),
+                enabledHours: [9, 10, 11, 12, 13, 14, 15, 16, 17, 18],
                 locale:'es',
                 format:'YYYY-MM-DD HH:mm:ss'
 
@@ -118,6 +121,7 @@
                 showClear:true,
                 showClose:true,
                 useCurrent: false, //Important! See issue #1075
+                enabledHours: [9, 10, 11, 12, 13, 14, 15, 16, 17, 18],
                 locale:'es',
                 format:'YYYY-MM-DD HH:mm:ss'
 

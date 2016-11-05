@@ -5,6 +5,8 @@
             <!-- /.row -->
             <div class="col-sm-12">
             <div class="row">
+                @include('alert.success')
+                @include('alert.request')
                 <div class="col-lg-3 col-md-6">
                     <div class="panel panel-yellow">
                         <div class="panel-heading">
@@ -13,12 +15,12 @@
                                     <i class="fa fa-tasks fa-5x"></i>
                                 </div>
                                 <div class="col-xs-9 text-right">
-                                    <div class="huge">124</div>
-                                    <div>Sin Terminar!</div>
+                                    <div class="huge">{{$tasksOn}}</div>
+                                    <div>Pendientes!</div>
                                 </div>
                             </div>
                         </div>
-                        <a href="#">
+                        <a href="{{route('user.profile.tasks')}}">
                             <div class="panel-footer">
                                 <span class="pull-left">Ver Detalles</span>
                                 <span class="pull-right"><i class="fa fa-arrow-circle-right"></i></span>
@@ -35,12 +37,12 @@
                                     <i class="fa fa-tasks fa-5x"></i>
                                 </div>
                                 <div class="col-xs-9 text-right">
-                                    <div class="huge">12</div>
+                                    <div class="huge">{{$tasksOff}}</div>
                                     <div>Terminadas!</div>
                                 </div>
                             </div>
                         </div>
-                        <a href="#">
+                        <a href="{{route('user.profile.tasks')}}">
                             <div class="panel-footer">
                                 <span class="pull-left">Ver Detalles</span>
                                 <span class="pull-right"><i class="fa fa-arrow-circle-right"></i></span>
@@ -49,38 +51,40 @@
                         </a>
                     </div>
                 </div>
+                {{--<div class="col-lg-3 col-md-6">--}}
+                    {{--<div class="panel panel-red">--}}
+                        {{--<div class="panel-heading">--}}
+                            {{--<div class="row">--}}
+                                {{--<div class="col-xs-3">--}}
+                                    {{--<i class="fa fa-tasks fa-5x"></i>--}}
+                                {{--</div>--}}
+                                {{--<div class="col-xs-9 text-right">--}}
+                                    {{--<div class="huge">{{$tasksOff}}</div>--}}
+                                    {{--<div>Incumplidas!</div>--}}
+                                {{--</div>--}}
+                            {{--</div>--}}
+                        {{--</div>--}}
+                        {{--<a href="{{route('user.profile.tasks')}}">--}}
+                            {{--<div class="panel-footer">--}}
+                                {{--<span class="pull-left">Ver Detalles</span>--}}
+                                {{--<span class="pull-right"><i class="fa fa-arrow-circle-right"></i></span>--}}
+                                {{--<div class="clearfix"></div>--}}
+                            {{--</div>--}}
+                        {{--</a>--}}
+                    {{--</div>--}}
+                {{--</div>--}}
 
-                <div class="col-lg-2 col-lg-offset-2">
-                    @section ('pane3_panel_title', 'Editar Perfil')
-                    @section ('pane3_panel_body')
 
-                        <div class="list-group">
-                            {{--<a href="#" class="list-group-item">--}}
-                            {{--<i class="fa fa-comment fa-fw"></i> New Comment--}}
-                            {{--<span class="pull-right text-muted small"><em>4 minutes ago</em>--}}
-                            {{--</span>--}}
-                            {{--</a>--}}
-                            <p class="pull-right">
-                                <a href="#!" class="btn btn-success">
-                                    <i class="fa fa-key fa-fw"></i> Contraseña
-                                </a>
-                            </p>
-                            <p class="pull-right">
-                                <a href="#" class="btn btn-success">
-                                    <i class="fa fa-image fa-fw"></i> Imagen
-                                </a>
-                            </p>
+                <div class="col-lg-3 col-md-6 pull-right">
+                    <a href="{{route('user.profile.edit')}}">
 
-                        </div>
-                        <!-- /.list-group -->
-                        {{--<a href="#" class="btn btn-default btn-block">Ver todas</a>--}}
+                        {!! Form::button('<i class="fa fa-key fa-fw" aria-hidden="true"></i>Cambiar Contraseña', ['class'=>'btn btn-lg btn-primary']) !!}
+                    </a>
 
-                                <!-- /.panel-body -->
-                    @endsection
-                    @include('widgets.panel', array('header'=>true, 'class'=>'success', 'as'=>'pane3'))
                 </div>
-            </div>
-            <!-- /.row -->
+
+
+            </div> <!-- /.row -->
 
 
             <div class="row">
@@ -92,7 +96,7 @@
                     <!-- /.panel -->
                     <ul class="timeline">
                         @foreach($tasks as $task )
-                            @if (!$task->state)
+                            @if ($task->state==1)
                                 <li class="timeline-inverted">
                                     <div class="timeline-badge success"><i class="fa fa-check"></i>
                                     </div>
@@ -107,7 +111,7 @@
                                         </div>
                                     </div>
                                 </li>
-                           @elseif ($task->state)
+                           @else
                                 <li >
                                     <div class="timeline-badge warning"><i class="fa fa-minus"></i>
                                     </div>
@@ -139,7 +143,7 @@
                                 </li>
                             @endif
                         @endforeach
-                        {{ $tasks->render() }}
+                            {{ $tasks->render() }}
                     </ul>
                 @endsection
                 @include('widgets.panel', array('header'=>true, 'as'=>'pane2'))
@@ -147,8 +151,9 @@
 
                 <!-- /.col-lg-8 -->
                 <div class="col-lg-4">
-                    @section ('pane1_panel_title', 'Panel de Notificaciones')
+                    @section ('pane1_panel_title', '<i class="fa fa-bell fa-fw"></i> Panel de Notificaciones')
                     @section ('pane1_panel_body')
+
 
                         <div class="list-group">
                                 {{--<a href="#" class="list-group-item">--}}
@@ -156,27 +161,27 @@
                                     {{--<span class="pull-right text-muted small"><em>4 minutes ago</em>--}}
                                     {{--</span>--}}
                                 {{--</a>--}}
-                            <a href="#" class="list-group-item">
-                                <i class="fa fa-tasks fa-fw"></i> Nueva Tarea
-                                <span class="pull-right text-muted small"><em>hace 43 minutos</em>
+                            @foreach($notifications as $notification)
+                                @if(!$notification->read)
+                            <a href="{{route('user.notifications.read',$notification)}}" class="list-group-item">
+                                <i class="fa fa-tasks fa-fw"></i>
+                                    {{$notification->text}}
+                                <span class="pull-right text-muted small"><em><i class="fa fa-clock-o"></i> {{ $notification->created_at->diffForHumans() }}</em>
                                 </span>
                             </a>
-
+                                @endif
+                            @endforeach
                         </div>
                             <!-- /.list-group -->
-                            <a href="#" class="btn btn-default btn-block">Ver todas</a>
+                            <a href="{{route('user.notifications.all')}}" class="btn btn-default btn-block">Ver todas</a>
 
                         <!-- /.panel-body -->
+
                     @endsection
-                    @include('widgets.panel', array('header'=>true, 'as'=>'pane1'))
+                    @include('widgets.panel', array('header'=>true, 'as'=>'pane1', 'class'=>'danger'))
                 </div>
-
                 <!-- /.col-lg-8 -->
-
-
-
             </div><!-- /.row -->
             </div>  <!-- /.col-sm-12 -->
 
-            
 @endsection

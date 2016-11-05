@@ -12,6 +12,13 @@ class Task extends Model
      * @var string
      */
     protected $table = 'tasks';
+
+    //para convertir a fechas de carbon
+    protected $dates = [
+        'start_day',
+        'performance_day',
+        'end_day'
+    ];
     
 
     /**
@@ -34,12 +41,15 @@ class Task extends Model
     ];
 
     public function user(){
-        return $this->belongsTo('App\Person');
+        return $this->belongsTo('App\User');
     }
 
     public function events(){
         return $this->hasMany('App\Event');
     }
 
-    
+    public function comments(){
+        return $this->hasMany('App\Comment');
+    }
+   
 }

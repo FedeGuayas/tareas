@@ -3,9 +3,9 @@
 
 @section('section')
 
-    <div class="panel panel-primary">
+    <div class="panel panel-success">
         <!-- Content Header (Page header) -->
-        <div class="panel-heading"><h2>Calendario</h2></div>
+        <div class="panel-heading"><h2>Calendario Editable</h2></div>
         <div class="panel-body">
             <!-- Main content -->
             <section class="content">
@@ -14,7 +14,7 @@
                         {{--Tareas externas--}}
                         <div class="box box-solid">
                             <div class="box-header with-border">
-                                <h4 class="box-title">Otros eventos</h4>
+                                <h4 class="box-title">Otras tareas</h4>
                             </div>
                             <div class="box-body">
                                 <!-- the events -->
@@ -169,22 +169,22 @@
 
 //                weekends: false, // will hide Saturdays and Sundays
 
-                events: { url:"getTasks"},
+                events: { url:"getEvents"},
 
-                editable: false,//true para permitir editar en el calendario
+                editable: true,//true para permitir editar en el calendario
                 droppable: true, // this allows things to be dropped onto the calendar !!!
 
                 //acion al ser arrastrado un evento sobre el calendario
-                drop: function (date, allDay) { // this function is called when something is dropped
+//                drop: function (date, allDay) { // this function is called when something is dropped
                     // retrieve the dropped element's stored Event Object
-                    var originalEventObject = $(this).data('eventObject');
+//                    var originalEventObject = $(this).data('eventObject');
                     // we need to copy it, so that multiple events don't have a reference to the same object
-                    var copiedEventObject = $.extend({}, originalEventObject);
-                    allDay=true;
+//                    var copiedEventObject = $.extend({}, originalEventObject);
+//                    allDay=true;
                     // assign it the date that was reported
-                    copiedEventObject.start = date;
-                    copiedEventObject.allDay = allDay;
-                    copiedEventObject.backgroundColor = $(this).css("background-color");
+//                    copiedEventObject.start = date;
+//                    copiedEventObject.allDay = allDay;
+//                    copiedEventObject.backgroundColor = $(this).css("background-color");
 //                    alert("Dropped on " + date.format());
 //                    copiedEventObject.borderColor = $(this).css("border-color");
 
@@ -192,50 +192,51 @@
                     //$('#calendar').fullCalendar('renderEvent', copiedEventObject, true);
                     // the last `true` argument determines if the event "sticks" (http://arshaw.com/fullcalendar/docs/event_rendering/renderEvent/)
                     // is the "remove after drop" checkbox checked?
-                    if ($('#drop-remove').is(':checked')) {
+//                    if ($('#drop-remove').is(':checked')) {
                         // if so, remove the element from the "Draggable Events" list
-                        $(this).remove();
-                    }
+//                        $(this).remove();
+//                    }
                     //Guardamos el evento creado en base de datos
 //                    var title=copiedEventObject.title;
 //                    var start=copiedEventObject.start.format("YYYY-MM-DD HH:mm");
 //                    var back=copiedEventObject.backgroundColor;
 
-                    crsfToken = document.getElementsByName("_token")[0].value;
-                    $.ajax({
-                        url: 'guardaEventos',//la URI definida en la ruta
-                        data: 'title='+ title+'&start='+ start+'&allday='+allDay+'&background='+back,//parametros pasados en el head al controlador al metodo create
-                        type: "POST",
-                        headers: {
-                            "X-CSRF-TOKEN": crsfToken
-                        },
-                        success: function(events) {
-                            console.log('Evento creado');
-                            $('#calendar').fullCalendar('refetchEvents' );
-                        },
-                        error: function(json){
-                            console.log("Error al crear evento");
-                        }
-                    });
-                },//end drop
+//                    crsfToken = document.getElementsByName("_token")[0].value;
+//                    $.ajax({
+//                        url: 'guardaEventos',//la URI definida en la ruta
+//                        data: 'title='+ title+'&start='+ start+'&allday='+allDay+'&background='+back,//parametros pasados en el head al controlador al metodo create
+//                        type: "POST",
+//                        headers: {
+//                            "X-CSRF-TOKEN": crsfToken
+//                        },
+//                        success: function(events) {
+//                            console.log('Evento creado');
+//                            $('#calendar').fullCalendar('refetchEvents' );
+//                        },
+//                        error: function(json){
+//                            console.log("Error al crear evento");
+//                        }
+//                    });
+//                },//end drop
 
                 /*funciones*/
 
                 //actualiza en la bd al editar en el calendario un evento al cambiar su tamaño, llama al metodo update del controler
-                eventResize: function(event) {
-                    var start = event.start.format("YYYY-MM-DD HH:mm");
-                    var back=event.backgroundColor;
-                    var allDay=event.allDay;
+                eventResize: function(event,delta) {
+                    var start = event.start.format("YYYY-MM-DD ");
+//                    var back=event.color;
+                    var task=event.task_id;
+
 
                     //compruebo si el evento tiene fecha de fin
                     if(event.end){
-                        var end = event.end.format("YYYY-MM-DD HH:mm");//le doy la fecha
+                        var end = event.end.format("YYYY-MM-DD");//le doy la fecha
                     }else{var end="NULL"; //sino valor nulo para enviar algo al controlador y poder guaradarlo en la bd
                     }
                     crsfToken = document.getElementsByName("_token")[0].value;
                     $.ajax({
-                        url: '/actualizaEventos',
-                        data: 'title='+ event.title+'&start='+ start +'&end='+ end +'&id='+ event.id+'&background='+back+'&allday='+allDay,
+                        url: 'actualizaEventos',
+                        data: 'title='+ event.title+'&start='+ start +'&end='+ end +'&id='+ event.id+'&task_id='+task,
                         type: "POST",
                         headers: {
                             "X-CSRF-TOKEN": crsfToken
@@ -250,24 +251,23 @@
                 },
                 /*actualiza en la bd el evento al arrastarlo y cambiandolo de fecha dentro del calendario*/
                 eventDrop: function(event, delta) {
-                    var start = event.start.format("YYYY-MM-DD HH:mm");
+                    var start = event.start.format("YYYY-MM-DD ");
                     if(event.end){
-                        var end = event.end.format("YYYY-MM-DD HH:mm");
+                        var end = event.end.format("YYYY-MM-DD ");
                     }else{var end="NULL";
                     }
-                    var back=event.backgroundColor;
-                    var allDay=event.allDay;
+//                    var back=event.color;
+                    var task=event.task_id;
                     crsfToken = document.getElementsByName("_token")[0].value;
-
                     $.ajax({
                         url: 'actualizaEventos',
-                        data: 'title='+ event.title+'&start='+ start +'&end='+ end+'&id='+ event.id+'&background='+back+'&allday='+allDay ,
+                        data: 'title='+ event.title+'&start='+ start +'&end='+ end +'&id='+ event.id+'&task_id='+task,
                         type: "POST",
                         headers: {
                             "X-CSRF-TOKEN": crsfToken
                         },
                         success: function(json) {
-                            console.log("Updated Successfully eventdrop");
+                            console.log(event.id);
                         },
                         error: function(json){
                             console.log("Error al actualizar eventdrop");
@@ -276,25 +276,40 @@
                 },
                 //mostrar informacion del evento en un tooltip al pasar el mouse por encima
                 eventMouseover: function( event, jsEvent, view ) {
-                    var start = (event.start.format("HH:mm"));
-                    var back=event.backgroundColor;
+                    var start = (event.start.format("YYYY-MM-DD HH:mm"));
+                    var back=event.color;
+                    var area=event.area;
+                    var resp=event.user_id;
+                    var repeat=event.repeats;
+                    var repeat_freq=event.repeats_freq;
+
                     if(event.end){
-                        var end = event.end.format("HH:mm");
+                        var end = event.end.format("YYYY-MM-DD HH:mm");
                     }else{var end="No definido";
                     }
-                    if(event.allDay){
-                        var allDay = "Si";
-                    }else{var allDay="No";
-                    }
-                    var tooltip = '<div class="tooltipevent" style="width:200px;height:100px;color:#030414;background:'+back+';position:absolute;z-index:10001;">'+'<center>'+ event.title +'</center>'+'Todo el dia: '+allDay+'<br>'+ 'Inicio: '+start+'<br>'+ 'Fin: '+ end +'</div>';
+
+                    if (repeat>0){ var recurrent='SI'; }else{var recurrent='NO'; }
+                    if (repeat_freq==7){var freq='Semanal';}else if (repeat_freq==30){var freq='Mensual';} else {var freq='';}
+//                    if(event.allDay){
+//                        var allDay = "Si";
+//                    }else{var allDay="No";
+//                    }
+                    var tooltip = '<div class="tooltipevent" style="padding:10px;border-radius: 10px 10px 10px 10px; width:auto;height:auto;color:#030414;background:'+back+';position:absolute; placement:top;z-index:10001;">' +
+                            ''+'<b><center> '+ event.title +' </center></b>'+
+                            ''+ 'Area: '+area+'<br>' +
+                            ''+ 'Inicio: '+start+'<br>' +
+                            ''+ 'Fin: '+ end +'<br>' +
+                            ''+ 'Recurrente: '+ recurrent +'<br>' +
+                            ''+ 'Frecuencia: '+ freq +'<br>' +
+                            ''+'Responsable: '+'<b>'+resp+'</b></div>';
                     $("body").append(tooltip);
                     $(this).mouseover(function(e) {
                         $(this).css('z-index', 10000);
                         $('.tooltipevent').fadeIn('500');
                         $('.tooltipevent').fadeTo('10', 1.9);
                     }).mousemove(function(e) {
-                        $('.tooltipevent').css('top', e.pageY + 10);
-                        $('.tooltipevent').css('left', e.pageX + 20);
+                        $('.tooltipevent').css('top', e.pageY -170);
+                        $('.tooltipevent').css('left', e.pageX -170);
                     });
                 },
                 //evento al retirar el mouse se cierra el toolpit
@@ -322,6 +337,7 @@
                     }else{
                         console.log("Cancelado");
                     }
+                    return false;
                 },
                 //entra en determinado dia al dar click en el calendario
                 dayClick: function(date, jsEvent, view) {

@@ -2,14 +2,20 @@
 
 namespace App\Http\Controllers;
 
+use App\Area;
+use Illuminate\Support\Facades\Event;
 use App\Role;
 use App\Task;
 use Illuminate\Http\Request;
 use Carbon\Carbon;
 use App\Http\Requests;
 use Auth;
+use Illuminate\Support\Facades\Hash;
 use Session;
+use App\Events\UserCreated;
+use DB;
 use App\User;
+use App\Http\Requests\ChangePasswordRequest;
 
 
 class UsersController extends Controller
@@ -25,12 +31,14 @@ class UsersController extends Controller
      */
     public function index()
     {
-        $usuarios=User::all();
-        $usuarios->each(function ($usuarios) {
-            $usuarios->person;
+        $users=User::where('activated',true)->get();
+        $users->each(function ($users) {
+            $users->area;
+            $users->tasks;
         });
-//        dd($usuarios);
-        return view('users.index',['usuarios'=>$usuarios]);
+        
+
+        return view('users.index',['users'=>$users]);
     }
 
     /**
@@ -40,7 +48,9 @@ class UsersController extends Controller
      */
     public function create()
     {
-        //
+        $areas_coll=Area::all();
+        $listado = $areas_coll->pluck('area', 'id');
+        return view('users.create',['areas'=>$listado]);
     }
 
     /**
@@ -51,7 +61,33 @@ class UsersController extends Controller
      */
     public function store(Request $request)
     {
-        //
+        try {
+            DB::beginTransaction();
+
+            $user=new User();
+            $user->email=$request->input('email');
+            $pass=str_random(6);
+            $user->password=$pass;
+            $user->activated=false;
+            $user->name=$request->input('first_name');
+            $user->first_name=$request->input('first_name');
+            $user->last_name=$request->input('last_name');
+            $user->phone=$request->input('phone');
+            $area_id=$request->input('area_id');
+            $area=Area::findOrFail($area_id);
+//            $user->area()->associate($area);
+            $area->users()->save($user);//Agrega el id del area al user y lo salva, por las relaciones
+
+            Event::fire(new UserCreated($user,$pass));
+            DB::commit();
+
+        } catch (\Exception $e) {
+            DB::rollback();
+            return redirect()->back()->with('message_danger','ERROR!! '.$e->getMessage());
+        }
+
+        Session::flash('message','Trabajador agregado correctamente');
+        return redirect()->route('admin.users.index');
     }
 
     /**
@@ -66,14 +102,17 @@ class UsersController extends Controller
     }
 
     /**
-     * Show the form for editing the specified resource.
+     * Miestra el Formulario para editar akl trabajador
      *
      * @param  int  $id
      * @return \Illuminate\Http\Response
      */
     public function edit($id)
     {
-        return view('users.pass-change');
+        $user=User::findOrFail($id);
+        $areas_coll=Area::all();
+        $listado = $areas_coll->pluck('area', 'id');
+        return view('users.edit',['user'=>$user,'areas'=>$listado]);
     }
 
     /**
@@ -85,8 +124,20 @@ class UsersController extends Controller
      */
     public function update(Request $request, $id)
     {
-        //
+        $user=User::findOrFail($id);
+        $user->email=$request->input('email');
+        $user->name=$request->input('first_name');
+        $user->first_name=$request->input('first_name');
+        $user->last_name=$request->input('last_name');
+        $user->phone=$request->input('phone');
+        $area_id=$request->input('area_id');
+        $area=Area::findOrFail($area_id);
+        $user->area()->associate($area);
+        $user->update();//Agrega el id del area al user y lo salva, por las relaciones
+
+        return redirect()->route('admin.users.index')->with('message','Trabajador editado correctamente');
     }
+
 
     /**
      * Remove the specified resource from storage.
@@ -96,7 +147,18 @@ class UsersController extends Controller
      */
     public function destroy($id)
     {
-        //
+        $user=User::findOrFail($id);
+        $notifications=$user->getNotifications();
+        $notifications->each(function($notification){
+            $notification->delete();
+        });
+        $flag=$user->delete();
+        if ($flag){
+            return redirect()->route('admin.users.index')->with('message_danger', 'El usuario '.$user->getFullName().' ha sido eliminado');
+        }else{
+            return redirect()->route('admin.users.index')->with('message_danger', 'Ah ocurrido un error');
+        }
+
     }
 
 
@@ -115,46 +177,77 @@ class UsersController extends Controller
 //    }
 
 
+    /**
+     * Muestra el perfil general del usuario
+     * @param Request $request
+     * @return mixed
+     */
+
     public function getProfile(Request $request){
-
-        $tasks=Task::all();
-
-
-
-//            join('persons as p','p.id','=','t.person_id','as t')
-//            ->join('users as u','u.id','=','p.user_id')
-//                ->select( 't.area_id','t.person_id','t.task','t.description','t.start_day','t.performance_day','t.state','t.end_day',
-//                    't.color','t.created_at','t.updated_at',
-//                    'u.name','u.email','u.activated','p.phone','p.first_name','p.last_name')
-//            ->where('user_id',$request->user()->id)
-//            ->orderBy('t.created_at','desc')->paginate(5);
-//            ->get();
-dd($tasks);
-
-//         $tasks->each(function ($tasks) {
-//             $tasks->person;
-//             $tasks->area;
-//             $tasks->person->user;
-//         });
-
-
-        
-
-        return view('users.profile',['tasks'=>$tasks]);
-    }
-    
-
-    public function getProfileEdit($id){
+        $user=$request->user();
        
-        $user=User::findOrFail($id);
+//        $data=[];
+//        foreach ($user->tasks as $task){
+//            $performance_day=$task->performance_day;
+//            $end=$task->end_day;
+//            $data[]=[
+//                'performance_day'=>$performance_day,
+//              'end'=>$end,
+//            ];
+//        }
 
-        return view('users.pass-change',['user'=>$user]);
+        $notifications = $user->getNotifications();
+        $tasks=Task::where('user_id',$user->id)->paginate(5);
+        $total=$user->tasks->count();//total de tareas
+        $tasksOn=$user->tasks->where('state',0)->count();//tareas activas
+        $tasksOff=$total-$tasksOn;//tareas inacctivas
+
+
+//        dd($user->notifications()->byRead(1)->get());
+        return view('users.profile.profile',compact('user','tasks','tasksOn','tasksOff','notifications'));
     }
 
-    
-    
+
+    /**
+     * cargar el form para editar la contraseña del usuario
+     * @param Request $request
+     * @return mixed
+     */
+    public function getProfileEdit(Request $request){
+
+        $user=$request->user();
+        
+        return view('users.profile.pass-edit',['user'=>$user]);
+    }
+
+    /**
+     * Cambio de contraseña de usuario
+     * @param ChangePasswordRequest $request
+     * @param User $user
+     * @return mixed
+     */
+    public function postProfile(ChangePasswordRequest $request,User $user){
+
+        $new_pass=$request->password_new;
+        $user->password = $new_pass;
+        $user->update();
+        return redirect()->route('user.profile')->with('message','Contraseña Actualizada');
+    }
+
+    public function  userTasks(Request $request){
+        $user=$request->user();
+        $tasks=$user->tasks;
+
+        return view('users.profile.task',compact('tasks'));
+    }
 
 
+
+    /**
+     * Cargar vista para otorgar roles
+     * @param $id
+     * @return mixed
+     */
     public  function roles($id)
     {
         $user=User::findOrFail($id);
@@ -189,5 +282,7 @@ dd($tasks);
         return redirect()->route('admin.users.index');
     }
     
+
+
 
 }

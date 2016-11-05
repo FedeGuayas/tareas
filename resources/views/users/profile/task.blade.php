@@ -1,14 +1,7 @@
 @extends ('layouts.dashboard')
-@section('page_heading','Listado de Tareas')
+@section('page_heading','Tareas')
 
 @section('section')
-    <div class="col-sm-12 col-lg-6">
-        <div class="row">
-            <a href="{{ route('admin.tasks.create' )}}" class="btn btn-success tip pull-left" data-placement="right"
-               title="Nueva"><i class="fa fa-tasks" aria-hidden="true"></i>
-                Nueva</a>
-        </div>
-    </div>
 
     <div class="col-sm-12">
         @include('alert.success')
@@ -21,11 +14,9 @@
                     <tr>
                         {{--<th>id</th>--}}
                         <th>Tarea</th>
-                        <th>Trabajador</th>
-                        <th>Area</th>
                         <th>Inicio</th>
-                        <th>Termino P</th>
-                        <th>Termino R</th>
+                        <th>Fecha Termino</th>
+                        <th>Fecha Cumplida</th>
                         <th>Estado</th>
                         <th>Acción</th>
                     </tr>
@@ -34,11 +25,9 @@
                     <tr>
                         {{--<th>id</th>--}}
                         <th>Tarea</th>
-                        <th>Trabajador</th>
-                        <th>Area</th>
                         <th>Inicio</th>
-                        <th>Termino P</th>
-                        <th>Termino R</th>
+                        <th>Fecha Termino</th>
+                        <th>Fecha Cumplida</th>
                         <th>Estado</th>
                         <th>Acción</th>
                     </tr>
@@ -48,42 +37,24 @@
                         <tr>
                             {{--<td>{{$area->id}}</td>--}}
                             <td>{{$task->task}}</td>
-                            <td>{{$task->user->getFullName()}}</td>
-                            <td>
-                                @foreach($areas as $area)
-                                    {{-- $task->user->area_id //area del usuario--}}
-                                    @if ($task->user->area_id==$area->id)
-                                        {{$area->area}}<br><br>
-                                    @endif
-                                @endforeach
-                            </td>
                             <td>{{$task->start_day}}</td>
                             <td>{{$task->performance_day}}</td>
                             <td>{{$task->end_day}}</td>
                             <td>
                                 @if ($task->state==0)
                                     <span class="label label-warning">Activa</span>
-
                                 @else
                                     <span class="label label-success">Terminada</span>
                                 @endif
                             </td>
-
                             <td>
-                                @if ($task->repeats==0)
-                                    <a href="{{ route('admin.tasks.edit', $task )}}" class="btn btn-xs btn-warning" data-placement="top" title="Editar"><i class="fa fa-pencil" aria-hidden="true"></i>
-                                    </a>
-                                @else
-                                    <a href="{{ route('admin.calendar.edit', $task)}}" class="btn btn-xs btn-warning" data-placement="top" title="Editar"><i class="fa fa-calendar" aria-hidden="true"></i>
+                                @if ($task->state==0)
+                                    <a href="" data-target="#modal-coment-{{ $task->id }}" data-toggle="modal" class="btn btn-xs btn-primary" data-placement="top" title="Terminada"><i class="fa fa-hand-o-left" aria-hidden="true"></i>
                                     </a>
                                 @endif
-                                <a href="" data-target="#modal-delete-{{ $task->id }}" data-toggle="modal" class="btn btn-xs btn-danger" data-placement="top" title="Elimminar"><i class="fa fa-trash" aria-hidden="true"></i>
-                                </a>
-                                    <a href="" class="btn btn-xs btn-primary" data-placement="top" title="Aprobar"><i class="fa fa-thumbs-up" aria-hidden="true"></i>
-                                    </a>
                             </td>
                         </tr>
-                        @include('tasks.modal')
+                        @include('users.profile.end_tasks')
                     @endforeach
                     </tbody>
                 </table>

@@ -5,6 +5,8 @@
 
     <div class="col-sm-12">
         <div class="row">
+            @include('alert.success')
+            @include('alert.request')
             <div class="col-sm-6">
                 {!! Form::model($task,['route'=>['admin.tasks.update',$task->id], 'method'=>'PUT','role'=>'form']) !!}
                 <div class="form-group">
@@ -18,23 +20,23 @@
                     {!! Form::textarea('description',null,['class'=>'form-control','placeholder'=>'Breve descripción... puede dejarlo vacio','rows'=>'3']) !!}
                 </div>
 
-                <div class="container">
-                    <div class='col-sm-3'>
+                <div class="row">
+                    <div class='col-sm-6'>
                         <div class="form-group">
                             {!! Form::label('start_day','Dia inicio') !!}
                             <div class='input-group date' id='start_day_datetimepicker'>
-                                {!! Form::text('start_day',$task->start_day,['class'=>'form-control','required']) !!}
+                                {!! Form::text('start_day',null,['class'=>'form-control','required']) !!}
                                 <span class="input-group-addon">
                                     <span class="glyphicon glyphicon-calendar"></span>
                                 </span>
                             </div>
                         </div>
                     </div>
-                    <div class='col-sm-3'>
+                    <div class='col-sm-6'>
                         <div class="form-group">
                             {!! Form::label('performance_day','Dia de termino') !!}
                             <div class='input-group date' id='performance_day_datetimepicker'>
-                                {!! Form::text('performance_day',$task->performance_day,['class'=>'form-control','required']) !!}
+                                {!! Form::text('performance_day',null,['class'=>'form-control','required']) !!}
                                 <span class="input-group-addon">
                                     <span class="glyphicon glyphicon-calendar"></span>
                                 </span>
@@ -42,23 +44,52 @@
                         </div>
                     </div>
                 </div>
-                <div class="col-sm-6">
-                    <div class="form-group">
-                        {!! Form::label('area_id','Area:') !!}
-                        {!! Form::select('area_id',$areas,null,['class'=>'form-control']) !!}
+
+                <div class="row">
+                    <div class="form-inline">
+                        <div class="checkbox col-lg-4">
+                            <label>
+                                <input type="checkbox" name="repeats" id="repeats" value="1" disabled> Tarea recurrente
+                            </label>
+                        </div>
+                        <div id="repeat-options col-lg-4" >
+                            {{--<label class="radio-inline">--}}
+                            {{--<input type="radio" value="1" name="repeat-freq" id="1" align="bottom" disabled> diario--}}
+                            {{--</label>--}}
+                            <label class="radio-inline">
+                                <input type="radio" value="7" name="repeat-freq" align="bottom" disabled> semana
+                            </label>
+                            <label class="radio-inline">
+                                <input type="radio" value="30" name="repeat-freq" align="bottom" disabled> mensual
+                            </label>
+                        </div>
                     </div>
                 </div>
-                <div class="col-sm-6">
-                    <div class="form-group">
-                        {!! Form::label('person_id','Trabajador:') !!}
-                        {!! Form::select('person_id',$person,null,['class'=>'form-control']) !!}
+                <br>
+                <div class="row">
+                    <div class="col-sm-6">
+                        <div class="form-group">
+                            {!! Form::label('area_id','Area:') !!}
+                            {!! Form::select('area_id',$areas,$task->user->area_id,['class'=>'form-control']) !!}
+                        </div>
+                    </div>
+                    <div class="col-sm-6">
+                        <div class="form-group">
+                            {!! Form::label('user_id','Trabajador:') !!}
+                            {!! Form::select('user_id',[$task->user_id=>$task->user->getFullName()],null,['class'=>'form-control']) !!}
+                        </div>
                     </div>
                 </div>
-                {!! Form::submit('Atualizar',['class'=>'btn btn-success','type'=>'button']) !!}
-                {!! Form::reset('Cancelar',['class'=>'btn btn-danger']) !!}
-                <a href="{{route('admin.tasks.index')}}" >
-                    {!! Form::button('Regresar',['class'=>'btn btn-warning']) !!}
-                </a>
+
+
+                <div class="pull-right">
+                    <div class="clearfix"></div>
+                    <br>
+                    {!! Form::submit('Editar',['class'=>'btn btn-success','type'=>'button']) !!}
+                    {!! Form::reset('Limpiar',['class'=>'btn btn-danger']) !!}
+
+                </div>
+
                 {!! Form::close() !!}
 
             </div>
@@ -100,8 +131,18 @@
             $("#performance_day_datetimepicker").on("dp.change", function (e) {
                 $('#start_day_datetimepicker').data("DateTimePicker").maxDate(e.date);
             });
+
+
+            $("#repeats").on('click',function(){
+                if($("#repeats").prop("checked")){
+                    $("input[type=radio][name=repeat-freq]").prop("disabled", false);
+                }else{
+                    $("input[type=radio][name=repeat-freq]").prop("disabled",true);
+                    $("input[type=radio][name=repeat-freq]").prop("checked",false);
+                }
+
+            });
         });
     </script>
-
 
 @endsection

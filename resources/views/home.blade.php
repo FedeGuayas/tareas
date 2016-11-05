@@ -1,242 +1,230 @@
 @extends('layouts.dashboard')
 @section('page_heading','Administración de Tareas')
 @section('section')
-           
-            <!-- /.row -->
-            <div class="col-sm-12">
-            <div class="row">
-                <div class="col-lg-3 col-md-6">
-                    <div class="panel panel-primary">
-                        <div class="panel-heading">
-                            <div class="row">
-                                <div class="col-xs-3">
-                                    <i class="fa fa-tasks fa-5x"></i>
-                                </div>
-                                <div class="col-xs-9 text-right">
-                                    <div class="huge">26</div>
-                                    <div>Tareas Nuevas!</div>
-                                </div>
+
+@section('section')
+    <div class="panel panel-primary">
+        <!-- Content Header (Page header) -->
+        <div class="panel-heading"><h2>Calendario</h2></div>
+        <div class="panel-body">
+            <!-- Main content -->
+            <section class="content">
+                <div class="row">
+                    <div class="col-md-9">
+                        <div class="box box-primary">
+                            <div class="box-body no-padding">
+                                <!-- THE CALENDAR -->
+                                <div id="calendar"></div>
                             </div>
+                            <!-- /.box-body -->
                         </div>
-                        <a href="#">
-                            <div class="panel-footer">
-                                <span class="pull-left">Ver Detalles</span>
-                                <span class="pull-right"><i class="fa fa-arrow-circle-right"></i></span>
-                                <div class="clearfix"></div>
+                        <!-- /. box -->
+                    </div>
+                    <!-- /.col 9-->
+
+                    {{--LEYENDA--}}
+                    <div class="col-md-3">
+                        <div class="box box-solid">
+                            <div class="box-header with-border"><br><br><br>
+                                <h4 class="box-title">Leyenda</h4>
                             </div>
-                        </a>
+                            <div class="box-body">
+                                <ul class="list-group">
+                                    <li class="list-group-item"><h4><i style="color: #337ab7;" class="fa fa-square" aria-hidden="true"></i> Tareas asignada</h4></li>
+                                    <li class="list-group-item"><h4><i style="color: #5cb85c;" class="fa fa-square" aria-hidden="true"></i> Tareas terminadas</h4></li>
+                                    <li class="list-group-item"><h4><i style="color: #f0ad4e;" class="fa fa-square" aria-hidden="true"></i> Próximas a vencer</h4></li>
+                                    <li class="list-group-item"><h4><i style="color: #d9534f;" class="fa fa-square" aria-hidden="true"></i> Tareas incumplidas</h4></li>
+                                </ul>
+                            </div><!-- /.box-body-->
+                        </div><!-- /. box-->
                     </div>
                 </div>
-                <div class="col-lg-3 col-md-6">
-                    <div class="panel panel-green">
-                        <div class="panel-heading">
-                            <div class="row">
-                                <div class="col-xs-3">
-                                    <i class="fa fa-tasks fa-5x"></i>
-                                </div>
-                                <div class="col-xs-9 text-right">
-                                    <div class="huge">12</div>
-                                    <div>En proceso!</div>
-                                </div>
-                            </div>
-                        </div>
-                        <a href="#">
-                            <div class="panel-footer">
-                                <span class="pull-left">Ver Detalles</span>
-                                <span class="pull-right"><i class="fa fa-arrow-circle-right"></i></span>
-                                <div class="clearfix"></div>
-                            </div>
-                        </a>
-                    </div>
-                </div>
-                <div class="col-lg-3 col-md-6">
-                    <div class="panel panel-yellow">
-                        <div class="panel-heading">
-                            <div class="row">
-                                <div class="col-xs-3">
-                                    <i class="fa fa-tasks fa-5x"></i>
-                                </div>
-                                <div class="col-xs-9 text-right">
-                                    <div class="huge">124</div>
-                                    <div>Próximas a término!</div>
-                                </div>
-                            </div>
-                        </div>
-                        <a href="#">
-                            <div class="panel-footer">
-                                <span class="pull-left">Ver Detalles</span>
-                                <span class="pull-right"><i class="fa fa-arrow-circle-right"></i></span>
-                                <div class="clearfix"></div>
-                            </div>
-                        </a>
-                    </div>
-                </div>
-                <div class="col-lg-3 col-md-6">
-                    <div class="panel panel-red">
-                        <div class="panel-heading">
-                            <div class="row">
-                                <div class="col-xs-3">
-                                    <i class="fa fa-tasks fa-5x"></i>
-                                </div>
-                                <div class="col-xs-9 text-right">
-                                    <div class="huge">13</div>
-                                    <div>No realizadas!</div>
-                                </div>
-                            </div>
-                        </div>
-                        <a href="#">
-                            <div class="panel-footer">
-                                <span class="pull-left">Ver Detalles</span>
-                                <span class="pull-right"><i class="fa fa-arrow-circle-right"></i></span>
-                                <div class="clearfix"></div>
-                            </div>
-                        </a>
-                    </div>
-                </div>
-            </div>
-            <!-- /.row -->
+                <!-- /.row -->
+            </section>
+
+            <!-- /.content -->
+        </div><!-- /.panel-body -->
+        {!! Form::open(['id' =>'form-calendario']) !!}
+        {!! Form::close() !!}
+    </div><!-- /.panel -->
+    @include('callendar.modalInfo')
+
+@endsection
+
+@section('script')
+    <script>
+        $(function () {
+            /* initialize the external events
+             -----------------------------------------------------------------*/
+            function ini_events(ele) {
+                ele.each(function () {
+                    // create an Event Object (http://arshaw.com/fullcalendar/docs/event_data/Event_Object/)
+                    // it doesn't need to have a start or end
+                    var eventObject = {
+                        title: $.trim($(this).text()) // use the element's text as the event title
+                    };
+
+                    // store the Event Object in the DOM element so we can get to it later
+                    $(this).data('eventObject', eventObject);
+
+                });
+            }
+
+//            ini_events($('#external-events div.external-event'));
+
+            /* initialize the calendar
+             -----------------------------------------------------------------*/
 
 
-            <div class="row">
-                <div class="col-lg-8">
+            $('#calendar').fullCalendar({
+                header: {
+                    left: 'prev,next today',
+                    center: 'title',
+                    right: 'month,agendaWeek,agendaDay'
+                },
+                businessHours: [ // specify an array instead
+                    {
+                        dow: [ 1,2,3,4,5], // Lunes, Martes, Miercoles, Jueves y Viernes
+                        start: '09:00', // 9am
+                        end: '18:00' // 6pm
+                    },
+//                    {
+//                        dow: [6,7 ], //   Domingo Sabado
+//                        start: '10:00', // 10am
+//                        end: '11:00' // 4pm
+//                    }
+                ],
+                locale:'es',
 
-                @section ('pane2_panel_title', 'En el tiempo...')
-                @section ('pane2_panel_body')
-                    
-                    <!-- /.panel -->
-                    <ul class="timeline">
-                        <li>
-                            <div class="timeline-badge"><i class="fa fa-check"></i>
-                            </div>
-                            <div class="timeline-panel">
-                                <div class="timeline-heading">
-                                    <h4 class="timeline-title">Lorem ipsum dolor</h4>
-                                    <p><small class="text-muted"><i class="fa fa-clock-o"></i> 11 hours ago via Twitter</small>
-                                    </p>
-                                </div>
-                                <div class="timeline-body">
-                                    <p>Lorem ipsum dolor sit amet, consectetur adipisicing elit. Libero laboriosam dolor perspiciatis omnis exercitationem. Beatae, officia pariatur? Est cum veniam excepturi. Maiores praesentium, porro voluptas suscipit facere rem dicta, debitis.</p>
-                                </div>
-                            </div>
-                        </li>
-                        <li class="timeline-inverted">
-                            <div class="timeline-badge warning"><i class="fa fa-credit-card"></i>
-                            </div>
-                            <div class="timeline-panel">
-                                <div class="timeline-heading">
-                                    <h4 class="timeline-title">Lorem ipsum dolor</h4>
-                                </div>
-                                <div class="timeline-body">
-                                    <p>Lorem ipsum dolor sit amet, consectetur adipisicing elit. Autem dolorem quibusdam, tenetur commodi provident cumque magni voluptatem libero, quis rerum. Fugiat esse debitis optio, tempore. Animi officiis alias, officia repellendus.</p>
-                                    <p>Lorem ipsum dolor sit amet, consectetur adipisicing elit. Laudantium maiores odit qui est tempora eos, nostrum provident explicabo dignissimos debitis vel! Adipisci eius voluptates, ad aut recusandae minus eaque facere.</p>
-                                </div>
-                            </div>
-                        </li>
-                        <li>
-                            <div class="timeline-badge danger"><i class="fa fa-bomb"></i>
-                            </div>
-                            <div class="timeline-panel">
-                                <div class="timeline-heading">
-                                    <h4 class="timeline-title">Lorem ipsum dolor</h4>
-                                </div>
-                                <div class="timeline-body">
-                                    <p>Lorem ipsum dolor sit amet, consectetur adipisicing elit. Repellendus numquam facilis enim eaque, tenetur nam id qui vel velit similique nihil iure molestias aliquam, voluptatem totam quaerat, magni commodi quisquam.</p>
-                                </div>
-                            </div>
-                        </li>
-                        <li class="timeline-inverted">
-                            <div class="timeline-panel">
-                                <div class="timeline-heading">
-                                    <h4 class="timeline-title">Lorem ipsum dolor</h4>
-                                </div>
-                                <div class="timeline-body">
-                                    <p>Lorem ipsum dolor sit amet, consectetur adipisicing elit. Voluptates est quaerat asperiores sapiente, eligendi, nihil. Itaque quos, alias sapiente rerum quas odit! Aperiam officiis quidem delectus libero, omnis ut debitis!</p>
-                                </div>
-                            </div>
-                        </li>
-                        <li>
-                            <div class="timeline-badge info"><i class="fa fa-save"></i>
-                            </div>
-                            <div class="timeline-panel">
-                                <div class="timeline-heading">
-                                    <h4 class="timeline-title">Lorem ipsum dolor</h4>
-                                </div>
-                                <div class="timeline-body">
-                                    <p>Lorem ipsum dolor sit amet, consectetur adipisicing elit. Nobis minus modi quam ipsum alias at est molestiae excepturi delectus nesciunt, quibusdam debitis amet, beatae consequuntur impedit nulla qui! Laborum, atque.</p>
-                                    <hr>
-                                    <div class="btn-group">
-                                        <button type="button" class="btn btn-primary btn-sm dropdown-toggle" data-toggle="dropdown">
-                                            <i class="fa fa-gear"></i>  <span class="caret"></span>
-                                        </button>
-                                        <ul class="dropdown-menu" role="menu">
-                                            <li><a href="#">Action</a>
-                                            </li>
-                                            <li><a href="#">Another action</a>
-                                            </li>
-                                            <li><a href="#">Something else here</a>
-                                            </li>
-                                            <li class="divider"></li>
-                                            <li><a href="#">Separated link</a>
-                                            </li>
-                                        </ul>
-                                    </div>
-                                </div>
-                            </div>
-                        </li>
-                        <li>
-                            <div class="timeline-panel">
-                                <div class="timeline-heading">
-                                    <h4 class="timeline-title">Lorem ipsum dolor</h4>
-                                </div>
-                                <div class="timeline-body">
-                                    <p>Lorem ipsum dolor sit amet, consectetur adipisicing elit. Sequi fuga odio quibusdam. Iure expedita, incidunt unde quis nam! Quod, quisquam. Officia quam qui adipisci quas consequuntur nostrum sequi. Consequuntur, commodi.</p>
-                                </div>
-                            </div>
-                        </li>
-                        <li class="timeline-inverted">
-                            <div class="timeline-badge success"><i class="fa fa-graduation-cap"></i>
-                            </div>
-                            <div class="timeline-panel">
-                                <div class="timeline-heading">
-                                    <h4 class="timeline-title">Lorem ipsum dolor</h4>
-                                </div>
-                                <div class="timeline-body">
-                                    <p>Lorem ipsum dolor sit amet, consectetur adipisicing elit. Deserunt obcaecati, quaerat tempore officia voluptas debitis consectetur culpa amet, accusamus dolorum fugiat, animi dicta aperiam, enim incidunt quisquam maxime neque eaque.</p>
-                                </div>
-                            </div>
-                        </li>
-                    </ul>
-                @endsection
-                @include('widgets.panel', array('header'=>true, 'as'=>'pane2'))
-                </div>
+                eventTextColor:'#030414',
+                slotDuration:'00:30:00',// (30 minutes) intervalos de tiempo en la vista del dia
+                buttonText: {
+                    today: 'hoy',
+                    month: 'mes',
+                    week: 'semana',
+                    day: 'dia'
+                },
+//                displayEventEnd:true,
 
-                <!-- /.col-lg-8 -->
-                <div class="col-lg-4">
-                    @section ('pane1_panel_title', 'Panel de Notificaciones')
-                    @section ('pane1_panel_body')
+//                weekends: false, // will hide Saturdays and Sundays
 
-                        <div class="list-group">
-                                {{--<a href="#" class="list-group-item">--}}
-                                    {{--<i class="fa fa-comment fa-fw"></i> New Comment--}}
-                                    {{--<span class="pull-right text-muted small"><em>4 minutes ago</em>--}}
-                                    {{--</span>--}}
-                                {{--</a>--}}
-                            <a href="#" class="list-group-item">
-                                <i class="fa fa-tasks fa-fw"></i> Nueva Tarea
-                                <span class="pull-right text-muted small"><em>hace 43 minutos</em>
-                                </span>
-                            </a>
+                events: {
+                    url:"getEvents"
+                },
 
-                        </div>
-                            <!-- /.list-group -->
-                            <a href="#" class="btn btn-default btn-block">Ver todas</a>
+                editable: false,//true para permitir editar en el calendario
 
-                        <!-- /.panel-body -->
-                    @endsection
-                    @include('widgets.panel', array('header'=>true, 'as'=>'pane1'))
-                </div>
-            </div><!-- /.row -->
-            </div>  <!-- /.col-sm-12 -->
+                /*funciones*/
 
-            
+                //mostrar informacion del evento en un tooltip al pasar el mouse por encima
+                eventMouseover: function( event, jsEvent, view ) {
+                    var start = (event.start.format("YYYY-MM-DD HH:mm"));
+                    var back=event.color;
+                    var area=event.area;
+                    var resp=event.user_id;
+                    var repeat=event.repeats;
+                    var repeat_freq=event.repeats_freq;
+
+                    if(event.end){
+                        var end = event.end.format("YYYY-MM-DD HH:mm");
+                    }else{
+                        var end="No definido";
+                    }
+
+                    if (repeat>0){ var recurrent='SI'; }else{var recurrent='NO'; }
+                    if (repeat_freq==7){var freq='Semanal';}else if (repeat_freq==30){var freq='Mensual';} else {var freq='';}
+
+
+
+                    var tooltip = '<div class="tooltipevent" style="padding:10px;border-radius: 10px 10px 10px 10px; width:auto;height:auto;color:#030414;background:'+back+';position:absolute; placement:top;z-index:10001;">' +
+                            ''+'<b><center> '+ event.title +' </center></b>'+
+                            ''+ 'Area: '+area+'<br>' +
+                            ''+ 'Inicio: '+start+'<br>' +
+                            ''+ 'Fin: '+ end +'<br>' +
+                            ''+ 'Recurrente: '+ recurrent +'<br>' +
+                            ''+ 'Frecuencia: '+ freq +'<br>' +
+                            ''+'Responsable: '+'<b>'+resp+'</b></div>';
+                    $("body").append(tooltip);
+                    $(this).mouseover(function(e) {
+                        $(this).css('z-index', 10000);
+                        $('.tooltipevent').fadeIn('500');
+                        $('.tooltipevent').fadeTo('10', 1.9);
+                    }).mousemove(function(e) {
+                        $('.tooltipevent').css('top', e.pageY - 170);
+                        $('.tooltipevent').css('left', e.pageX -170);
+                    });
+                },
+                //evento al retirar el mouse se cierra el toolpit
+                eventMouseout: function(calEvent, jsEvent) {
+                    $(this).css('z-index', 8);
+                    $('.tooltipevent').remove();
+                },
+                //evento para eliminar una tarea al dar click sobre ella
+                eventClick: function (event, jsEvent, view) {
+
+                    var start = (event.start.format("YYYY-MM-DD HH:mm"));
+                    var back=event.color;
+                    var area=event.area;
+                    var resp=event.user_id;
+
+                    if(event.end){
+                        var end = event.end.format("YYYY-MM-DD HH:mm");
+                    }else{var end="No definido";
+                    }
+
+                    //limpio los datos de la tabla
+                    $("#asignadas").empty();
+                    $("#terminadas").empty();
+                    $("#pendientes").empty();
+                    $("#cumplimiento").empty();
+//                    $('#terminadas ').html('<h3 id="terminadas"><span class="label label-success"></span></h3>');
+//                    //set the values and open the modal
+                    $('#modalTitle').html(event.title);
+                    $('#area_id').val(area);
+                    $('#start').val(start);
+                    $('#end').val(end);
+                    $('#person_id').val(resp);
+
+                    $("#modalInfo").modal()
+                    crsfToken = document.getElementsByName("_token")[0].value;
+                    $.ajax({
+                        url: 'getDataModal',
+                        dataType: 'json',
+                        data: 'id=' + event.id,
+                        headers: {
+                            "X-CSRF-TOKEN": crsfToken
+                        },
+                        type: "POST",
+                        success: function (data) {
+//                            console.log(data.asignada);//no funciona asi
+                            console.log(data);
+                            var asignadas=data[0].asignadas,
+                                    terminadas=data[0].terminadas,
+                                    pendientes=data[0].pendientes,
+                                    cumplimiento=data[0].cumplimiento;
+                            $("#asignadas").text(asignadas);
+                            $("#terminadas").text(terminadas);
+                            $("#pendientes").text(pendientes);
+                            $("#cumplimiento").text(cumplimiento);
+                        },
+                        error: function(json){
+                            console.log("Error en conexion");
+                        }
+                    });
+                    return false;
+                },
+                //entra en determinado dia al dar click en el calendario
+
+                dayClick: function(date, jsEvent, view) {
+                    if (view.name === "month") {
+                        $('#calendar').fullCalendar('gotoDate', date);
+                        $('#calendar').fullCalendar('changeView', 'agendaDay');
+                    }
+                }
+                /*end funciones*/
+            });
+
+        });
+    </script>
+
 @endsection

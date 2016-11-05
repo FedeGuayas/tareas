@@ -2,7 +2,6 @@
 @section('page_heading','Tareas')
 
 @section('section')
-
     <div class="panel panel-primary">
         <!-- Content Header (Page header) -->
         <div class="panel-heading"><h2>Calendario</h2></div>
@@ -47,9 +46,9 @@
         {!! Form::open(['id' =>'form-calendario']) !!}
         {!! Form::close() !!}
     </div><!-- /.panel -->
+    @include('callendar.modalInfo')
 
-
-   @include('callendar.modalInfo')
+@endsection
 
 @section('script')
     <script>
@@ -109,7 +108,7 @@
 //                weekends: false, // will hide Saturdays and Sundays
 
                 events: {
-                    url:"getTasks"
+                    url:"getEvents"
                 },
 
                 editable: false,//true para permitir editar en el calendario
@@ -120,19 +119,29 @@
                 eventMouseover: function( event, jsEvent, view ) {
                     var start = (event.start.format("YYYY-MM-DD HH:mm"));
                     var back=event.color;
-                    var area=event.area_id;
-                    var resp=event.person_id;
+                    var area=event.area;
+                    var resp=event.user_id;
+                    var repeat=event.repeats;
+                    var repeat_freq=event.repeats_freq;
 
                     if(event.end){
                         var end = event.end.format("YYYY-MM-DD HH:mm");
-                    }else{var end="No definido";
+                    }else{
+                        var end="No definido";
                     }
+
+                    if (repeat>0){ var recurrent='SI'; }else{var recurrent='NO'; }
+                    if (repeat_freq==7){var freq='Semanal';}else if (repeat_freq==30){var freq='Mensual';} else {var freq='';}
+
+
 
                     var tooltip = '<div class="tooltipevent" style="padding:10px;border-radius: 10px 10px 10px 10px; width:auto;height:auto;color:#030414;background:'+back+';position:absolute; placement:top;z-index:10001;">' +
                             ''+'<b><center> '+ event.title +' </center></b>'+
-                            ''+ 'Area '+area+'<br>' +
+                            ''+ 'Area: '+area+'<br>' +
                             ''+ 'Inicio: '+start+'<br>' +
                             ''+ 'Fin: '+ end +'<br>' +
+                            ''+ 'Recurrente: '+ recurrent +'<br>' +
+                            ''+ 'Frecuencia: '+ freq +'<br>' +
                             ''+'Responsable: '+'<b>'+resp+'</b></div>';
                     $("body").append(tooltip);
                     $(this).mouseover(function(e) {
@@ -140,8 +149,8 @@
                         $('.tooltipevent').fadeIn('500');
                         $('.tooltipevent').fadeTo('10', 1.9);
                     }).mousemove(function(e) {
-                        $('.tooltipevent').css('top', e.pageY - 150);
-                        $('.tooltipevent').css('left', e.pageX -160);
+                        $('.tooltipevent').css('top', e.pageY - 170);
+                        $('.tooltipevent').css('left', e.pageX -170);
                     });
                 },
                 //evento al retirar el mouse se cierra el toolpit
@@ -154,8 +163,8 @@
 
                     var start = (event.start.format("YYYY-MM-DD HH:mm"));
                     var back=event.color;
-                    var area=event.area_id;
-                    var resp=event.person_id;
+                    var area=event.area;
+                    var resp=event.user_id;
 
                     if(event.end){
                         var end = event.end.format("YYYY-MM-DD HH:mm");
@@ -186,8 +195,8 @@
                         },
                         type: "POST",
                         success: function (data) {
-//
 //                            console.log(data.asignada);//no funciona asi
+                            console.log(data);
                             var asignadas=data[0].asignadas,
                                 terminadas=data[0].terminadas,
                                 pendientes=data[0].pendientes,
@@ -196,16 +205,12 @@
                             $("#terminadas").text(terminadas);
                             $("#pendientes").text(pendientes);
                             $("#cumplimiento").text(cumplimiento);
-
-
                         },
                         error: function(json){
                             console.log("Error en conexion");
                         }
                     });
-//
                     return false;
-//
                 },
                 //entra en determinado dia al dar click en el calendario
 
@@ -220,5 +225,5 @@
 
         });
     </script>
-@endsection
+
 @endsection

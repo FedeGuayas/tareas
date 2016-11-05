@@ -5,7 +5,7 @@
 
     <div class="col-sm-12">
         <div class="row">
-            <div class="col-lg-8 col-lg-offset-1">
+            <div class="col-lg-10 col-lg-offset-1">
                 @include('alert.success')
                 <table id="area_table" class="table table-striped table-bordered" cellspacing="0" width="100%"
                        data-order='[[ 1, "asc" ]]' style="display: none">
@@ -13,8 +13,9 @@
                     <tr>
                         {{--<th>id</th>--}}
                         <th>Area</th>
-                        <th>Descripción</th>
+                        {{--<th>Descripción</th>--}}
                         <th>Trabajadores</th>
+                        <th>Tareas</th>
                         <th>Acción</th>
                     </tr>
                     </thead>
@@ -22,8 +23,9 @@
                     <tr>
                         {{--<th>id</th>--}}
                         <th>Area</th>
-                        <th>Descripción</th>
+                        {{--<th>Descripción</th>--}}
                         <th>Trabajadores</th>
+                        <th>Tareas</th>
                         <th>Acción</th>
                     </tr>
                     </tfoot>
@@ -32,10 +34,15 @@
                         <tr>
                             {{--<td>{{$area->id}}</td>--}}
                             <td>{{$area->area}}</td>
-                            <td>{{$area->description}}</td>
+{{--                            <td>{{$area->description}}</td>--}}
                             <td>
-                                @foreach($area->persons as $per)
-                                    {{$per->getFullName()}}<br>
+                                @foreach($area->users as $user)
+                                    {{$user->getFullName()}}<br>
+                                @endforeach
+                            </td>
+                            <td>
+                                @foreach($area->tasks as $task)
+                                    {{$task->task}}<br>
                                 @endforeach
                             </td>
                             <td>

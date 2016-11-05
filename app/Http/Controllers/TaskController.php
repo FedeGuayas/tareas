@@ -3,14 +3,20 @@
 namespace App\Http\Controllers;
 
 use App\Event;
-use App\Person;
+
+use App\Events\TaskCreated;
 use App\Task;
+use App\User;
 use Illuminate\Http\Request;
 use App\Area;
 use Illuminate\Queue\SerializesModels;
 use Session;
 use DB;
+use Mail;
 use Auth;
+use Carbon\Carbon;
+use App\Http\Requests\TaskStoreRequest;
+use Fenos\Notifynder\Facades\Notifynder;
 
 use App\Http\Requests;
 
@@ -26,35 +32,56 @@ class TaskController extends Controller
      * "bg-danger"=> #d9534f
      */
 
-    /*muestra tabla con todas las tareas*/
+    /**
+     * muestra tabla con todas las tareas
+     * @return mixed
+     */
     public function index()
     {
-
         $tasks = Task::all();
+        $areas=Area::all();
 
         $tasks->each(function ($tasks) {
-            $tasks->person;
-            $tasks->area;
+            $tasks->user;
         });
-        return view('tasks.index', ['tasks' => $tasks]);
+
+        $areas->each(function ($areas)  {
+            $areas->tasks;
+        });
+
+        return view('tasks.index', ['tasks' => $tasks,'areas' => $areas]);
     }
 
+    /**
+     * Muestra formulario para crear tareas
+     * @return string
+     */
     public function create()
     {
-//        if(Auth::check()){
+        if(Auth::check()){
             $areas_coll = Area::all();
             $list_areas = $areas_coll->pluck('area', 'id');
             return view('tasks.create', ['areas' => $list_areas]);
-//        }else{
-//            return "Inicie sesión para poder crear Tareas";
-//        }
+        }else{
+            return "Inicie sesión para poder crear Tareas";
+        }
     }
 
-    public function store(Request $request)
+
+    /**
+     * 
+     * Almacena la nueva tarea en la bd, notifica al usuario en el sistema y le envia correo
+     * @param TaskStoreRequest $request
+     * @return mixed
+     */
+    public function store(TaskStoreRequest $request)
     {
 
         //hacemos uso de las funciones para verificar el rol del usuario
 //        if(Auth::user()->hasRole('administrador')) {
+        try {
+            DB::beginTransaction();
+
 
         $task = new Task;
         $task->task = $request->input('task');
@@ -65,10 +92,9 @@ class TaskController extends Controller
         $task->state = false;//no terminada
         $task->user_id = $request->input('user_id');
         $task->allDay = false;
-        $task->color = "#337ab7";
+        $task->color = "#d9edf7";//info tarea recien creada
         $repeats = $request->input('repeats');
         $weekday = date('N', strtotime($request->input('start_day')));
-
 
         if (!$repeats) {
             // El usuario no marcó checkbox tarearecurrente
@@ -83,30 +109,79 @@ class TaskController extends Controller
             ]);
             $event->task()->associate($task);
             $event->save();
+
         } else {
             // El usuario marcó checkbox tarea recurrente
+            $start_day=$request->input('start_day');
+            $performance_day = $request->input('performance_day');
             $repeats = $request->input('repeats');
             $repeats_freq= $request->input('repeat-freq');
-            $until = (365/$repeats_freq);
-            if ($repeats_freq == 1){
-                $weekday = 0;
+//            $until = (365/$repeats_freq);
+//            if ($repeats_freq == 1){ //diario
+//                $weekday = 0;
+//            }
+            if ($repeats_freq==7){
+                //convierto el start_day en objeto carbon
+                $inicio = new Carbon($start_day);
+                $fin = new Carbon($performance_day);
+                //le adiciono 1 año y calculo la diferencia de semanas, esto me da las semanas del año
+                $until=$inicio->diffInWeeks($inicio->copy()->addYear());
+
+                $task->repeats = $repeats;
+                $task->repeats_freq =$repeats_freq;
+                $task->weekday=$weekday;
+
+                $task->save();
+                $start_week=$inicio;
+                $end_week=$fin;
+                for ($i=0; $i<$until; $i++){
+                    $event=new Event([
+                        'start' =>$start_week,
+                        'end' =>$end_week,
+                        'title' =>$task->task
+                    ]);
+                    $event->task()->associate($task);
+                    $event->save();
+                    $start_week=$inicio->addWeek();
+                    $end_week=$fin->addWeek();
+                }
             }
-            $task->repeats = $repeats;
-            $task->repeats_freq =$repeats_freq;
-            $task->weekday=$weekday;
-            $task->save();
-            for ($i=0; $i<$until; $i++){
-                $event=new Event([
-                    'start' =>$task->start_day,
-                    'end' =>$task->performance_day,
-                    'title' =>$task->task
-                ]);
-                $event->task()->associate($task);
-                $event->save();
+            if ($repeats_freq==30){
+                //convierto el start_day en objeto carbon
+                $inicio = new Carbon($start_day);
+                $fin = new Carbon($performance_day);
+                //le adiciono 1 año y calculo la diferencia de meses, esto me da los meses del año
+                $until=$inicio->diffInMonths($inicio->copy()->addYear());
+
+                $task->repeats = $repeats;
+                $task->repeats_freq =$repeats_freq;
+                $task->weekday=$weekday;
+
+                $task->save();
+                $start_month=$inicio;
+                $end_month=$fin;
+
+                for ($i=0; $i<$until; $i++){
+
+                    $event=new Event([
+                        'start' =>$start_month,
+                        'end' =>$end_month,
+                        'title' =>$task->task
+                    ]);
+                    $event->task()->associate($task);
+                    $event->save();
+                    $start_month=$inicio->addMonth();
+                    $end_month=$fin->addMonth();
+                }
             }
         }
-        
-        
+            DB::commit();
+        }catch (\Exception $e) {
+            DB::rollback();
+
+            Session::flash('message_danger','Error'.$e->getMessage());
+            return redirect()->route('admin.tasks.create');
+        }
 
 //            $task->save();
 //            Session::flash('message', 'Tarea creada correctamente');
@@ -115,102 +190,138 @@ class TaskController extends Controller
 //            //si el usuario no cumple con los requisitos, retornamos un error 403
 //            return abort(403);
 //        }
-    }
 
-    public function edit($id)
-    {
-        $task = Task::findOrFail($id);
+        $receiver=User::findOrFail($task->user_id);
 
-        $areas_coll = Area::all();
-        $list_areas = $areas_coll->pluck('area', 'id');
+        //notificacion del sistema
+        \Notifynder::category('task.new')
+        ->from($request->user())
+        ->to($receiver)
+        ->url('/user/tasks')
+        ->extra(['message' => 'Nueva tarea creada'])
+        ->expire(Carbon::now()->addMonth())
+        ->send();
 
-        $persons_coll = Person::select(DB::raw('CONCAT(first_name, " ", last_name) AS name'), 'id')->where('id', $task->person_id);
-        $list_persons = $persons_coll->pluck('name', 'id');
+        //correo de notificacion
+        $sender=$request->user();
+        event(new TaskCreated($sender,$task));
 
-
-        return view('tasks.edit', ['task' => $task, 'areas' => $list_areas, 'person' => $list_persons]);
-
-    }
-
-    public function update(Request $request, $id)
-    {
-
-        $task = Task::findOrFail($id);
-        if(Auth::user()->hasRole(['administrador','gestor'])){//verificamos los roles
-
-        $task->task = $request->get('task');
-        $task->description = $request->get('description');
-        $task->start_day = $request->get('start_day');
-        $task->performance_day = $request->get('performance_day');
-        $task->performance_day = $request->get('performance_day');
-//        $task->state=true;
-//        $task->end_day=null;
-        $task->area_id = $request->get('area_id');
-        $task->person_id = $request->get('person_id');
-//        $task->allDay=true;
-//        $task->color="rgb(92,184,92)";
-
-        $task->update();
-        Session::flash('message', 'Tarea actualizada correctamente');
+        Session::flash('message', 'Tarea creada correctamente');
         return redirect()->route('admin.tasks.index');
-        } else{
-            return "usted no tiene permisos para actualizar esta tarea";
-        }
-
-    }
-
-    public function delete()
-    {
-
-    }
-
-    public function show($id)
-    {
-
     }
 
 
     /**
-     * Cargar tareas en el calendario por ajax
+     * Carga formulario para Editar la tarea 
+     * @param $id
+     * @return mixed
      */
-    public function getTasks()
+    public function edit($id)
     {
+        $task = Task::findOrFail($id);
+        $areas_coll = Area::all();
+        $list_areas = $areas_coll->pluck('area', 'id');
+            return view('tasks.edit', ['task' => $task, 'areas' => $list_areas]);
+    }
 
-        $tasks = Task::all();
 
-        $tasks->each(function ($tasks) {
-            $tasks->person;
-            $tasks->area;
-        });
+    /**
+     * 
+     * Actualiza la tarea en la bd
+     * @param Request $request
+     * @param $id
+     * @return mixed
+     */
+    public function update(Request $request, $id)
+    {
+        $task = Task::findOrFail($id);
 
-        $data = [];
-        foreach ($tasks as $task) {
-            $data[] = [
-                'id' => $task->id,
-                'title' => $task->task,
-                'description' => $task->description,
-                'start' => $task->start_day,
-                'end' => $task->performance_day,
-                'end_day' => $task->end_day,
-                'state' => $task->state,
-                'area_id' => $task->area->area,
-                'person_id' => $task->person->getFullName(),
-                'allDay' => $task->allDay,
-                'color' => $task->color,
-                "url" => "getTasks" . "/" . $task->id,
-            ];
+        try {
+            DB::beginTransaction();
+            
+//        if(Auth::user()->hasRole(['administrador','gestor'])){//verificamos los roles
+
+            $task->task = $request->input('task');
+            $task->description = $request->input('description');
+            $task->start_day = $request->input('start_day');
+            $task->performance_day = $request->input('performance_day');
+    //        $task->end_day = null;
+    //        $task->state = false;//no terminada
+            $task->user_id = $request->input('user_id');
+    //        $task->allDay = false;
+            $task->color = "#d9edf7";//info tarea recien creada
+            $repeats = $request->input('repeats');
+            $weekday = date('N', strtotime($request->input('start_day')));
+    //        $task->repeats = 0;
+    //        $task->repeats_freq = 0;
+            $task->weekday=$weekday;
+
+            $event=Event::where('task_id',$id)->first();
+            $event->start =$task->start_day;
+            $event->end=$task->performance_day;
+            $event->title =$task->task;
+            $task->update();
+            $event->task()->associate($task);
+            $event->update();
+
+            DB::commit();
+
+        }catch (\Exception $e) {
+            DB::rollback();
+
+            Session::flash('message_danger','Error'.$e->getMessage());
+            return redirect()->route('admin.tasks.edit');
         }
 
-        json_encode($data);
-        return $data;
+        Session::flash('message', 'Tarea actualizada correctamente');
+        return redirect()->route('admin.tasks.index');
+//        } else{
+//            return "usted no tiene permisos para actualizar esta tarea";
+//        }
+    }
+
+    /**
+     * elimina una tarea de la bd, esto tambien elimina sus eventos relacionados
+     * @param $id
+     * @return mixed
+     */
+    public function destroy($id)
+    {
+        $task=Task::findOrFail($id);
+        $task->delete();
+        Session::flash('message_danger','Tarea eliminada');
+        return redirect()->route('admin.tasks.index');
+    }
+
+
+    /**
+     * 
+     * @param Request $request
+     * @param $id
+     */
+    public function userTaskEnd(Request $request,$id)
+    {
+
+        $receiver=User::where('id','>',0)->get();
+        dd($receiver);
+
+        \Notifynder::category('task.new')
+        ->from($request->user())
+        ->to($receiver)
+        ->url('/user/tasks')
+        ->extra(['message' => 'Nueva tarea creada'])
+        ->expire(Carbon::now()->addMonth())
+        ->send();
 
     }
+
+
 
 
     /**
      * Cargar datos del trabajador en la ventana modal en el calendario por ajax
      */
-    public function getDataModal()
+    public function getDataModal222()
     {
         $id = $_POST['id'];
 
@@ -232,4 +343,32 @@ class TaskController extends Controller
 
         return response()->json($data);
     }
+
+    /**
+     * Correo de notificacion de nueva tarea
+     * @param $user
+     * @param $pass
+     */
+
+    public function sendNewTaskMail($sender,$task){
+
+        $receiver_id=$task->user_id;
+        $receiver=User::findOrFail($receiver_id);
+        
+        //mensaje
+//        $message = sprintf('Activate account <a href="%s">%s</a>', $link, $link);
+        //cambiando raw por send se puede utilizar una plantilla html para el mail
+//        $this->mailer->raw($message, function (Message $m) use ($user) {
+//            $m->to($user->email)->subject('Activation mail');
+//        });
+
+
+        Mail::later(60,'emails.new_task', ['sender' => $sender,'receiver'=>$receiver,'task'=>$task], function ($message) use ($receiver){
+            $message->from('admin@fedeguayas.com.ec', 'Gestion de Tareas');
+            $message->subject('Nueva Tarea asignada');
+            $message->to($receiver->email);
+        });
+
+    }
+
 }

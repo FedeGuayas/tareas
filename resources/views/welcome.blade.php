@@ -242,7 +242,7 @@
 //                weekends: false, // will hide Saturdays and Sundays
 
             events: {
-                url:"getTasks"
+                url:"getEvents"
             },
 
             editable: false,//true para permitir editar en el calendario
@@ -253,17 +253,18 @@
             eventMouseover: function( event, jsEvent, view ) {
                 var start = (event.start.format("YYYY-MM-DD HH:mm"));
                 var back=event.color;
-                var area=event.area_id;
-                var resp=event.person_id;
+                var area=event.area;
+                var resp=event.user_id;
 
                 if(event.end){
                     var end = event.end.format("YYYY-MM-DD HH:mm");
-                }else{var end="No definido";
+                }else{
+                    var end="No definido";
                 }
 
                 var tooltip = '<div class="tooltipevent" style="padding:10px;border-radius: 10px 10px 10px 10px; width:auto;height:auto;color:#030414;background:'+back+';position:absolute; placement:top;z-index:10001;">' +
                         ''+'<b><center> '+ event.title +' </center></b>'+
-                        ''+ 'Area '+area+'<br>' +
+                        ''+ 'Area: '+area+'<br>' +
                         ''+ 'Inicio: '+start+'<br>' +
                         ''+ 'Fin: '+ end +'<br>' +
                         ''+'Responsable: '+'<b>'+resp+'</b></div>';
@@ -286,8 +287,8 @@
             eventClick: function (event, jsEvent, view) {
                 var start = (event.start.format("YYYY-MM-DD HH:mm"));
                 var back=event.color;
-                var area=event.area_id;
-                var resp=event.person_id;
+                var area=event.area;
+                var resp=event.user_id;
 
                 if(event.end){
                     var end = event.end.format("YYYY-MM-DD HH:mm");

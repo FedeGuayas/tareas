@@ -50,7 +50,7 @@ class ActivationService
 //        });
                 
 
-        Mail::send('emails.new_user', ['user' => $user,'link'=>$link, 'passw'=>$pass], function ($message) use ($user){
+        Mail::queue('emails.new_user', ['user' => $user,'link'=>$link, 'passw'=>$pass], function ($message) use ($user){
             $message->from('admin@fedeguayas.com.ec', 'Gestion de Tareas');
             $message->subject('Activación de cuenta');
             $message->to($user->email);

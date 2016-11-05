@@ -22,9 +22,11 @@ class AreasController extends Controller
     {
 
         $areas=Area::all();
-        foreach ($areas as $area ){
-           $area->persons();
-        }
+
+        $areas->each(function ($areas) {
+            $areas->users;
+            $areas->tasks;
+        });
         return view('areas.index',['areas'=>$areas]);
     }
 
@@ -102,7 +104,7 @@ class AreasController extends Controller
     public function destroy($id)
     {
         $area=Area::findOrFail($id);
-        $flag=$area->persons;
+        $flag=$area->users;
         if (count($flag)>0){
             Session::flash('message_danger','El area '.$area->area.' tiene trabajadores, eliminelos o cambielos de area');
             return redirect()->back();
@@ -113,7 +115,7 @@ class AreasController extends Controller
         return redirect()->route('admin.areas.index');
     }
 
-    //obtener todos los usuarios apar un area y devolver un json
+    //obtener todos los usuarios apar un area y devolver un json para select dinamico
     public function getUsers(Request $request,$id){
         if ($request->ajax()){
             $users=User::users($id);

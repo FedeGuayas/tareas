@@ -3,12 +3,12 @@
 namespace App;
 
 use Illuminate\Foundation\Auth\User as Authenticatable;
-use Illuminate\Support\Facades\Crypt;
-//use Illuminate\Support\Facades\Hash;
 use Zizaco\Entrust\Traits\EntrustUserTrait;
+use Fenos\Notifynder\Traits\Notifable as NotifableTrait;
 
 class User extends Authenticatable
 {
+    use NotifableTrait; //trai para notificaciones
     /**
      * Este trait habilita las relaciones del modelo User con el modelo Role, adicionando los siguientes metodos
      * roles(), hasRole($name), can($permission), and ability($roles, $permissions, $options)
@@ -59,10 +59,13 @@ class User extends Authenticatable
         return $this->belongsTo('App\Area');
     }
 
-    public function notifications()
-    {
-        return $this->belongsToMany('App\Notification');
+//    public function notifications()
+//    {
+//        return $this->belongsToMany('App\Notification');
+//    }
+
+    public function comments(){
+        return $this->hasMany('App\Coments');
     }
+
 }
-
-

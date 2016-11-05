@@ -35,27 +35,6 @@
 /*OKKKKKKKKKKKKKKKK*/
 
 
-Route::group(['prefix'=>'user'],function(){
-
-    //solo los autenticados pueden acceder al perfil y a deslogearse
-    Route::group(['middleware'=>'auth'],function() {
-
-        //acceso al perfil de usuarios
-        Route::get('/profile', [
-            'uses' => 'UsersController@getProfile',
-            'as' => 'user.profile'
-        ]);
-
-        //acceso al perfil de usuarios
-        Route::get('{id}/profile/', [
-            'uses' => 'UsersController@getProfileEdit',
-            'as' => 'user.profile.edit'
-        ]);
-        
-    });
-
-
-});
 
 Route::auth();
 
@@ -69,39 +48,93 @@ Route::get('/', function(){
 });
 
 
-//Calendario
+//Calendario backend
 Route::get('/callendar',function(){
     return view('callendar.index');
 });
 
-Route::get('getTasks{id?}',[
-    'uses'=>'TaskController@getTasks',
-    'as' => 'task.show'
+//obtener json con los eventos
+Route::get('/getEvents{id?}',[
+    'uses'=>'EventController@index',
+    'as' => 'events.index'
 ]);
 
+//obtener json con datos para cargar en ventana modal en calendario
 Route::post('/getDataModal{id?}',[
-    'uses'=>'TaskController@getDataModal',
-    'as' => 'task.person'
+    'uses'=>'EventController@getDataModal',
+    'as' => 'events.modal'
+]);
+//cargo calendario editable
+Route::get('eventsEdit{task?}',[
+    'uses'=>'EventController@edit',
+    'as' => 'admin.calendar.edit'
+]);
+//actualizar eventos desde calendario
+Route::post('actualizaEventos',[
+    'uses'=>'EventController@update',
+    'as' => 'events.update'
+]);
+//eliminar evento desde calendario
+Route::post('eliminaEvento',[
+    'uses'=>'EventController@destroy',
+    'as'=>'events.delete'
 ]);
 
 
-//obtener el id de las personas por area
+
+//obtener el id de las personas por area para select dinamico
 Route::get('/users/{id}','AreasController@getUsers');
+
+
+
+Route::group(['prefix'=>'user'],function(){
+
+    //solo los autenticados pueden acceder al perfil y a deslogearse
+    Route::group(['middleware'=>'auth'],function() {
+
+        //acceso al perfil general de usuarios al hacer login
+        Route::get('/profile', [ 'uses' => 'UsersController@getProfile','as' => 'user.profile' ]);
+
+        //vista para editar la contraseña del perfil de usuario
+        Route::get('/profile/edit', ['uses' => 'UsersController@getProfileEdit','as' => 'user.profile.edit']);
+        
+        //actualizar la contraseña del perfil de usuario
+        Route::put('{user}/profile/edit', ['uses' => 'UsersController@postProfile','as' => 'user.profile.update']);
+        
+        //tasreas del usuario
+        Route::get('/tasks', ['uses' => 'UsersController@userTasks','as' => 'user.profile.tasks']);
+
+        //el usuario marco la tarea como finalizada
+        Route::get('/tasks/{id}/end', ['uses'=>'NotificationController@userTaskEnd',
+            'as'=>'user.task.end']);
+
+        //todas las notificaciones del usuarios
+        Route::get('/notifications', ['uses'=>'NotificationController@getIndex','as'=>'user.notifications.all']);
+
+        //leer una notificacion marcandola como leida
+        Route::get('/notifications{notification}', ['uses'=>'NotificationController@getRead','as'=>'user.notifications.read']);
+        
+        
+    });
+
+
+});
+
+
 
 
 
 Route::group(['prefix'=>'admin'],function() {
 
     Route::resource('/tasks', 'TaskController');
-    Route::resource('/persons', 'PersonsController');
+//    Route::resource('/persons', 'PersonsController');
     Route::resource('/areas', 'AreasController');
     Route::resource('/permissions', 'PermissionsController');
     Route::resource('/roles', 'RolesController');
+    Route::resource('/users', 'UsersController');
+    Route::resource('/notifications', 'NotificationController');
 
-    //Usuarios
-    Route::get('users', ['as' => 'admin.users.index','uses'=>'UsersController@index' ]);
-
-
+    
 });
 
 

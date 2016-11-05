@@ -16,6 +16,9 @@ class EventServiceProvider extends ServiceProvider
         'App\Events\UserCreated' => [
             'App\Listeners\SendActivationEmail',
         ],
+        'App\Events\TaskCreated' => [
+            'App\Listeners\NewTaskNotificationEmail',
+        ],
     ];
 
     /**

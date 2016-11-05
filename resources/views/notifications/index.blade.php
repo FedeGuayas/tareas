@@ -1,70 +1,55 @@
-@extends('layouts.dashboard')
-
-@section('page_heading','Listado Trabajadores')
+@extends ('layouts.dashboard')
+@section('page_heading','Categorias de notificaciones')
 
 @section('section')
+    <div class="col-sm-12 col-lg-6">
+        <div class="row">
+            <a href="{{ route('admin.notifications.create' )}}" class="btn btn-success tip pull-left" data-placement="right"
+               title="Nueva"><i class="fa fa-comment" aria-hidden="true"></i>
+                Nueva</a>
+        </div>
+    </div>
+
 
     <div class="col-sm-12">
         <div class="row">
             <div class="col-lg-10 col-lg-offset-1">
                 @include('alert.success')
-                <table id="users_table" class="table table-striped table-bordered" cellspacing="0" width="100%"
+                <table id="noti_table" class="table table-striped table-bordered" cellspacing="0" width="100%"
                        data-order='[[ 1, "asc" ]]' style="display: none">
                     <thead>
                     <tr>
                         {{--<th>id</th>--}}
-                        <th>Usuario</th>
                         <th>Nombre</th>
-                        <th>Telefono</th>
-                        <th>Email</th>
-                        <th>Area</th>
-                        <th>Tareas</th>
+                        <th>Texto</th>
                         <th>Acción</th>
                     </tr>
                     </thead>
                     <tfoot>
                     <tr>
                         {{--<th>id</th>--}}
-                        <th>Usuario</th>
                         <th>Nombre</th>
-                        <th>Telefono</th>
-                        <th>Email</th>
-                        <th>Area</th>
-                        <th>Tareas</th>
+                        <th>Texto</th>
                         <th>Acción</th>
                     </tr>
                     </tfoot>
                     <tbody>
-                    @foreach($users as $user)
+                    @foreach($notifications as $notifi)
                         <tr>
                             {{--<td>{{$area->id}}</td>--}}
-                            <td>{{$user->name}}</td>
-                            <td>{{$user->getFullName()}}</td>
-                            <td>{{$user->phone}}</td>
-                            <td>{{$user->email}}</td>
-                            <td>{{$user->area['area']}}</td>
+                            <td>{{$notifi->name}}</td>
+                            <td>{{$notifi->text}}</td>
                             <td>
-                                <a href="#!" class="btn btn-xs bg-info">Total  <span class="badge">{{$user->tasks->count()}}</span></a>
-
-                                @foreach($user->tasks as $task)
-                                    @if ($task->repeats==1){{--repetitiva--}}
-                                        <a href="#!" class="btn btn-xs bg-primary">Recurrentes <span class="badge">{{$task->events->count()}}</span></a>
-                                    @endif
-                                @endforeach
-                            </td>
-                            <td>
-                                <a href="{{ route('admin.users.edit', $user->id )}}" class="btn btn-xs btn-warning tip" data-placement="top" title="Editar"><i class="fa fa-pencil" aria-hidden="true"></i>
+                                <a href="{{ route('admin.notifications.edit', $notifi->id )}}" class="btn btn-xs btn-warning tip" data-placement="top" title="Editar"><i class="fa fa-pencil" aria-hidden="true"></i>
                                 </a>
-                                <a href="" data-target="#modal-delete-{{ $user->id }}" data-toggle="modal" class="btn btn-xs btn-danger tip"  data-placement="top" title="Elimminar"><i class="fa fa-trash" aria-hidden="true"></i>
+                                <a href="" data-target="#modal-delete-{{ $notifi->id }}" data-toggle="modal" class="btn btn-xs btn-danger tip"  data-placement="top" title="Elimminar"><i class="fa fa-trash" aria-hidden="true"></i>
                                 </a>
                             </td>
                         </tr>
-                        @include('users.modal')
+                        @include('notifications.modal')
                     @endforeach
                     </tbody>
                 </table>
-
-
             </div>
         </div>
     </div>
@@ -76,7 +61,7 @@
 
         $(document).ready( function () {
 
-            var table =  $('#users_table').DataTable({
+            var table =  $('#noti_table').DataTable({
                 "lengthMenu": [[5, 7, 10, 25], [5, 7, 10, 25]],
                 "processing": true,
 //            "serverSide": false,
@@ -117,7 +102,7 @@
                     }
                 },
                 "fnInitComplete":function(){
-                    $('#users_table').fadeIn();
+                    $('#noti_table').fadeIn();
                 }
             });
 
