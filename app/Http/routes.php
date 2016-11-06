@@ -104,9 +104,14 @@ Route::group(['prefix'=>'user'],function(){
         //tasreas del usuario
         Route::get('/tasks', ['uses' => 'UsersController@userTasks','as' => 'user.profile.tasks']);
 
-        //el usuario marco la tarea como finalizada
-        Route::get('/tasks/{id}/end', ['uses'=>'NotificationController@userTaskEnd',
+        //el usuario solicita termino de tarea
+        Route::post('/tasks/end-sol/{id?}', ['uses'=>'TaskController@userTaskEnd',
             'as'=>'user.task.end']);
+        
+        //el supervisor aprueba termino de tarea
+        Route::post('/tasks/end-aprob/{id?}', ['uses'=>'TaskController@taskEndAprob',
+            'as'=>'user.task.end.aprob']);
+        
 
         //todas las notificaciones del usuarios
         Route::get('/notifications', ['uses'=>'NotificationController@getIndex','as'=>'user.notifications.all']);

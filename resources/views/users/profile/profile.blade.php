@@ -5,8 +5,13 @@
             <!-- /.row -->
             <div class="col-sm-12">
             <div class="row">
+
                 @include('alert.success')
                 @include('alert.request')
+                <div id="msg-send" class="alert alert-success alert-dismissible" role="alert" style="display: none">
+                    <button type="button" class="close" data-dismiss="alert" aria-label="Close"><span aria-hidden="true">&times;</span></button>
+                    <strong id="send"></strong>
+                </div>
                 <div class="col-lg-3 col-md-6">
                     <div class="panel panel-yellow">
                         <div class="panel-heading">
@@ -129,13 +134,16 @@
                                                     <i class="fa fa-gear"></i>  <span class="caret"></span>
                                                 </button>
                                                 <ul class="dropdown-menu" role="menu">
-                                                    <li><a href="#">Ver</a>
-                                                    </li>
                                                     <li><a href="#">Comentar</a>
                                                     </li>
                                                     <li class="divider"></li>
-                                                    <li><a href="#">Terminar</a>
+                                                    @if (is_null($task->end_day) )
+                                                    <li><a href="#!" class="solEndTask" id="{{$task->id}}">Terminar</a>
                                                     </li>
+                                                        @else
+                                                        <li><a href="#!" class="bg-success">Solicitud enviada</a>
+                                                        </li>
+                                                    @endif
                                                 </ul>
                                             </div>
                                         </div>
@@ -183,5 +191,40 @@
                 <!-- /.col-lg-8 -->
             </div><!-- /.row -->
             </div>  <!-- /.col-sm-12 -->
+{!! Form::open(['id' =>'form-solEndTask']) !!}
+{!! Form::close() !!}
+@endsection
+
+@section('script')
+
+    <script>
+
+        $(".solEndTask").click(function(){
+            var token = document.getElementsByName("_token")[0].value;
+            var datos=this.id;
+            var route="{{route('user.task.end')}}";
+            $.ajax({
+                url: route,
+                type: "POST",
+                headers: {'X-CSRF-TOKEN': token},
+                contentType: 'application/x-www-form-urlencoded',
+                data: {datos},
+                success: function(json) {
+                    console.log(json);
+                    $("#send").html(json.message);
+                    $("#msg-send").fadeIn();
+                },
+                error: function(json){
+                    console.log("Error al enviar id");
+                }
+            });
+        });
+
+//        function solEndTask(tak){
+//            $('meta[name=_token]').attr('content')
+
+//        }
+
+    </script>
 
 @endsection

@@ -12,6 +12,9 @@
 
     <div class="col-sm-12">
         @include('alert.success')
+        <div id="msg-send" class="alert alert-success alert-dismissible" role="alert" style="display: none">
+            <button type="button" class="close" data-dismiss="alert" aria-label="Close"><span aria-hidden="true">&times;</span></button>
+            <strong id="send"></strong></div>
         <div class="row">
             <div class="col-lg-12">
 
@@ -65,7 +68,12 @@
                                     <span class="label label-warning">Activa</span>
 
                                 @else
-                                    <span class="label label-success">Terminada</span>
+                                    @if ($task->end_day > $task->performance_day)
+                                        <span class="label label-danger">Terminada</span>
+                                    @else
+                                        <span class="label label-success">Terminada</span>
+                                    @endif
+
                                 @endif
                             </td>
 
@@ -79,8 +87,10 @@
                                 @endif
                                 <a href="" data-target="#modal-delete-{{ $task->id }}" data-toggle="modal" class="btn btn-xs btn-danger" data-placement="top" title="Elimminar"><i class="fa fa-trash" aria-hidden="true"></i>
                                 </a>
-                                    <a href="" class="btn btn-xs btn-primary" data-placement="top" title="Aprobar"><i class="fa fa-thumbs-up" aria-hidden="true"></i>
-                                    </a>
+                                    @if (!is_null($task->end_day) && ($task->state==0))
+                                        <a href="" id="{{$task->id}}" class="btn btn-xs btn-primary aprobEndTask" data-placement="top" title="Aprobar"><i class="fa fa-thumbs-up" aria-hidden="true"></i>
+                                        </a>
+                                    @endif
                             </td>
                         </tr>
                         @include('tasks.modal')
@@ -92,6 +102,8 @@
             </div>
         </div>
     </div>
+    {!! Form::open(['id' =>'form-taskEndAprob']) !!}
+    {!! Form::close() !!}
 @endsection
 
 @section('script')
@@ -148,6 +160,28 @@
 
             $(function () {
                 $(".tip1").tooltip()
+            });
+        });
+
+        $(".aprobEndTask").click(function(e){
+            e.preventDefault();
+            var token = document.getElementsByName("_token")[0].value;
+            var datos=this.id;
+            var route="{{route('user.task.end.aprob')}}";
+            $.ajax({
+                url: route,
+                type: "POST",
+                headers: {'X-CSRF-TOKEN': token},
+                contentType: 'application/x-www-form-urlencoded',
+                data: {datos},
+                success: function(json) {
+                    console.log(json);
+                    $("#send").html(json.message);
+                    $("#msg-send").fadeIn();
+                },
+                error: function(json){
+                    console.log("Error al enviar id");
+                }
             });
         });
     </script>

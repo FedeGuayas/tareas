@@ -16,6 +16,8 @@ use App\Events\UserCreated;
 use DB;
 use App\User;
 use App\Http\Requests\ChangePasswordRequest;
+use Illuminate\Support\Collection as Collection;
+
 
 
 class UsersController extends Controller
@@ -184,19 +186,11 @@ class UsersController extends Controller
      */
 
     public function getProfile(Request $request){
+        
+        
         $user=$request->user();
-       
-//        $data=[];
-//        foreach ($user->tasks as $task){
-//            $performance_day=$task->performance_day;
-//            $end=$task->end_day;
-//            $data[]=[
-//                'performance_day'=>$performance_day,
-//              'end'=>$end,
-//            ];
-//        }
 
-        $notifications = $user->getNotifications();
+        $notifications = $user->getNotifications(10, 'asc');
         $tasks=Task::where('user_id',$user->id)->paginate(5);
         $total=$user->tasks->count();//total de tareas
         $tasksOn=$user->tasks->where('state',0)->count();//tareas activas

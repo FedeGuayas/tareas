@@ -5,6 +5,7 @@ namespace App\Http\Controllers;
 use App\Event;
 
 use App\Events\TaskCreated;
+use App\Role;
 use App\Task;
 use App\User;
 use Illuminate\Http\Request;
@@ -17,6 +18,7 @@ use Auth;
 use Carbon\Carbon;
 use App\Http\Requests\TaskStoreRequest;
 use Fenos\Notifynder\Facades\Notifynder;
+use Illuminate\Support\Collection as Collection;
 
 use App\Http\Requests;
 
@@ -295,23 +297,75 @@ class TaskController extends Controller
 
 
     /**
-     * 
+     * Solicitud de terminio de tarea por parte del usuario
      * @param Request $request
      * @param $id
      */
-    public function userTaskEnd(Request $request,$id)
-    {
+    public function userTaskEnd(Request $request){
 
-        $receiver=User::where('id','>',0)->get();
-        dd($receiver);
+        $id=$request->get('datos');
+        if ($request->ajax()){
 
-        \Notifynder::category('task.new')
-        ->from($request->user())
-        ->to($receiver)
-        ->url('/user/tasks')
-        ->extra(['message' => 'Nueva tarea creada'])
-        ->expire(Carbon::now()->addMonth())
-        ->send();
+            $task=Task::findOrFail($id);
+            $task->end_day=Carbon::now();
+            $task->update();
+
+            //            $roles=Role::with('users')->where('name', 'supervisor')->get();
+            //usuarios con rol de supervisor
+            $receivers = User::whereHas('roles', function($q){
+                $q->where('name', 'supervisor');
+            })->get();
+
+            $sender=$request->user();
+
+//            //notificacion multiple a todos los supervisores
+        \Notifynder::loop($receivers, function(\Fenos\Notifynder\Builder\Builder $builder, $receiver) use ($sender) {
+            $builder->category('task.end.sol')// define the category to send
+            ->from($sender)
+                ->to($receiver)
+                ->url('/admin/tasks')
+                ->extra(['message' => 'Solicitud finalizar tarea'])
+                ->expire(Carbon::now()->addMonth());
+        })->send();
+
+
+
+            return response()->json(["message"=>"Solicitud de termino de tarea enviada"]);
+
+        }
+
+    }
+
+
+    /**
+     * Aprovacion de terminio de tarea por parte del supervisor
+     * @param Request $request
+     * @param $id
+     */
+    public function taskEndAprob(Request $request){
+
+        $id=$request->get('datos');
+        if ($request->ajax()){
+
+            $task=Task::findOrFail($id);
+            $task->state=1;
+            $task->update();
+
+            $user_id=$task->user_id;
+            $receiver=User::findOrFail($user_id);
+            $sender=$request->user();
+
+            //notificacion del sistema
+            \Notifynder::category('tasks.end.aprob')
+                ->from($sender)
+                ->to($receiver)
+                ->url('/user/tasks')
+                ->extra(['message' => 'Aprobada la finalizacion de la tarea'])
+                ->expire(Carbon::now()->addDays(3))
+                ->send();
+
+            return response()->json(["message"=>"Aprobación enviada"]);
+        }
 
     }
 
@@ -368,7 +422,8 @@ class TaskController extends Controller
             $message->subject('Nueva Tarea asignada');
             $message->to($receiver->email);
         });
-
     }
+
+
 
 }
