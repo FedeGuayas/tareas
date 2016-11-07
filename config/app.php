@@ -163,7 +163,8 @@ return [
         Zizaco\Entrust\EntrustServiceProvider::class,
         'App\Providers\ValidatorServiceProvider',
         Fenos\Notifynder\NotifynderServiceProvider::class,
-
+        Barryvdh\DomPDF\ServiceProvider::class,
+        Maatwebsite\Excel\ExcelServiceProvider::class,
     ],
 
     /*
@@ -216,6 +217,8 @@ return [
         'Html' => Collective\Html\HtmlFacade::class,
         'Entrust'   => Zizaco\Entrust\EntrustFacade::class,
         'Notifynder' => Fenos\Notifynder\Facades\Notifynder::class,
+        'PDF' => Barryvdh\DomPDF\Facade::class,
+        'Excel' => Maatwebsite\Excel\Facades\Excel::class,
     ],
 
 ];

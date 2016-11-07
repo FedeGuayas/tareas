@@ -32,12 +32,23 @@
                         </div>
 
                         <div class="form-group">
-                            <div class="col-md-6 col-md-offset-4">
-                                <button type="submit" class="btn btn-warning">
+                            <div class="col-md-8 col-lg-offset-4">
+                                <button type="submit" class="btn btn-success">
                                     <i class="fa fa-btn fa-envelope"></i> Link reestablecer contraseña
                                 </button>
+
+    <a href="{{url('login')}}">
+        {!! Form::button('<i class="fa fa-undo fa-fw"></i>Login',['class'=>'btn btn-primary pull-right']) !!}
+    </a>
+                                <div class="clearfix"></div>
+
+
                             </div>
+
+
+
                         </div>
+
                     </form>
                 </div>
             </div>

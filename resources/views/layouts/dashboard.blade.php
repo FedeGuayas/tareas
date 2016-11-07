@@ -205,17 +205,15 @@
                             <a href="#"><i class="fa fa-files-o" aria-hidden="true"></i> Reportes<span class="fa arrow"></span></a>
                             <ul class="nav nav-second-level">
                                 <li>
-                                    <a href="#!">Informe tipo 1</a>
+                                    <a href="{{route('admin.tasks.reports.users')}}">Tareas por trabajadores</a>
                                 </li>
                                 <li>
-                                    <a href="#!">Informe tipo 2</a>
-                                </li>
-                                <li>
-                                    <a href="#!">Informe tipo 3</a>
+                                    <a href="{{route('admin.reports.index')}}">Informe Excel</a>
                                 </li>
                             </ul>
                             <!-- /.nav-second-level -->
                         </li>
+
                         <li>
                             <a href="#"><i class="fa fa-cogs" aria-hidden="true"></i> Gestión<span class="fa arrow"></span></a>
                             <ul class="nav nav-second-level">
@@ -223,7 +221,10 @@
                                     <a href="#!">Areas <span class="fa arrow"></span></a>
                                     <ul class="nav nav-third-level">
                                         <li>
+                                            <!-- visible solo para el autorizado a crear area-->
+                                            @permission('create-area')
                                             <a href="{{route('admin.areas.create')}}">Nueva</a>
+                                            @endpermission
                                         </li>
                                         <li>
                                             <a href="{{route('admin.areas.index')}}">Todas</a>
@@ -236,7 +237,10 @@
                                     <a href="#"><i class="fa fa-users" aria-hidden="true"></i> Trabajadores <span class="fa arrow"></span></a>
                                     <ul class="nav nav-third-level">
                                         <li>
+                                            <!-- visible solo para el autorizado a crear usuarios-->
+                                            @permission('create-user')
                                             <a href="{{route('admin.users.create')}}">Nuevo</a>
+                                            @endpermission
                                         </li>
                                         <li>
                                             <a href="{{route('admin.users.index')}}">Todos</a>
@@ -274,8 +278,9 @@
                                     </ul>
                                     <!-- /.nav-third-level -->
                                 </li>
-
+                                @role('administrador')
                                 <li>
+
                                     <a href="#">Accesos <span class="fa arrow"></span></a>
                                     <ul class="nav nav-third-level">
                                         <li>
@@ -289,7 +294,9 @@
                                         </li>
                                     </ul>
                                     <!-- /.nav-third-level -->
+
                                 </li>
+                                @endrole
                             </ul>
                             <!-- /.nav-second-level -->
                         </li>

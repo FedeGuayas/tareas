@@ -79,8 +79,8 @@ class TaskController extends Controller
     public function store(TaskStoreRequest $request)
     {
 
-        //hacemos uso de las funciones para verificar el rol del usuario
-//        if(Auth::user()->hasRole('administrador')) {
+//        hacemos uso de las funciones para verificar el rol del usuario
+        if(Auth::user()->hasRole('supervisor')) {
         try {
             DB::beginTransaction();
 
@@ -188,10 +188,10 @@ class TaskController extends Controller
 //            $task->save();
 //            Session::flash('message', 'Tarea creada correctamente');
 //            return redirect()->route('admin.tasks.index');
-//        }else{
+        }else{
 //            //si el usuario no cumple con los requisitos, retornamos un error 403
-//            return abort(403);
-//        }
+            return abort(403);
+        }
 
         $receiver=User::findOrFail($task->user_id);
 
@@ -237,11 +237,9 @@ class TaskController extends Controller
     public function update(Request $request, $id)
     {
         $task = Task::findOrFail($id);
-
+        if(Auth::user()->hasRole(['supervisor'])){//verificamos los roles
         try {
             DB::beginTransaction();
-            
-//        if(Auth::user()->hasRole(['administrador','gestor'])){//verificamos los roles
 
             $task->task = $request->input('task');
             $task->description = $request->input('description');
@@ -277,9 +275,9 @@ class TaskController extends Controller
 
         Session::flash('message', 'Tarea actualizada correctamente');
         return redirect()->route('admin.tasks.index');
-//        } else{
-//            return "usted no tiene permisos para actualizar esta tarea";
-//        }
+        } else{
+            return "usted no tiene permisos para actualizar esta tarea";
+        }
     }
 
     /**
@@ -290,9 +288,13 @@ class TaskController extends Controller
     public function destroy($id)
     {
         $task=Task::findOrFail($id);
+        if(Auth::user()->hasRole('supervisor')){
         $task->delete();
         Session::flash('message_danger','Tarea eliminada');
         return redirect()->route('admin.tasks.index');
+        }else{
+            return "no estas autorizado para eliminar tareas";
+        }
     }
 
 
@@ -344,7 +346,9 @@ class TaskController extends Controller
      */
     public function taskEndAprob(Request $request){
 
+        if(Auth::user()->hasRole('supervisor')){
         $id=$request->get('datos');
+
         if ($request->ajax()){
 
             $task=Task::findOrFail($id);
@@ -365,6 +369,10 @@ class TaskController extends Controller
                 ->send();
 
             return response()->json(["message"=>"Aprobación enviada"]);
+        }
+        }else{
+            return response()->json(["message"=>"no estas autorizado para aprobar finalizacion de tareas"]);
+
         }
 
     }
