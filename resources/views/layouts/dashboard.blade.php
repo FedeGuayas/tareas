@@ -284,10 +284,10 @@
                                     <a href="#">Accesos <span class="fa arrow"></span></a>
                                     <ul class="nav nav-third-level">
                                         <li>
-                                            <a href="{{route('admin.roles.create')}}">Roles</a>
+                                            <a href="{{route('admin.roles.index')}}">Roles</a>
                                         </li>
                                         <li>
-                                            <a href="{{route('admin.permissions.create')}}">Permisos</a>
+                                            <a href="{{route('admin.permissions.index')}}">Permisos</a>
                                         </li>
                                         <li>
                                             <a href="{{route('admin.notifications.index')}}">Notificaciones</a>

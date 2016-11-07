@@ -10,79 +10,9 @@
             <!-- Main content -->
             <section class="content">
                 <div class="row">
-                    <div class="col-md-3">
-                        {{--Tareas externas--}}
-                        <div class="box box-solid">
-                            <div class="box-header with-border">
-                                <h4 class="box-title">Otras tareas</h4>
-                            </div>
-                            <div class="box-body">
-                                <!-- the events -->
-                                <div id="external-events">
-                                    <div class="external-event bg-success">Tarea 1</div>
-                                    <div class="external-event bg-warning">Tarea 2</div>
-                                    <div class="external-event bg-primary">Tarea 3</div>
-                                    <div class="external-event bg-danger">Tarea 4</div>
-                                    <div class="external-event bg-info">Tarea 5</div>
-                                    <div class="checkbox">
-                                        <label for="drop-remove">
-                                            <input type="checkbox" id="drop-remove">
-                                            Eliminar al asignar
-                                        </label>
-                                    </div>
-                                </div>
-                            </div><!-- /.box-body-->
-                        </div><!-- /. box-->
-                        {{--/.Tareas externas--}}
-                        <div class="box box-solid">
-                            <div class="box-header with-border">
-                                <h3 class="box-title">Crear tarea</h3>
-                            </div>
-                            <div class="box-body">
 
-                                <div class="btn-group" style="width: 100%; margin-bottom: 10px;">
-
-                                    <button type="button" class="btn btn-primary">Color estado</button>
-                                    <button type="button" id="color-chooser-btn" class="btn btn-primary dropdown-toggle" data-toggle="dropdown" aria-haspopup="true" aria-expanded="false">
-                                        <span class="caret"></span> <span class="sr-only">Toggle Dropdown</span></button>
-                                    <ul class="fc-color-picker dropdown-menu" id="color-chooser">
-                                        <li><a class="label-success" href="#"><i class="fa fa-arrow-circle-o-right"></i></a></li>
-                                        <li><a class="label-info" href="#"><i class="fa fa-arrow-circle-o-right"></i></a></li>
-                                        <li><a class="label-warning" href="#"><i class="fa fa-arrow-circle-o-right"></i></a></li>
-                                        <li><a class="label-danger" href="#"><i class="fa fa-arrow-circle-o-right"></i></a></li>
-                                        <li><a class="label-primary" href="#"><i class="fa fa-arrow-circle-o-right"></i></a></li>
-                                        {{--<li><a class="text-aqua" href="#"><i class="fa fa-square"></i></a></li>--}}
-                                        {{--<li><a class="text-blue" href="#"><i class="fa fa-square"></i></a></li>--}}
-                                        {{--<li><a class="text-light-blue" href="#"><i class="fa fa-square"></i></a></li>--}}
-                                        {{--<li><a class="text-teal" href="#"><i class="fa fa-square"></i></a></li>--}}
-                                        {{--<li><a class="text-yellow" href="#"><i class="fa fa-square"></i></a></li>--}}
-                                        {{--<li><a class="text-orange" href="#"><i class="fa fa-square"></i></a></li>--}}
-                                        {{--<li><a class="text-green" href="#"><i class="fa fa-square"></i></a></li>--}}
-                                        {{--<li><a class="text-lime" href="#"><i class="fa fa-square"></i></a></li>--}}
-                                        {{--<li><a class="text-red" href="#"><i class="fa fa-square"></i></a></li>--}}
-                                        {{--<li><a class="text-purple" href="#"><i class="fa fa-square"></i></a></li>--}}
-                                        {{--<li><a class="text-fuchsia" href="#"><i class="fa fa-square"></i></a></li>--}}
-                                        {{--<li><a class="text-muted" href="#"><i class="fa fa-square"></i></a></li>--}}
-                                        {{--<li><a class="text-navy" href="#"><i class="fa fa-square"></i></a></li>--}}
-                                    </ul>
-                                </div>
-                                <!-- /btn-group -->
-                                <div class="input-group">
-                                    <input id="new-event" type="text" class="form-control" placeholder="Titulo de evento">
-
-                                    <div class="input-group-btn">
-                                        <button id="add-new-event" type="button" class="btn btn-primary btn-flat">Agregar</button>
-                                    </div>
-                                    <!-- /btn-group -->
-                                </div><br/><br/>
-                                <!-- /input-group -->
-                                {!! Form::open(['id' =>'form-calendario']) !!}
-                                {!! Form::close() !!}
-                            </div>
-                        </div>
-                    </div>
                     <!-- /.col -->
-                    <div class="col-md-9">
+                    <div class="col-md-9 col-lg-offset-2">
                         <div class="box box-primary">
                             <div class="box-body no-padding">
                                 <!-- THE CALENDAR -->
@@ -99,7 +29,8 @@
             <!-- /.content -->
         </div><!-- /.panel-body -->
     </div><!-- /.panel -->
-
+    {!! Form::open(['id' =>'form-calendario']) !!}
+    {!! Form::close() !!}
 @section('script')
     <script>
         $(function () {
@@ -127,14 +58,14 @@
             }
 
             ini_events($('#external-events div.external-event'));
-
+//
             /* initialize the calendar
              -----------------------------------------------------------------*/
-            //Date for the calendar events (dummy data)
-            var date = new Date();
-            var     d = date.getDate(),
-                    m = date.getMonth(),
-                    y = date.getFullYear();
+//            //Date for the calendar events (dummy data)
+//            var date = new Date();
+//            var     d = date.getDate(),
+//                    m = date.getMonth(),
+//                    y = date.getFullYear();
             //while(reload==false){
 
             $('#calendar').fullCalendar({
@@ -166,6 +97,8 @@
                     day: 'dia'
                 },
                 displayEventEnd:true,
+
+                eventDurationEditable:true,
 
 //                weekends: false, // will hide Saturdays and Sundays
 
@@ -222,55 +155,81 @@
                 /*funciones*/
 
                 //actualiza en la bd al editar en el calendario un evento al cambiar su tamaño, llama al metodo update del controler
-                eventResize: function(event,delta) {
-                    var start = event.start.format("YYYY-MM-DD ");
-//                    var back=event.color;
-                    var task=event.task_id;
+                eventResize: function(event, delta, revertFunc) {
+                    var start = event.start.format("YYYY-MM-DD HH:MM");//inicio del evento = task sino es repetitivo
+                    var task_id=event.task_id; //task_id identifica a la tarea si no es repetitivo
+                    var id=event.id; //id del evento
+//                    var end=event.end; //fin evento = al performances_day si no es repetitivo
+                    var  start_day=event.start_day; //inicio de tarea= inicio de evento  sino es repetitivo
+                    var  performance_day=event.performance_day; //fin de tarea
+                    if(!event.allDay){
+                        var allDay = false;
+                        defaultTimedEventDuration: "00:30:00";
+                    }else {
+                        var allDay = true;
+                        defaultTimedEventDuration: "00:30:00";
+                    }
+
+                    var title=event.title; //igual al titulo de la tarea task
+                    var repeats=event.repeats; //para saber si es evento recurrente
 
 
                     //compruebo si el evento tiene fecha de fin
                     if(event.end){
-                        var end = event.end.format("YYYY-MM-DD");//le doy la fecha
-                    }else{var end="NULL"; //sino valor nulo para enviar algo al controlador y poder guaradarlo en la bd
+                        var end = event.end.format("YYYY-MM-DD HH:MM");
+                    }else{var end="NULL";
                     }
+                    var datos={start:start, task_id:task_id,  id:id , end:end, strat_day:start_day, performance_day:performance_day, title:title, repeats:repeats ,allDay:allDay}
                     crsfToken = document.getElementsByName("_token")[0].value;
                     $.ajax({
                         url: 'actualizaEventos',
-                        data: 'title='+ event.title+'&start='+ start +'&end='+ end +'&id='+ event.id+'&task_id='+task,
+                        data:datos,
+//                        'title='+ event.title+'&start='+ start +'&end='+ end +'&id='+ event.id+'&task_id='+task,
                         type: "POST",
                         headers: {
                             "X-CSRF-TOKEN": crsfToken
                         },
                         success: function(json) {
-                            console.log("Updated Successfully");
+                            console.log("Actualizado al resize");
                         },
                         error: function(json){
-                            console.log("Error al actualizar evento");
+                            console.log("Error al actualizar resize");
                         }
                     });
                 },
                 /*actualiza en la bd el evento al arrastarlo y cambiandolo de fecha dentro del calendario*/
                 eventDrop: function(event, delta) {
-                    var start = event.start.format("YYYY-MM-DD ");
+                    var start = event.start.format("YYYY-MM-DD HH:MM");//inicio del evento = task sino es repetitivo
+                    var task_id=event.task_id; //task_id identifica a la tarea si no es repetitivo
+                    var id=event.id; //id del evento
+//                    var end=event.end; //fin evento = al performances_day si no es repetitivo
+                    var  start_day=event.start_day; //inicio de tarea= inicio de evento  sino es repetitivo
+                    var  performance_day=event.performance_day; //fin de tarea
+                    var allDay = event.allDay;
+                    var title=event.title; //igual al titulo de la tarea task
+                    var repeats=event.repeats; //para saber si es evento recurrente
+
                     if(event.end){
-                        var end = event.end.format("YYYY-MM-DD ");
+                        var end = event.end.format("YYYY-MM-DD HH:MM");
                     }else{var end="NULL";
                     }
-//                    var back=event.color;
-                    var task=event.task_id;
+                    var datos={start:start, task_id:task_id,  id:id , end:end, strat_day:start_day, performance_day:performance_day, title:title, repeats:repeats}
+
+//
                     crsfToken = document.getElementsByName("_token")[0].value;
                     $.ajax({
                         url: 'actualizaEventos',
-                        data: 'title='+ event.title+'&start='+ start +'&end='+ end +'&id='+ event.id+'&task_id='+task,
+                        data: datos,
+//                        'title='+ event.title+'&start='+ start +'&end='+ end +'&id='+ event.id+'&task_id='+task,
                         type: "POST",
                         headers: {
                             "X-CSRF-TOKEN": crsfToken
                         },
                         success: function(json) {
-                            console.log(event.id);
+                            console.log('Actualizado al arrastrar ');
                         },
                         error: function(json){
-                            console.log("Error al actualizar eventdrop");
+                            console.log("Error al actualizar arrastrado");
                         }
                     });
                 },

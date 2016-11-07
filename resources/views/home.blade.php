@@ -2,7 +2,7 @@
 @section('page_heading','Administración de Tareas')
 @section('section')
 
-@section('section')
+
     <div class="panel panel-primary">
         <!-- Content Header (Page header) -->
         <div class="panel-heading"><h2>Calendario</h2></div>
@@ -44,11 +44,11 @@
 
             <!-- /.content -->
         </div><!-- /.panel-body -->
-        {!! Form::open(['id' =>'form-calendario']) !!}
-        {!! Form::close() !!}
+
     </div><!-- /.panel -->
     @include('callendar.modalInfo')
-
+    {!! Form::open(['id' =>'form-calendario']) !!}
+    {!! Form::close() !!}
 @endsection
 
 @section('script')
@@ -87,7 +87,7 @@
                         dow: [ 1,2,3,4,5], // Lunes, Martes, Miercoles, Jueves y Viernes
                         start: '09:00', // 9am
                         end: '18:00' // 6pm
-                    },
+                    }
 //                    {
 //                        dow: [6,7 ], //   Domingo Sabado
 //                        start: '10:00', // 10am
@@ -104,7 +104,7 @@
                     week: 'semana',
                     day: 'dia'
                 },
-//                displayEventEnd:true,
+                displayEventEnd:true,
 
 //                weekends: false, // will hide Saturdays and Sundays
 
@@ -159,7 +159,7 @@
                     $(this).css('z-index', 8);
                     $('.tooltipevent').remove();
                 },
-                //evento para eliminar una tarea al dar click sobre ella
+                //evento para mostrar info en ventana modal
                 eventClick: function (event, jsEvent, view) {
 
                     var start = (event.start.format("YYYY-MM-DD HH:mm"));
@@ -228,3 +228,7 @@
     </script>
 
 @endsection
+
+
+
+

@@ -2,8 +2,10 @@
 
 namespace App\Http\Controllers;
 
+use App\Area;
 use App\Task;
 use App\User;
+use Carbon\Carbon;
 use Illuminate\Http\Request;
 use DB;
 use App\Http\Requests;
@@ -171,20 +173,40 @@ dd($trabajador);
         $start = trim($request->get('start'));
         $end = trim($request->get('end'));
 
-        $tasks = DB::table('tasks as t')
-            ->join('users as u', 'u.id', '=', 't.user_id')
-            ->join('events as e', 'e.task_id', '=', 't.id')
-            ->select('t.task', 't.user_id', 't.start_day', 't.performance_day', 't.end_day', 't.state', 't.repeats',
-                't.repeats_freq','t.created_at',
-                'e.task_id','e.start','e.start','e.end','e.title','e.created_at',
-                'u.first_name','u.last_name','u.phone','u.email','u.activated')
-            ->where('start_day','>=',$start)
+        $tasks = Task::
+        where('start_day','>=',$start)
             ->where('performance_day','<=',$end)
-            ->orderBy('t.created_at')
-            ->get();
+            ->orderBy('created_at')
+            ->get();;
+        
+        $areas=Area::all();
+
+        $tasks->each(function ($tasks) {
+            $tasks->user;
+        });
+
+        $areas->each(function ($areas)  {
+            $areas->tasks;
+        });
+
+//        return view('tasks.index', ['tasks' => $tasks,'areas' => $areas]);
+      
+         
+
+//        $tasks = DB::table('tasks as t')
+//            ->join('users as u', 'u.id', '=', 't.user_id')
+//            ->join('events as e', 'e.task_id', '=', 't.id')
+//            ->select('t.task', 't.user_id', 't.start_day', 't.performance_day', 't.end_day', 't.state', 't.repeats',
+//                't.repeats_freq','t.created_at',
+//                'e.task_id','e.start','e.start','e.end','e.title','e.created_at',
+//                'u.first_name','u.last_name','u.phone','u.email','u.activated')
+//            ->where('start_day','>=',$start)
+//            ->where('performance_day','<=',$end)
+//            ->orderBy('t.created_at')
+//            ->get();
 
 
-        return view('reports.index-task',compact('tasks','start','end'));
+        return view('reports.index-task',compact('tasks','start','end','areas'));
     }
 
 
@@ -195,33 +217,59 @@ dd($trabajador);
         $start = trim($request->get('start'));
         $end = trim($request->get('end'));
 
-
-        $tasks = DB::table('tasks as t')
-            ->join('users as u', 'u.id', '=', 't.user_id')
-            ->join('events as e', 'e.task_id', '=', 't.id')
-            ->select('t.task', 't.user_id', 't.start_day', 't.performance_day', 't.end_day', 't.state', 't.repeats',
-                't.repeats_freq','t.created_at',
-                'e.task_id','e.start','e.start','e.end','e.title','e.created_at',
-                'u.first_name','u.last_name','u.phone','u.email','u.activated')
-            ->where('start_day','>=',$start)
+        $tasks = Task::
+            where('start_day','>=',$start)
             ->where('performance_day','<=',$end)
-            ->orderBy('t.created_at')
-            ->get();
+            ->orderBy('task')
+            ->get();;
 
+        $areas=Area::all();
 
+        $tasks->each(function ($tasks) {
+            $tasks->user;
+        });
 
-        $taskArray[] = ['Tarea', 'Nombre ', 'Apellidos'];
+        $areas->each(function ($areas)  {
+            $areas->tasks;
+        });
+
+        $taskArray[] = ['Trabajador','Area','Tarea', 'Inicio Tarea','Fin Planificado','Fin Real','Estado','Descripción'];
+
         foreach ($tasks as $task) {
+            if($task->state==0){
+                $estado='Activa';
+            }  else{
+                $estado='Terminada';}
+            
             $taskArray[] = [
-                'Tarea' => $task->task,
+                'trabajador' => $task->user->getFullName(),
+                'area'=> $task->user->area->area,
+                'tarea'=>   $task->task,
+                'inicio'=>$task->start_day,
+                'fin_p'=>$task->performance_day,
+                'fin_r'=>$task->end_day,
+                'estado'=> $estado,
+                'descripcion'=>$task->description,
             ];
         }
 
-        Excel::create('Tareas Excel', function ($excel) use ($taskArray) {
+        Excel::create('Tareas_Excel - '.Carbon::now().'', function ($excel) use ($taskArray) {
+
+
 
             $excel->sheet('Tareas', function ($sheet) use ($taskArray) {
 
-                $sheet->fromArray($taskArray);
+//                $sheet->setBorder('thin');
+                $sheet->setBorder('A1:H1', 'thin');
+
+                $sheet->cells('A1:H1', function($cells){
+//                   $cells->setBackground('#B2B2B2');
+                    $cells->setFontWeight('bold');
+                    $cells->setAlignment('center');
+                    $cells->setBorder('solid', 'solid', 'solid', 'solid');
+                });
+
+                $sheet->fromArray($taskArray,null,'A1',false,false);
 
             });
         })->export('xlsx');
@@ -229,8 +277,7 @@ dd($trabajador);
     }
     
     
-    
-    
+
 
 
 }

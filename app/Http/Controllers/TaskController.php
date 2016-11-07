@@ -80,7 +80,7 @@ class TaskController extends Controller
     {
 
 //        hacemos uso de las funciones para verificar el rol del usuario
-        if(Auth::user()->hasRole('supervisor')) {
+        if(Auth::user()->hasRole(['supervisor','administrador'])) {
         try {
             DB::beginTransaction();
 
@@ -93,16 +93,16 @@ class TaskController extends Controller
         $task->end_day = null;
         $task->state = false;//no terminada
         $task->user_id = $request->input('user_id');
-        $task->allDay = false;
         $task->color = "#d9edf7";//info tarea recien creada
         $repeats = $request->input('repeats');
         $weekday = date('N', strtotime($request->input('start_day')));
 
         if (!$repeats) {
-            // El usuario no marcó checkbox tarearecurrente
+            // El usuario no marcó checkbox tarea recurrente
             $task->repeats = 0;
             $task->repeats_freq = 0;
             $task->weekday=$weekday;
+            $task->allDay = false; //no resize en calendario
             $task->save();
             $event=new Event([
                 'start' =>$task->start_day,
@@ -118,6 +118,7 @@ class TaskController extends Controller
             $performance_day = $request->input('performance_day');
             $repeats = $request->input('repeats');
             $repeats_freq= $request->input('repeat-freq');
+            $task->allDay = true; //el evento ocupa all  dia por lo k se puede resuze en el calendario
 //            $until = (365/$repeats_freq);
 //            if ($repeats_freq == 1){ //diario
 //                $weekday = 0;
@@ -237,7 +238,7 @@ class TaskController extends Controller
     public function update(Request $request, $id)
     {
         $task = Task::findOrFail($id);
-        if(Auth::user()->hasRole(['supervisor'])){//verificamos los roles
+        if(Auth::user()->hasRole(['supervisor','administrador'])){//verificamos los roles
         try {
             DB::beginTransaction();
 

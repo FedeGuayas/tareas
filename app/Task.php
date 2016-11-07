@@ -44,6 +44,10 @@ class Task extends Model
         return $this->belongsTo('App\User');
     }
 
+    public function area(){
+        return $this->belongsTo('App\User');
+    }
+
     public function events(){
         return $this->hasMany('App\Event');
     }

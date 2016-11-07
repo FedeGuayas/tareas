@@ -40,15 +40,15 @@
                 </div>
                 <!-- /.row -->
             </section>
-
+            {!! Form::open(['id' =>'form-calendario']) !!}
+            {!! Form::close() !!}
             <!-- /.content -->
         </div><!-- /.panel-body -->
-        {!! Form::open(['id' =>'form-calendario']) !!}
-        {!! Form::close() !!}
-    </div><!-- /.panel -->
-    @include('callendar.modalInfo')
 
-@endsection
+    </div><!-- /.panel -->
+    {{--@include('callendar.modalInfo')--}}
+
+{{--@endsection--}}
 
 @section('script')
     <script>

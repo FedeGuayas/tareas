@@ -9,12 +9,10 @@
             @include('reports.task-search')
             <div class="col-sm-3">
                 <div class="form-group pull-right">
-{{--                    {!! Form::label('export','Exportar') !!}--}}
-
+                    {{--{!! Form::label('export','Exportar') !!}--}}
                         @include('reports.export-tasks')
                         {{--<a href="{{route('admin.tasks.reports.users.excel')}}"  class="btn btn-success" title="exportar"><i class="fa fa-file-excel-o" aria-hidden="true"></i>--}}
                         {{--</a>--}}
-
                 </div>
             </div>
             <div class="row">
@@ -25,32 +23,44 @@
                         <thead>
                         <tr>
                             {{--<th>id</th>--}}
-                            <th>Area</th>
+                            <th>Tarea</th>
                             <th>Trabajador</th>
-                            <th>Tareas</th>
-                            <th>Fecha Inicio</th>
-                            <th>Fecha termino</th>
+                            <th>Area</th>
+                            <th>Inicio</th>
+                            <th>Termino P</th>
+                            <th>Termino R</th>
+
                         </tr>
                         </thead>
                         <tfoot>
                         <tr>
                             {{--<th>id</th>--}}
-                            <th>Area</th>
+                            <th>Tarea</th>
                             <th>Trabajador</th>
-                            <th>Tareas</th>
-                            <th>Fecha Inicio</th>
-                            <th>Fecha termino</th>
+                            <th>Area</th>
+                            <th>Inicio</th>
+                            <th>Termino P</th>
+                            <th>Termino R</th>
+
                         </tr>
                         </tfoot>
                         <tbody>
                         @foreach($tasks as $task)
                             <tr>
-                                <td>area</td>
-                                <td>{{$task->user_id}}</td>
+                                {{--<td>{{$area->id}}</td>--}}
                                 <td>{{$task->task}}</td>
+                                <td>{{$task->user->getFullName()}}</td>
+                                <td>
+                                    @foreach($areas as $area)
+                                        {{-- $task->user->area_id //area del usuario--}}
+                                        @if ($task->user->area_id==$area->id)
+                                            {{$area->area}}<br>
+                                        @endif
+                                    @endforeach
+                                </td>
                                 <td>{{$task->start_day}}</td>
                                 <td>{{$task->performance_day}}</td>
-                            </tr>
+                                <td>{{$task->end_day}}</td>
                             @endforeach
                         </tbody>
                     </table>

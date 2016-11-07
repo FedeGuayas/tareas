@@ -47,16 +47,13 @@ Route::get('/', function(){
     return view('welcome');
 });
 
-
 //Calendario backend
 Route::get('/callendar',function(){
     return view('callendar.index');
 });
 
 //obtener json con los eventos
-Route::get('/getEvents{id?}',[
-    'uses'=>'EventController@index',
-    'as' => 'events.index'
+Route::get('getEvents{id?}',['uses'=>'EventController@index','as' => 'events.index'
 ]);
 
 //obtener json con datos para cargar en ventana modal en calendario
@@ -149,6 +146,7 @@ Route::group(['prefix'=>'admin'],function() {
         'uses'=>'ReportsController@getUsersTask',
         'as'=>'admin.tasks.reports.users'
     ]);
+    
     //exportar a excel reporte de un usuario
     Route::get('/tasks/reports/users/excel/',[
         'uses'=>'ReportsController@exportUsersTask',

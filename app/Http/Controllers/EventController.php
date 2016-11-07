@@ -5,6 +5,7 @@ namespace App\Http\Controllers;
 use App\Area;
 use App\Event;
 use App\Task;
+use Carbon\Carbon;
 use Illuminate\Http\Request;
 
 use App\Http\Requests;
@@ -27,10 +28,10 @@ class EventController extends Controller
         foreach ($events as $event) {
             $data[] = [
                 'id' => $event->id,
-//                'task' => $tevent->task->task,
+                'task' => $event->task->task,
                 'description' => $event->task->description,
-//                'start_day' => $event->task->start_day,
-//                'performance_day' => $event->task->performance_day,
+                'start_day' => $event->task->start_day,
+                'performance_day' => $event->task->performance_day,
                 'end_day' => $event->task->end_day,
                 'state' => $event->task->state,
                 'user_id' => $event->task->user->getFullName(),
@@ -47,12 +48,9 @@ class EventController extends Controller
                 "url" => "getEvents" . "/" . $event->id,
             ];
         }
-
         json_encode($data);
         return $data;
-
     }
-
 
     /**
      * Show the form for creating a new resource.
@@ -104,43 +102,56 @@ class EventController extends Controller
      * @param  int  $id
      * @return \Illuminate\Http\Response
      */
-    public function update()
+    public function update(Request $request)
     {
+        if ($request->ajax()) {
 
-        $id = $_POST['id'];
-        $title = $_POST['title'];
-        $start = $_POST['start'];
-        $end = $_POST['end'];
-        $task_id = $_POST['task_id'];
+            $event_id = $request->get('id');
+            $start_event = $request->get('start');
+            $start_day = $request->get('start_day');
+            $task_id = $request->get('task_id');
+            $end = $request->get('end');
+            $performance_day = $request->get('performance_day');
+            $title = $request->get('title');
+            $repeats = $request->get('repeats');
+//        $id = $_POST['id'];
+//        $title = $_POST['title'];
+//        $start = $_POST['start'];
+//        $end = $_POST['end'];
+//        $task_id = $_POST['task_id'];
 
-        $event=Event::findOrFail($id);
+            $event = Event::findOrFail($event_id);
 //        if($end=='NULL'){
 //            $evento->fechaFin='NULL'; //NULL sin comillas es para postgres
 //        }else{
 //            $evento->fechaFin=$end;
 //        }
-        $task = Task::findOrFail($task_id);
 
-        if ($task->repeats==0){
 
-            $task->start_day=$start;
-            $task->performnace_day=$end;
-            $task->update();
-            $event->start =$start;
-            $event->end=$end;
-            $event->task()->associate($task);
+            if ($repeats == 0) { //tarea unica sin evento recurrente
+
+                $task = Task::findOrFail($task_id);
+
+                $task->start_day = $start_day;
+                $task->performnace_day = $performance_day;
+//                 $task->update();
+                $event->start = $start_event;
+                $event->end = $end;
+                $event->updated_at = Carbon::now();
             $event->update();
 
-        }else {
+            } else {//evento recurrente
 
-            $event->start=$start;
-            $event->task_id=$task_id;
-            $event->title=$title;
-            $event->end=$end;
-            $event->update();
+                $event->start = $start_event;
+                $event->task_id = $task_id;
+                $event->title = $title;
+                $event->end = $end;
+                $event->update();
+            }
+
         }
-
     }
+
 
     /**
      * Remove the specified resource from storage.
@@ -163,10 +174,10 @@ class EventController extends Controller
     {
         $id = $_POST['id'];
 
-        $event = Event::findOrFail($id);
+        $event = Event::find($id);
 
         $task_id=$event->task_id;
-        $task=Task::findOrFail($task_id);
+        $task=Task::find($task_id);
 //        $user_id=$task->user;
 
         $user = $event->task->user;//responsable de la tarea

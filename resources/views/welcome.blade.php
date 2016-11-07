@@ -37,43 +37,43 @@
 
     <!-- jQuery -->
     <script src="{{asset('assets/landing/js/jquery.js')}}"></script>
-    <link href="{{asset('assets/stylesheets/go-top.css')}}" rel="stylesheet">
+{{--    <link href="{{asset('assets/stylesheets/go-top.css')}}" rel="stylesheet">--}}
 
-    <script type="text/javascript">
-        $(document).ready(function(){
+    {{--<script type="text/javascript">--}}
+        {{--$(document).ready(function(){--}}
 
-//            $('.go-top').on('click','.go-top',function(){
-//                $('.go-top').addClass('disabled');
-//                alert('ok');
-                //                    $('html, body').animate({ scrollTop: 0 }, 600);
-                //                    return false;
-//            });
+{{--//            $('.go-top').on('click','.go-top',function(){--}}
+{{--//                $('.go-top').addClass('disabled');--}}
+{{--//                alert('ok');--}}
+                {{--//                    $('html, body').animate({ scrollTop: 0 }, 600);--}}
+                {{--//                    return false;--}}
+{{--//            });--}}
 
-            $(window).scroll(function(){
-                if ($(this).scrollTop() > 250) {
-                    $('.go-top').slideDown(300);
-                    $('.go-top').on('click','.go-top',function(){
-                        $('html, body').animate({ scrollTop: 0 }, 600);
-                                            return false;
-                    });
+            {{--$(window).scroll(function(){--}}
+                {{--if ($(this).scrollTop() > 250) {--}}
+                    {{--$('.go-top').slideDown(300);--}}
+                    {{--$('.go-top').on('click','.go-top',function(){--}}
+                        {{--$('html, body').animate({ scrollTop: 0 }, 600);--}}
+                                            {{--return false;--}}
+                    {{--});--}}
 
-                } else {
-                    $('.go-top').slideUp(300);
-                }
-            });
-
-
-
-        });
+                {{--} else {--}}
+                    {{--$('.go-top').slideUp(300);--}}
+                {{--}--}}
+            {{--});--}}
 
 
-    </script>
+
+        {{--});--}}
+
+
+    {{--</script>--}}
 
 </head>
 
 <body>
 <!-- BackToTop Button -->
-<a href="#" class="go-top" title="Scroll to Top" style="display: none"><span></span></a>
+{{--<a href="#" class="go-top" title="Scroll to Top" style="display: none"><span></span></a>--}}
 
 <!-- Header -->
 <div class="intro-header">
@@ -163,7 +163,7 @@
 
 
 {{--modal info--}}
-@include('callendar.modalInfo')
+{{--@include('callendar.modalInfo')--}}
 
 
 
@@ -186,7 +186,6 @@
 
     $(function () {
 
-
         /* initialize the external events
          -----------------------------------------------------------------*/
         function ini_events(ele) {
@@ -199,6 +198,13 @@
 
                 // store the Event Object in the DOM element so we can get to it later
                 $(this).data('eventObject', eventObject);
+
+                // make the event draggable using jQuery UI
+                $(this).draggable({
+                    zIndex: 1070,
+                    revert: true, // will cause the event to go back to its
+                    revertDuration: 0  //  original position after the drag
+                });
 
             });
         }
@@ -237,13 +243,11 @@
                 week: 'semana',
                 day: 'dia'
             },
-//                displayEventEnd:true,
+                displayEventEnd:true,
 
 //                weekends: false, // will hide Saturdays and Sundays
 
-            events: {
-                url:"getEvents"
-            },
+            events: { url:"getEvents" },
 
             editable: false,//true para permitir editar en el calendario
 

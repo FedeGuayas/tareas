@@ -245,10 +245,11 @@ class UsersController extends Controller
     public  function roles($id)
     {
         $user=User::findOrFail($id);
-        $nombre=$user->person->first_name.' '.$user->person->last_name ;
+//        dd($user);
+        $nombre=$user->first_name.' '.$user->last_name ;
 //        $roles= [''=>'Seleccione roles'] + Role::lists('display_name', 'id')->all();
         $roles=Role::all();
-        return view('users.set-roles',compact('user','roles','nombre'));
+        return view('users.access.set-roles',compact('user','roles','nombre'));
     }
 
     /**
