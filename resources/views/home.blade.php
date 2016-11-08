@@ -112,6 +112,29 @@
                     url:"getEvents"
                 },
 
+//                eventRender: function (event, element, view)
+//                {
+//                    var date = new Date(); //this is your todays date
+//
+//                    if (event.start <= date)
+//                        $(element).css("backgroundColor", "red");
+//
+//                },
+                eventAfterRender: function (event, element, view) {
+                    var hoy = new Date();
+                    if (( event.end_day=='' || event.end_day=='NULL' ) ) {
+                        //event.color = "#FFB347"; //Em andamento
+                        element.css('background-color', '#d9534f');
+                    }
+                    else if (event.start < hoy && event.end < hoy) {
+                        //event.color = "#77DD77"; //Concluído OK
+                        element.css('background-color', '#5cb85c');
+                    }  else if (event.start > hoy && event.end > hoy) {
+                        //event.color = "#AEC6CF"; //Não iniciado
+                        element.css('background-color', '#AEC6CF');
+                    }
+                },
+
                 editable: false,//true para permitir editar en el calendario
 
                 /*funciones*/

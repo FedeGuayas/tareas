@@ -76,6 +76,7 @@
 
 
             $('#calendar').fullCalendar({
+
                 header: {
                     left: 'prev,next today',
                     center: 'title',
@@ -86,7 +87,7 @@
                         dow: [ 1,2,3,4,5], // Lunes, Martes, Miercoles, Jueves y Viernes
                         start: '09:00', // 9am
                         end: '18:00' // 6pm
-                    },
+                    }
 //                    {
 //                        dow: [6,7 ], //   Domingo Sabado
 //                        start: '10:00', // 10am
@@ -112,7 +113,6 @@
                 },
 
                 editable: false,//true para permitir editar en el calendario
-
                 /*funciones*/
 
                 //mostrar informacion del evento en un tooltip al pasar el mouse por encima
@@ -220,6 +220,7 @@
                         $('#calendar').fullCalendar('changeView', 'agendaDay');
                     }
                 }
+
                 /*end funciones*/
             });
 

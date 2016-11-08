@@ -331,8 +331,6 @@ class TaskController extends Controller
                 ->expire(Carbon::now()->addMonth());
         })->send();
 
-
-
             return response()->json(["message"=>"Solicitud de termino de tarea enviada"]);
 
         }
@@ -373,40 +371,10 @@ class TaskController extends Controller
         }
         }else{
             return response()->json(["message"=>"no estas autorizado para aprobar finalizacion de tareas"]);
-
         }
-
     }
 
-
-
-
-    /**
-     * Cargar datos del trabajador en la ventana modal en el calendario por ajax
-     */
-    public function getDataModal222()
-    {
-        $id = $_POST['id'];
-
-        $task = Task::findOrFail($id);
-        $person = $task->person;//responsable de la tarea
-        $asignadas = $person->tasks->count();//cantidad de tareas asignadas a este trabajador
-        $terminadas = Task::where('person_id', $person->id)
-            ->where('state', false)->count();
-        $pendientes = $asignadas - $terminadas;//tareas pendientes
-        $cumplimiento = round((($terminadas * 100) / $asignadas), 2);//%de tareas cumplidas
-
-        $data[] = [
-            'asignadas' => $asignadas,
-            'terminadas' => $terminadas,
-            'pendientes' => $pendientes,
-            'cumplimiento' => $cumplimiento
-        ];
-
-
-        return response()->json($data);
-    }
-
+   
     /**
      * Correo de notificacion de nueva tarea
      * @param $user

@@ -22,6 +22,7 @@ class EventController extends Controller
         $events = Event::all();
         $events->each(function ($events)  {
             $events->task;
+
         });
 
         $data = [];
