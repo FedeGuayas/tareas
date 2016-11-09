@@ -25,4 +25,5 @@ class Permission extends EntrustPermission
     protected $hidden = [
 
     ];
+
 }

@@ -270,18 +270,13 @@
                             <a href="#"><i class="fa fa-lock fa-fw" aria-hidden="true"></i> Administración<span class="fa arrow"></span></a>
                             <ul class="nav nav-second-level">
                                 <li>
-                                    <a href="#!">Usuarios <span class="fa arrow"></span></a>
-                                    <ul class="nav nav-third-level">
-                                        <li>
-                                            <a href="{{route('admin.users.index')}}">Todos</a>
-                                        </li>
-                                    </ul>
+                                    <a href="{{route('admin.users.index')}}"><i class="fa fa-user-secret fa-fw" aria-hidden="true"></i> Accesos Usuarios <span class="fa arrow"></span></a>
                                     <!-- /.nav-third-level -->
                                 </li>
                                 @role('administrador')
                                 <li>
 
-                                    <a href="#">Accesos <span class="fa arrow"></span></a>
+                                    <a href="#"><i class="fa fa-key fa-fw" aria-hidden="true"></i>Admin<span class="fa arrow"></span></a>
                                     <ul class="nav nav-third-level">
                                         <li>
                                             <a href="{{route('admin.roles.index')}}">Roles</a>

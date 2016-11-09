@@ -9,6 +9,13 @@ use App\Http\Requests;
 
 class PermissionsController extends Controller
 {
+    public function __construct()
+    {
+        $this->middleware('auth');
+        $this->middleware(['role:administrador']);
+    }
+
+
     /**
      * Display a listing of the resource.
      *

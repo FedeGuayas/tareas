@@ -7,14 +7,13 @@
 
     <div class="row">
         <div class="col l12 m12 s12">
-            {!! Form::open(['route'=>'admin.users.setroles', 'method'=>'POST']) !!}
-            {!! Form::hidden('user_id',$user->id) !!}
+            {!! Form::model($user,['route'=>['admin.users.setroles', $user->id], 'method'=>'PUT','role'=>'form']) !!}
             <table class="table table-striped table-bordered table-condensed table-hover highlight responsive-table">
                 <thead>
                     <th>Id</th>
                     <th>Add/Rem</th>
                     <th>Rol</th>
-                    <th>Descripcion</th>
+                    <th>Descripción</th>
                     <th>Permiso</th>
                 </thead>
                 @foreach ($roles as $rol)
@@ -32,7 +31,7 @@
                     </tr>
                 @endforeach
             </table><!--end table-responsive-->
-            {!! Form::button('Otorgar<i class="fa fa-play right"></i>', ['class'=>'btn waves-effect waves-light','type' => 'submit']) !!}
+            {!! Form::button('Actualizar<i class="fa fa-play right"></i>', ['class'=>'btn waves-effect waves-light','type' => 'submit']) !!}
             {!! Form::button('Cancelar<i class="fa fa-close right"></i>',['class'=>'btn waves-effect waves-light red darken-1','type' => 'reset']) !!}
             <a href="{{ route('admin.users.index') }}"  class="tooltipped" data-position="top" data-delay="50" data-tooltip="Regresar">
                 {!! Form::button('<i class="fa fa-undo"></i>',['class'=>'btn waves-effect waves-light darken-1']) !!}

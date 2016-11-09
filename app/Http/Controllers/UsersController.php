@@ -258,26 +258,19 @@ class UsersController extends Controller
      * $id de usuario
      *
      */
-    public  function setRoles(Request $request)
+    public  function setRoles(Request $request, $id)
     {
-        $user_id=$request->get('user_id');
-        $user=User::findOrFail($user_id);
+        $user=User::findOrFail($id);
         $roles=$request->get('roles');
 
         if ($roles) {
-            // El usuario marcó checkbox
-            foreach ($roles as $rol){
-                $user->attachRole($rol);
-            }
+            $user->roles()->sync($roles);
 
         } else {
             // El usuario no marcó checkbox
-            $user->detachRole($roles);
+//            $user->detachRole($roles);
         }
         return redirect()->route('admin.users.index');
     }
     
-
-
-
 }

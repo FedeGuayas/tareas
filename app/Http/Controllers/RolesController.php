@@ -10,6 +10,13 @@ use App\Http\Requests;
 
 class RolesController extends Controller
 {
+    public function __construct()
+    {
+        $this->middleware('auth');
+        $this->middleware(['role:administrador']);
+    }
+
+
 
     public function index(Request $request)
     {
@@ -17,7 +24,7 @@ class RolesController extends Controller
 //        if ($request){
         $roles=Role::all();
 //        }
-        
+
         return view('roles.index', compact('roles'));
     }
 
@@ -98,7 +105,7 @@ class RolesController extends Controller
     public function destroy($id)
     {
         $rol=Role::find($id);
-        
+
         $rol->delete;
 
         Session::flash('message','Rol eliminado');
@@ -108,33 +115,36 @@ class RolesController extends Controller
 
     public  function permisos($id)
     {
-        $rol=Role::find($id);
+        $rol=Role::findOrFail($id);
+        $role_perm = $rol->perms()->get();
 
-//        $roles= [''=>'Seleccione roles'] + Role::lists('display_name', 'id')->all();
-        $permisos=Permission::all();
+ $permisos=Permission::all();
+//        $perArray=[];
+//        for($i=0; $i<count($role_perm);$i++){
+//            $perArray[]=[
+//                'id'=>$role_perm[$i]['id']
+//            ];
+//        }
+//        foreach ($role_perm as $rp){
+//            $rp->id;
 
-        return view('roles.set-permisos',compact('rol','permisos'));
+        return view('roles.set-permisos',compact('rol','permisos','role_perm','perArray'));
     }
 
-    public  function setPermisos(Request $request)
+
+    public  function setPermisos(Request $request,$id)
     {
 
-        $rol_id=$request->get('rol_id');
-        $rol=Role::find($rol_id);
-        $permisos_id=$request->get('permisos');
+        $rol=Role::findOrFail($id);
+        $perm=$request->get('permisos');
 
-        if ($permisos_id) {
-            // El usuario marcó checkbox
-            foreach ($permisos_id as $per_id) {
-                $permiso=Permission::find($per_id);
-                $rol->attachPermission($permiso);
-            }
+
+        if ($perm) {
+            $rol->perms()->attach($perm);
 
         }
         else{
-
-            $rol->detachPermission($permisos_id);
-
+            $rol->detachPermission($perm);
         }
         return redirect()->route('admin.roles.index');
     }

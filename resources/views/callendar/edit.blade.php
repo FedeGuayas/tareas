@@ -13,6 +13,11 @@
 
                     <!-- /.col -->
                     <div class="col-md-9 col-lg-offset-2">
+                        @include('alert.success')
+                        <div id="msg-send-error" class="alert alert-danger alert-dismissible" role="alert" style="display: none">
+                            <button type="button" class="close" data-dismiss="alert" aria-label="Close"><span aria-hidden="true">&times;</span></button>
+                            <strong id="send"></strong>
+                        </div>
                         <div class="box box-primary">
                             <div class="box-body no-padding">
                                 <!-- THE CALENDAR -->
@@ -229,7 +234,9 @@
                             console.log('Actualizado al arrastrar ');
                         },
                         error: function(json){
-                            console.log("Error al actualizar arrastrado");
+//                            console.log("Error al actualizar arrastrado");
+                            $("#send").html(json.message);
+                            $("#msg-send-error").fadeIn();
                         }
                     });
                 },

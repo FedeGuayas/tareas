@@ -12,29 +12,6 @@
 */
 
 
-//Eventos FULLCalendario
-//Route::get('/verEventos',function(){
-//    return view('tasks.eventos');
-//});
-//
-//Route::post('/guardaEventos', [
-//    'uses' => 'CalendarController@create',
-//    'as' => 'guardaEventos'
-//]);
-//
-//Route::get('/cargaEventos{id?}',[
-//        'uses'=>'CalendarController@index',
-//        'as' => 'cargaEventos'
-//]);
-//
-//Route::post('/actualizaEventos','CalendarController@update');
-//Route::post('eliminaEvento','CalendarController@delete');
-
-
-
-/*OKKKKKKKKKKKKKKKK*/
-
-
 
 Route::auth();
 
@@ -169,12 +146,10 @@ Route::group(['prefix'=>'admin'],function() {
 });
 
 
-
-
 //asignar permisos a los roles
 Route::get('rol/{id}/permisos', ['as' => 'admin.roles.permisos','uses'=>'RolesController@permisos' ]);
-Route::post('rol/set-permisos', ['as' => 'admin.roles.setpermisos','uses'=>'RolesController@setPermisos' ]);
+Route::PUT('rol/{id}/set-permisos', ['as' => 'admin.roles.setpermisos','uses'=>'RolesController@setPermisos' ]);
 
 //adicionar roles a los usuarios
 Route::get('user/{id}/roles', ['as' => 'admin.users.roles','uses'=>'UsersController@roles' ]);
-Route::POST('user/setroles', ['as' => 'admin.users.setroles','uses'=>'UsersController@setRoles' ]);
+Route::PUT('user/{id}/setroles', ['as' => 'admin.users.setroles','uses'=>'UsersController@setRoles' ]);

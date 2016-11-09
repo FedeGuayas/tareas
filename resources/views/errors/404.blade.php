@@ -14,7 +14,7 @@
                 margin: 0;
                 padding: 0;
                 width: 100%;
-                color: #B0BEC5;
+                color: #07182b;
                 display: table;
                 font-weight: 100;
                 font-family: 'Lato';
@@ -38,10 +38,10 @@
         </style>
     </head>
     <body>
-        <div class="container">
-            <div class="content">
-                <div class="title">Error 404 !Objeto no encontrado.</div>
-            </div>
+    <div class="container">
+        <div class="content">
+            <div class="title">Error 404 !No encontrado.</div>
         </div>
+    </div>
     </body>
 </html>

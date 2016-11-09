@@ -1,19 +1,17 @@
 @extends('layouts.dashboard')
 
-@section('page_heading','Listado Roles')
+@section('page_heading','Roles')
 
 @section('section')
 
     <div class="row">
-        <div class="col l8 m8 s">
+        <div class="col-sm8 col-lg-offset-1">
             @include('alert.success')
-            <h4>Listado de Roles</h4>
-            {{-- @include('runner.usuarios.search')--}}
         </div>
     </div>
 
     <div class="row">
-        <div class="col s12">
+        <div class="col-sm-8 col-lg-offset-1">
             <div class="">
                 <a href="{{route('admin.roles.create')}}">
                     {!! Form::button('<i class="fa fa-plus fa-fw"></i>Crear',['class'=>'btn btn-success']) !!}
@@ -41,9 +39,6 @@
                                 {!! Form::button('<i class="fa fa-trash-o" ></i>',['class'=>'btn btn-xs btn-danger','data-target'=>"modal-delete-$rol->id"])!!}
                                 <a href="{{ route('admin.roles.edit', $rol->id ) }}">
                                     {!! Form::button('<i class="fa fa-pencil-square-o" ></i>',['class'=>'btn btn-xs btn-primary']) !!}
-                                </a>
-                                <a href="{{ route('admin.roles.show', $rol->id ) }}">
-                                    {!! Form::button('<i class="fa fa-eye fa-fw"></i>',['class'=>'btn btn-xs btn-info']) !!}
                                 </a>
                                 <a href="{{ route('admin.roles.permisos',$rol->id  ) }}">
                                     {!! Form::button('<i class="fa fa-key fa-fw"></i>',['class'=>'btn btn-xs btn-success']) !!}

@@ -26,4 +26,6 @@ class Role extends EntrustRole
     protected $hidden = [
 
     ];
+    
+   
 }

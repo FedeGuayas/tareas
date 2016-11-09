@@ -7,13 +7,26 @@ use App\Event;
 use App\Task;
 use Carbon\Carbon;
 use Illuminate\Http\Request;
-
+use Session;
 use App\Http\Requests;
+use Illuminate\Support\Facades\Auth;
 
 class EventController extends Controller
 {
+    public function __construct()
+    {
+        $this->middleware('auth',['except'=>['index','getDataModal']]);
+        $this->middleware(['role:supervisor'],['only'=>['update','destroy']]);
+
+    }
+
+    
+
+
+
+    
     /**
-     * Cragos todos los datos en un json para mostrarlos en el calendario por Ajax
+     * Cargo todos los datos en un json para mostrarlos en el calendario por Ajax
      *
      * @return \Illuminate\Http\Response
      */
@@ -105,23 +118,27 @@ class EventController extends Controller
      */
     public function update(Request $request)
     {
+
         if ($request->ajax()) {
 
-            $event_id = $request->get('id');
-            $start_event = $request->get('start');
-            $start_day = $request->get('start_day');
-            $task_id = $request->get('task_id');
-            $end = $request->get('end');
-            $performance_day = $request->get('performance_day');
-            $title = $request->get('title');
-            $repeats = $request->get('repeats');
+            if (Auth::user()->can('edit-tasks')) {
+
+
+                $event_id = $request->get('id');
+                $start_event = $request->get('start');
+                $start_day = $request->get('start_day');
+                $task_id = $request->get('task_id');
+                $end = $request->get('end');
+                $performance_day = $request->get('performance_day');
+                $title = $request->get('title');
+                $repeats = $request->get('repeats');
 //        $id = $_POST['id'];
 //        $title = $_POST['title'];
 //        $start = $_POST['start'];
 //        $end = $_POST['end'];
 //        $task_id = $_POST['task_id'];
 
-            $event = Event::findOrFail($event_id);
+                $event = Event::findOrFail($event_id);
 //        if($end=='NULL'){
 //            $evento->fechaFin='NULL'; //NULL sin comillas es para postgres
 //        }else{
@@ -129,27 +146,28 @@ class EventController extends Controller
 //        }
 
 
-            if ($repeats == 0) { //tarea unica sin evento recurrente
+                if ($repeats == 0) { //tarea unica sin evento recurrente
 
-                $task = Task::findOrFail($task_id);
+                    $task = Task::findOrFail($task_id);
 
-                $task->start_day = $start_day;
-                $task->performnace_day = $performance_day;
+                    $task->start_day = $start_day;
+                    $task->performnace_day = $performance_day;
 //                 $task->update();
-                $event->start = $start_event;
-                $event->end = $end;
-                $event->updated_at = Carbon::now();
-            $event->update();
+                    $event->start = $start_event;
+                    $event->end = $end;
+                    $event->updated_at = Carbon::now();
+                    $event->update();
 
-            } else {//evento recurrente
+                } else {//evento recurrente
 
-                $event->start = $start_event;
-                $event->task_id = $task_id;
-                $event->title = $title;
-                $event->end = $end;
-                $event->update();
+                    $event->start = $start_event;
+                    $event->task_id = $task_id;
+                    $event->title = $title;
+                    $event->end = $end;
+                    $event->update();
+                }
+
             }
-
         }
     }
 
@@ -162,11 +180,22 @@ class EventController extends Controller
      */
     public function destroy()
     {
-        $id = $_POST['id'];
-        $event=Event::findOrFail($id);
-        $event->delete();
-        return redirect()->route('admin.calendar.edit');
+        if (Auth::user()->can('delete-task')) {
+
+
+            $id = $_POST['id'];
+            $event = Event::findOrFail($id);
+            $event->delete();
+//        return redirect()->route('admin.calendar.edit');
+            return response()->json(["message"=>"Se elimino el evento"]);
+        }else{
+            return response()->json(["message"=>"No estas autorizado eliminar tareas"]);
+        }
+//            Session::flash('message_danger','No esta autorizado a eliminar tareas');
     }
+//        
+
+
 
     /**
      * Cargar datos del trabajador en la ventana modal en el calendario por ajax

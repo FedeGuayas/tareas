@@ -12,6 +12,12 @@ use Carbon\Carbon;
 
 class NotificationController extends Controller
 {
+    public function __construct()
+    {
+        $this->middleware('auth');
+        $this->middleware(['role:administrador'],['except'=>['getIndex','getRead']]);
+    }
+
     /**
      * Display a listing of the resource.
      *
@@ -134,12 +140,13 @@ class NotificationController extends Controller
            }
         });
 
-
-
         return view('notifications.user.index',compact('user', 'notifications'));
     }
 
-    //voy a la url y la marco como leida
+    /** El usuario va a la url y marca la notificacion como leida
+     * @param Notification $notification
+     * @return mixed
+     */
     public function getRead(Notification $notification)
     {
         $notification::where('id',$notification->getKey())
@@ -151,8 +158,10 @@ class NotificationController extends Controller
         return redirect()->to($notification->url);
     }
 
-    
-    public function noti(){
+    /**
+     * Test
+     */
+    public function notiAsxderdd(){
 
         $user = Auth::user();
         $notifications = $user->getNotifications(null, 'asc'); // all notifactions asc ordered by created_at

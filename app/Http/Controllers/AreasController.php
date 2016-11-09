@@ -13,6 +13,11 @@ use Session;
 
 class AreasController extends Controller
 {
+    public function __construct()
+    {
+        $this->middleware('auth');
+        $this->middleware(['role:supervisor']);
+    }
     /**
      * Display a listing of the resource.
      *
