@@ -22,7 +22,7 @@ class UserSeeder extends Seeder
             'password' => bcrypt('admin'),
             'activated'=>true,
         ]);
-        factory(App\User::class,20)->create();
+//        factory(App\User::class,20)->create();
         
     }
 }

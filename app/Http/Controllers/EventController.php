@@ -39,19 +39,19 @@ class EventController extends Controller
         foreach ($events as $event) {
             $data[] = [
                 'id' => $event->id,
-                'task' => $event->task['task'],
-                'description' => $event->task['description'],
-                'start_day' => $event->task['start_day'],
+                'task' => $event->task->task,
+                'description' => $event->task->description,
+                'start_day' => $event->task->start_day,
                 'performance_day' => $event->task->performance_day,
                 'end_day' => $event->task->end_day,
-                'state' => $event->task['state'],
-//                'user_id' => $event->task->user->getFullName(),
-                'allDay' => $event->task['allDay'],
-                'color' => $event->task['color'],
-                'weekday' => $event->task['weekday'],
-                'repeats'=>$event->task['repeats'],
-                'repeats_freq'=>$event->task['repeats_freq'],
-//                'area'=>$event->task->user->area->area,
+                'state' => $event->task->state,
+                'user_id' => $event->task->user->getFullName(),
+                'allDay' => $event->task->allDay,
+                'color' => $event->task->color,
+                'weekday' => $event->task->weekday,
+                'repeats'=>$event->task->repeats,
+                'repeats_freq'=>$event->task->repeats_freq,
+                'area'=>$event->task->user->area->area,
                 'task_id'=>$event->task_id,
                 'title'=>$event->title,
                 'start'=>$event->start,
@@ -59,6 +59,7 @@ class EventController extends Controller
                 "url" => "getEvents" . "/" . $event->id,
             ];
         }
+
         json_encode($data);
         return $data;
     }
