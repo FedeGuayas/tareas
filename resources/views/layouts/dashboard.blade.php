@@ -266,6 +266,7 @@
                             </ul>
                             <!-- /.nav-second-level -->
                         </li>
+                        @role('administrador')
                         <li>
                             <a href="#"><i class="fa fa-lock fa-fw" aria-hidden="true"></i> Administración<span class="fa arrow"></span></a>
                             <ul class="nav nav-second-level">
@@ -273,7 +274,7 @@
                                     <a href="{{route('admin.users.index')}}"><i class="fa fa-user-secret fa-fw" aria-hidden="true"></i> Accesos Usuarios <span class="fa arrow"></span></a>
                                     <!-- /.nav-third-level -->
                                 </li>
-                                @role('administrador')
+
                                 <li>
 
                                     <a href="#"><i class="fa fa-key fa-fw" aria-hidden="true"></i>Admin<span class="fa arrow"></span></a>
@@ -291,10 +292,11 @@
                                     <!-- /.nav-third-level -->
 
                                 </li>
-                                @endrole
+
                             </ul>
                             <!-- /.nav-second-level -->
                         </li>
+                        @endrole
                         {{--<li {{ (Request::is('*documentation') ? 'class="active"' : '') }}>--}}
                             {{--<a href="{{ url ('documentation') }}"><i class="fa fa-file-word-o fa-fw"></i> Documentation</a>--}}
                         {{--</li>--}}

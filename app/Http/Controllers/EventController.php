@@ -16,15 +16,11 @@ class EventController extends Controller
     public function __construct()
     {
         $this->middleware('auth',['except'=>['index','getDataModal']]);
-        $this->middleware(['role:supervisor'],['only'=>['update','destroy']]);
+        $this->middleware(['role:supervisor|administrador'],['only'=>['update','destroy']]);
 
     }
 
-    
 
-
-
-    
     /**
      * Cargo todos los datos en un json para mostrarlos en el calendario por Ajax
      *
@@ -33,6 +29,7 @@ class EventController extends Controller
     public function index()
     {
         $events = Event::all();
+
         $events->each(function ($events)  {
             $events->task;
 
@@ -42,19 +39,19 @@ class EventController extends Controller
         foreach ($events as $event) {
             $data[] = [
                 'id' => $event->id,
-                'task' => $event->task->task,
-                'description' => $event->task->description,
-                'start_day' => $event->task->start_day,
+                'task' => $event->task['task'],
+                'description' => $event->task['description'],
+                'start_day' => $event->task['start_day'],
                 'performance_day' => $event->task->performance_day,
                 'end_day' => $event->task->end_day,
-                'state' => $event->task->state,
-                'user_id' => $event->task->user->getFullName(),
-                'allDay' => $event->task->allDay,
-                'color' => $event->task->color,
-                'weekday' => $event->task->weekday,
-                'repeats'=>$event->task->repeats,
-                'repeats_freq'=>$event->task->repeats_freq,
-                'area'=>$event->task->user->area->area,
+                'state' => $event->task['state'],
+//                'user_id' => $event->task->user->getFullName(),
+                'allDay' => $event->task['allDay'],
+                'color' => $event->task['color'],
+                'weekday' => $event->task['weekday'],
+                'repeats'=>$event->task['repeats'],
+                'repeats_freq'=>$event->task['repeats_freq'],
+//                'area'=>$event->task->user->area->area,
                 'task_id'=>$event->task_id,
                 'title'=>$event->title,
                 'start'=>$event->start,
@@ -121,7 +118,7 @@ class EventController extends Controller
 
         if ($request->ajax()) {
 
-            if (Auth::user()->can('edit-tasks')) {
+            if (Auth::user()->can('edit-task')) {
 
 
                 $event_id = $request->get('id');

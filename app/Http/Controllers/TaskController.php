@@ -394,7 +394,7 @@ class TaskController extends Controller
 //        });
 
 
-        Mail::later(60,'emails.new_task', ['sender' => $sender,'receiver'=>$receiver,'task'=>$task], function ($message) use ($receiver){
+        Mail::send('emails.new_task', ['sender' => $sender,'receiver'=>$receiver,'task'=>$task], function ($message) use ($receiver){
             $message->from('admin@fedeguayas.com.ec', 'Gestion de Tareas');
             $message->subject('Nueva Tarea asignada');
             $message->to($receiver->email);

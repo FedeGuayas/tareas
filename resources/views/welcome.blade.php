@@ -142,10 +142,11 @@
                                         </div>
                                         <div class="box-body">
                                             <ul class="list-group">
-                                                <li class="list-group-item"><h4><i style="color: #337ab7;" class="fa fa-square" aria-hidden="true"></i> Tareas asignada</h4></li>
-                                                <li class="list-group-item"><h4><i style="color: #5cb85c;" class="fa fa-square" aria-hidden="true"></i> Tareas terminadas</h4></li>
-                                                <li class="list-group-item"><h4><i style="color: #f0ad4e;" class="fa fa-square" aria-hidden="true"></i> Próximas a vencer</h4></li>
-                                                <li class="list-group-item"><h4><i style="color: #d9534f;" class="fa fa-square" aria-hidden="true"></i> Tareas incumplidas</h4></li>
+                                                <li class="list-group-item"><h5><i style="color: #46b8da;" class="fa fa-square" aria-hidden="true"></i> En curso</h5></li>
+                                                <li class="list-group-item"><h5><i style="color: #5cb85c;" class="fa fa-square" aria-hidden="true"></i> Terminada en Tiempo</h5></li>
+                                                <li class="list-group-item"><h5><i style="color: #f0ad4e;" class="fa fa-square" aria-hidden="true"></i> Terminada fuera de término</h5></li>
+                                                <li class="list-group-item"><h5><i style="color: #d9534f;" class="fa fa-square" aria-hidden="true"></i> Tareas incumplidas</h5></li>
+                                                <li class="list-group-item"><h5><i style="color: #286090;" class="fa fa-square" aria-hidden="true"></i> No iniciada</h5></li>
                                             </ul>
                                         </div><!-- /.box-body-->
                                     </div><!-- /. box-->
@@ -248,6 +249,42 @@
 //                weekends: false, // will hide Saturdays and Sundays
 
             events: { url:"getEvents" },
+            eventAfterRender: function (event, element, view) {
+                var hoy = new Date();
+
+                if ((event.start<hoy && event.end>hoy) && ( event.end_day=='' || event.end_day=='NULL' ) ) {
+                    //en curso info
+                    element.css('background-color', '#46b8da');
+                    //event.color = "#FFB347";
+                }
+
+                else if ((event.start<hoy && event.end>hoy) && ( !(event.end_day == 'NULL') && (event.end_day<=event.end)) ) {
+                    //terminada en tiempo success
+                    element.css('background-color', '#3c763d');
+                    //event.color = "#FFB347"; //n curso
+                }else if ((event.start < hoy && event.end < hoy) && ( !(event.end_day == 'NULL') && (event.end_day<=event.end))){
+                    //Concluído OK success
+                    //event.color = "#77DD77";
+                    element.css('background-color', '#3c763d');
+                }else if ((event.start < hoy && event.end < hoy) && ( !(event.end_day == 'NULL') && (event.end_day>event.end))) {
+                    //Concluído fuera de termino warning
+                    //event.color = "#AEC6CF";
+                    element.css('background-color', '#ec971f');
+                }
+
+                else if ((event.start < hoy && event.end < hoy) && ( ( event.end_day=='' || event.end_day=='NULL' ) )) {
+                    //Incumplida danger
+                    //event.color = "#AEC6CF";
+                    element.css('background-color', '#d9534f');
+                }
+
+                else if ((event.start>hoy && event.end>hoy)) {
+                    //No iniciada primary
+                    element.css('background-color', '#286090');
+                    //event.color = "#FFB347"; //n curso
+                }
+
+            },
 
             editable: false,//true para permitir editar en el calendario
 
