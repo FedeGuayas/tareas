@@ -92,15 +92,14 @@ Route::group(['prefix'=>'user'],function(){
 
         //leer una notificacion marcandola como leida
         Route::get('/notifications{notification}', ['uses'=>'NotificationController@getRead','as'=>'user.notifications.read']);
-        
+
+        //eliminar una notificacion 
+        Route::get('/notifications/{id}', ['uses'=>'NotificationController@notifyUserDelete','as'=>'user.notification.destroy']);
         
     });
 
 
 });
-
-
-
 
 
 Route::group(['prefix'=>'admin'],function() {

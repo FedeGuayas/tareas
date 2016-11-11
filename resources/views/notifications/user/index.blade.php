@@ -16,7 +16,9 @@
                         <th>De</th>
                         <th>Notificación</th>
                         <th>Fecha Notificación</th>
-                        <th>Ir a Tarea</th>
+                        <th>Estado</th>
+                        <th>Tareas</th>
+                        <th>Acción</th>
                     </tr>
                     </thead>
                     <tfoot>
@@ -25,7 +27,9 @@
                         <th>De</th>
                         <th>Notificación</th>
                         <th>Fecha Notificación</th>
-                        <th>Ir a Tarea</th>
+                        <th>Estado</th>
+                        <th>Tareas</th>
+                        <th>Acción</th>
                     </tr>
                     </tfoot>
                     <tbody>
@@ -35,13 +39,22 @@
                             <td>{{$notifi->text}}</td>
                             <td>{{$notifi->created_at}}</td>
                             <td>
-                                dd
+                                @if ($notifi->read)
+                                    <span class="label label-success">Leida</span>
+                                @else
+                                    <span class="label label-warning">Nueva</span>
+                                @endif
                             </td>
-                            {{--<td>--}}
-                                {{--<a href="{{ route('admin.notifications.edit', $notifi->id )}}" class="btn btn-xs btn-warning tip" data-placement="top" title="Editar"><i class="fa fa-pencil" aria-hidden="true"></i>--}}
-                                {{--</a>--}}
+                            <td>
+                                <a href="{{ $notifi->url }}" class="btn btn-xs btn-primary tip" data-placement="top" title="Tarea"><i class="fa fa-tasks" aria-hidden="true"></i>
+                                </a>
 
-                            {{--</td>--}}
+                            </td>
+                            <td>
+                                <a href="{{ route('user.notification.destroy',$notifi->id)}}" class="btn btn-xs btn-danger tip" data-placement="top" title="Eliminar"><i class="fa fa-trash" aria-hidden="true"></i>
+                                </a>
+
+                            </td>
                         </tr>
 
                     @endforeach

@@ -84,7 +84,6 @@ class TaskController extends Controller
         try {
             DB::beginTransaction();
 
-
         $task = new Task;
         $task->task = $request->input('task');
         $task->description = $request->input('description');
@@ -185,7 +184,6 @@ class TaskController extends Controller
             Session::flash('message_danger','Error'.$e->getMessage());
             return redirect()->route('admin.tasks.create');
         }
-
 //            $task->save();
 //            Session::flash('message', 'Tarea creada correctamente');
 //            return redirect()->route('admin.tasks.index');
@@ -224,7 +222,7 @@ class TaskController extends Controller
         $task = Task::findOrFail($id);
         $areas_coll = Area::all();
         $list_areas = $areas_coll->pluck('area', 'id');
-            return view('tasks.edit', ['task' => $task, 'areas' => $list_areas]);
+        return view('tasks.edit', ['task' => $task, 'areas' => $list_areas]);
     }
 
 
@@ -313,7 +311,7 @@ class TaskController extends Controller
             $task->end_day=Carbon::now();
             $task->update();
 
-            //            $roles=Role::with('users')->where('name', 'supervisor')->get();
+            //$roles=Role::with('users')->where('name', 'supervisor')->get();
             //usuarios con rol de supervisor
             $receivers = User::whereHas('roles', function($q){
                 $q->where('name', 'supervisor');
@@ -398,7 +396,6 @@ class TaskController extends Controller
             $message->to($receiver->email);
         });
     }
-
-
-
+    
+    
 }

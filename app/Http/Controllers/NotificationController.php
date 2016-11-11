@@ -15,7 +15,7 @@ class NotificationController extends Controller
     public function __construct()
     {
         $this->middleware('auth');
-        $this->middleware(['role:administrador'],['except'=>['getIndex','getRead']]);
+        $this->middleware(['role:administrador'],['except'=>['getIndex','getRead','notifyUserDelete']]);
     }
 
     /**
@@ -114,12 +114,18 @@ class NotificationController extends Controller
         $notification=NotificationCategory::findOrFail($id);
         $notification->delete();
         Session::flash('message','Se elimino la notificacion');
-
-        return redirect()->route('admin.notifications.index');
+        return redirect()->back();
     }
-    
-    
-    
+
+    public function notifyUserDelete($id)
+    {
+        $notification=Notification::findOrFail($id);
+        $notification->delete();
+        Session::flash('message','Se elimino la notificacion');
+        return redirect()->route('user.notifications.all');
+    }
+
+
     /**
      * Ver todas las notificaciones del usuario
      */
@@ -128,17 +134,19 @@ class NotificationController extends Controller
 
         $user = Auth::user();
         //todas las notificaciones que no han expirado, y ordenadas por estado de si se han leido o no lectura
-        $notifications = $user->getNotificationRelation()//->where('category_id', 2) por categoria
+        $notifications = $user->getNotificationRelation()//->where('category_id', ) //por categori
             ->where(function($query) {
                 $query->whereNull('expires_at')->orWhere('expires_at', '>=', Carbon::now());
             })->orderBy('read', 'asc')->get();
 
-        //eliminar las notificaciones expiradas de la bd
-        $notifications->each(function($notification){
-           if ($notification->expires_at <= Carbon::now()){
-               $notification->delete();
+        //eliminar las notificaciones del usuario expiradas de la bd
+        $notiAll=$user->getNotifications();
+        $notiAll->each(function($notiAll){
+           if ($notiAll->expires_at <= Carbon::now()){
+               $notiAll->delete();
            }
         });
+
 
         return view('notifications.user.index',compact('user', 'notifications'));
     }

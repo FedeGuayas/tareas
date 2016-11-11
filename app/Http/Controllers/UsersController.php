@@ -19,7 +19,6 @@ use App\Http\Requests\ChangePasswordRequest;
 use Illuminate\Support\Collection as Collection;
 
 
-
 class UsersController extends Controller
 {
     public function __construct()
@@ -230,8 +229,27 @@ class UsersController extends Controller
 
     public function  userTasks(Request $request){
         $user=$request->user();
-        $tasks=$user->tasks;
+        $dt=Carbon::now();
+        $ano=$dt->year;
+        $mes=$dt->month;
 
+        $inicioMes=$dt->firstOfMonth()->toDateString();
+        $finMes=$dt->lastOfMonth()->toDateString();
+
+        //eventos del mes
+        $tasks=\App\Event::
+            join('tasks as t','t.id','=','e.task_id',' as e')
+            ->where([
+                ['start', '<', $finMes],
+                ['start', '>',  $inicioMes]
+            ])
+            ->get();
+
+//        $tasks=$user->tasks;
+//        $tasks->each(function($tasks){
+//            $tasks->events;
+//        });
+        
         return view('users.profile.task',compact('tasks'));
     }
 

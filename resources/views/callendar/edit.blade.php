@@ -19,6 +19,12 @@
                                         aria-hidden="true">&times;</span></button>
                             <strong id="send"></strong>
                         </div>
+                        <div id="msg-send-success" class="alert alert-success alert-dismissible" role="alert"
+                             style="display: none">
+                            <button type="button" class="close" data-dismiss="alert" aria-label="Close"><span
+                                        aria-hidden="true">&times;</span></button>
+                            <strong id="sendok"></strong>
+                        </div>
                         <div class="box box-primary">
                             <div class="box-body no-padding">
                                 <!-- THE CALENDAR -->
@@ -318,22 +324,25 @@
                         repeats: repeats
                     }
 
-//
                     crsfToken = document.getElementsByName("_token")[0].value;
                     $.ajax({
                         url: 'actualizaEventos',
                         data: datos,
 //                        'title='+ event.title+'&start='+ start +'&end='+ end +'&id='+ event.id+'&task_id='+task,
                         type: "POST",
+//                        contentType: 'application/x-www-form-urlencoded',
                         headers: {
                             "X-CSRF-TOKEN": crsfToken
                         },
+
                         success: function (json) {
                             console.log('Actualizado al arrastrar ');
+                            $("#sendok").html("Evento actualizado");
+                            $("#msg-send-success").fadeIn();
                         },
                         error: function (json) {
-//                            console.log("Error al actualizar arrastrado");
-                            $("#send").html(json.message);
+                            console.log("Error al actualizar arrastrado");
+                            $("#send").html("Este tipo de evento no puede ser actualizado en el calendario");
                             $("#msg-send-error").fadeIn();
                         }
                     });
@@ -397,6 +406,7 @@
 
                     crsfToken = document.getElementsByName("_token")[0].value;
                     var con = confirm("Esta seguro que desea eliminar el evento");
+
                     if (con) {
                         $.ajax({
                             url: 'eliminaEvento',

@@ -116,7 +116,7 @@ class EventController extends Controller
      */
     public function update(Request $request)
     {
-
+        
         if ($request->ajax()) {
 
             if (Auth::user()->can('edit-task')) {
@@ -145,7 +145,7 @@ class EventController extends Controller
                 if ($repeats == 0) { //tarea unica sin evento recurrente
 
                     $task = Task::findOrFail($task_id);
-                    dd($start_day);
+
                     $task->start_day = $start_day;
                     $task->performance_day =$performance_day;
 

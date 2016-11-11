@@ -172,7 +172,7 @@
                             @foreach($notifications as $notification)
                                 @if(!$notification->read)
                             <a href="{{route('user.notifications.read',$notification)}}" class="list-group-item">
-                                <i class="fa fa-tasks fa-fw"></i>
+                                <i class="fa fa-exclamation-circle fa-fw"></i>
                                     {{$notification->text}}
                                 <span class="pull-right text-muted small"><em><i class="fa fa-clock-o"></i> {{ $notification->created_at->diffForHumans() }}</em>
                                 </span>

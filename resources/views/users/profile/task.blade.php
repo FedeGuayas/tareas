@@ -36,8 +36,14 @@
                     @foreach($tasks as $task)
                         <tr>
                             {{--<td>{{$area->id}}</td>--}}
-                            <td>{{$task->task}}</td>
-                            <td>{{$task->start_day}}</td>
+                            <td>
+                                @if ($task->repeats==1)
+                                    {{$task->title}}<br>
+                                @else
+                                    {{$task->task}}<br>
+                                @endif
+                            </td>
+                            <td>{{$task->start}}</td>
                             <td>{{$task->performance_day}}</td>
                             <td>{{$task->end_day}}</td>
                             <td>
