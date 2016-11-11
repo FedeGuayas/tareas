@@ -3,7 +3,7 @@
 
 @section('section')
 
-    <div class="panel panel-warning">
+    <div class="panel panel-danger">
         <!-- Content Header (Page header) -->
         <div class="panel-heading"><h2>Calendario Editable</h2></div>
         <div class="panel-body">
@@ -180,20 +180,46 @@
                     var hoy = new Date();
                     var perf_day = event.performance_day.date;
                     var start_day = event.start_day.date;
-                    var end_day =event.end_day.date;
+
+                    if (event.end_day) {
+                        var end_day =event.end_day.date;
+                    } else {
+                        var end_day  = "NULL";
+                    }
+
+                    if (event.end) {
+                        var end =event.end.format("YYYY-MM-DD HH:mm");
+                    } else {
+                        var end = "NULL";
+                    }
+
                     var back=event.color;
                     var area=event.area;
                     var resp=event.user_id;
                     var repeat=event.repeats;
                     var repeat_freq=event.repeats_freq;
                     var start = (event.start.format("YYYY-MM-DD HH:mm"));
-                    var end = (event.end.format("YYYY-MM-DD HH:mm"));
 
+                    if ((event.start < hoy && event.end < hoy) && (end_day==='NULL') ) {
+                        //Incumplida danger
+                        //event.color = "#AEC6CF";
+                        element.css('background-color', '#d9534f');
+                    }
 
-                    if ((event.start<hoy && event.end>hoy) && ( event.end_day==='' ||  event.end_day==='NULL' ) ) {
-                        //en curso info
+                    if ((event.start < hoy && event.end < hoy) && ( (Date.parse(end_day)<=Date.parse(perf_day)) )){
+                        //Concluído OK success paso el tiempo y se cumplio
+                        //event.color = "#77DD77";
+                        element.css('background-color', '#3c763d');
+                    }
+
+                    if ((event.start<=hoy && event.end>=hoy) && (Date.parse(end_day)<=Date.parse(perf_day)))  {
+                        //terminada en tiempo success
+                        element.css('background-color', '#3c763d');
+                        //event.color = "#FFB347"; //n curso
+                    } else if ((event.start<=hoy && event.end>=hoy)  ) {
+//                        //en curso info
                         element.css('background-color', '#46b8da');
-                        //event.color = "#FFB347";
+//                        //event.color = "#FFB347";
                     }
 
                     if ((event.start>hoy && event.end>hoy)) {
@@ -202,24 +228,10 @@
                         //event.color = "#FFB347"; //n curso
                     }
 
-                    if ((event.start<hoy && event.end>hoy) && ( (!event.end_day.date === 'NULL') && (event.end_day.date<=event.end)) ) {
-                        //terminada en tiempo success
-                        element.css('background-color', '#3c763d');
-                        //event.color = "#FFB347"; //n curso
-                    }if ((event.start < hoy && event.end < hoy) && ( (Date.parse(end_day)<=Date.parse(event.end)))){
-                        //Concluído OK success
-                        //event.color = "#77DD77";
-                        element.css('background-color', '#3c763d');
-                    }if ((event.start < hoy && event.end < hoy) && ( !(event.end_day === 'NULL') && (event.end_day>event.end))) {
+                   if ((event.start < hoy && event.end < hoy) && (Date.parse(end_day)>Date.parse(perf_day))) {
                         //Concluído fuera de termino warning
                         //event.color = "#AEC6CF";
                         element.css('background-color', '#ec971f');
-                    }
-
-                    if ((event.start < hoy && event.end < hoy)  ) {
-                        //Incumplida danger
-                        //event.color = "#AEC6CF";
-                        element.css('background-color', '#d9534f');
                     }
 
                 },
@@ -229,9 +241,9 @@
                     var start = event.start.format("YYYY-MM-DD HH:MM");//inicio del evento = task sino es repetitivo
                     var task_id = event.task_id; //task_id identifica a la tarea si no es repetitivo
                     var id = event.id; //id del evento
-//                    var end=event.end; //fin evento = al performances_day si no es repetitivo
                     var start_day = event.start_day; //inicio de tarea= inicio de evento  sino es repetitivo
                     var performance_day = event.performance_day; //fin de tarea
+
                     if (!event.allDay) {
                         var allDay = false;
                         defaultTimedEventDuration: "00:30:00";
@@ -244,7 +256,7 @@
                     var repeats = event.repeats; //para saber si es evento recurrente
 
 
-                    //compruebo si el evento tiene fecha de fin
+                    //compruebo si el evento tiene fecha de fin, sino da error el hacer resize
                     if (event.end) {
                         var end = event.end.format("YYYY-MM-DD HH:MM");
                     } else {
@@ -300,7 +312,7 @@
                         task_id: task_id,
                         id: id,
                         end: end,
-                        strat_day: start_day,
+                        start_day: start_day,
                         performance_day: performance_day,
                         title: title,
                         repeats: repeats

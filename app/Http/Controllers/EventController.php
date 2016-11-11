@@ -121,15 +121,14 @@ class EventController extends Controller
 
             if (Auth::user()->can('edit-task')) {
 
-
-                $event_id = $request->get('id');
-                $start_event = $request->get('start');
-                $start_day = $request->get('start_day');
-                $task_id = $request->get('task_id');
-                $end = $request->get('end');
-                $performance_day = $request->get('performance_day');
-                $title = $request->get('title');
-                $repeats = $request->get('repeats');
+                $event_id = $request->get('id');//ok
+                $start_event = $request->get('start');//ok
+                $start_day = $request->get('start_day');//ok
+                $task_id = $request->get('task_id');//ok
+                $end = $request->get('end');//ok
+                $performance_day = $request->get('performance_day');//ok
+                $title = $request->get('title');//ok
+                $repeats = $request->get('repeats');//ok
 //        $id = $_POST['id'];
 //        $title = $_POST['title'];
 //        $start = $_POST['start'];
@@ -137,20 +136,20 @@ class EventController extends Controller
 //        $task_id = $_POST['task_id'];
 
                 $event = Event::findOrFail($event_id);
-//        if($end=='NULL'){
-//            $evento->fechaFin='NULL'; //NULL sin comillas es para postgres
-//        }else{
-//            $evento->fechaFin=$end;
-//        }
-
+                if($end=="NULL"){
+                $event->end="NULL"; //NULL sin comillas es para postgres
+                }else{
+                    $event->end=$end;
+                }
 
                 if ($repeats == 0) { //tarea unica sin evento recurrente
 
                     $task = Task::findOrFail($task_id);
-
+                    dd($start_day);
                     $task->start_day = $start_day;
-                    $task->performnace_day = $performance_day;
-//                 $task->update();
+                    $task->performance_day =$performance_day;
+
+                    $task->update();
                     $event->start = $start_event;
                     $event->end = $end;
                     $event->updated_at = Carbon::now();
@@ -183,13 +182,14 @@ class EventController extends Controller
 
             $id = $_POST['id'];
             $event = Event::findOrFail($id);
+
             $event->delete();
 //        return redirect()->route('admin.calendar.edit');
             return response()->json(["message"=>"Se elimino el evento"]);
         }else{
             return response()->json(["message"=>"No estas autorizado eliminar tareas"]);
         }
-//            Session::flash('message_danger','No esta autorizado a eliminar tareas');
+//
     }
 //        
 

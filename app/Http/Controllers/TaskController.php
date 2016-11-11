@@ -202,7 +202,7 @@ class TaskController extends Controller
         ->to($receiver)
         ->url('/user/tasks')
         ->extra(['message' => 'Nueva tarea creada'])
-        ->expire(Carbon::now()->addMonth())
+        ->expire(Carbon::now()->addDays(7))//expirara a la semana
         ->send();
 
         //correo de notificacion
@@ -328,13 +328,11 @@ class TaskController extends Controller
                 ->to($receiver)
                 ->url('/admin/tasks')
                 ->extra(['message' => 'Solicitud finalizar tarea'])
-                ->expire(Carbon::now()->addMonth());
+                ->expire(Carbon::now()->addDays(7));
         })->send();
 
             return response()->json(["message"=>"Solicitud de termino de tarea enviada"]);
-
         }
-
     }
 
 
@@ -364,7 +362,7 @@ class TaskController extends Controller
                 ->to($receiver)
                 ->url('/user/tasks')
                 ->extra(['message' => 'Aprobada la finalizacion de la tarea'])
-                ->expire(Carbon::now()->addDays(3))
+                ->expire(Carbon::now()->addDays(7))
                 ->send();
 
             return response()->json(["message"=>"Aprobación enviada"]);
