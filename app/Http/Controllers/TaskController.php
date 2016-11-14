@@ -372,7 +372,7 @@ class TaskController extends Controller
 
    
     /**
-     * Correo de notificacion de nueva tarea
+     * Correo de notificacion por email de nueva tarea
      * @param $user
      * @param $pass
      */
