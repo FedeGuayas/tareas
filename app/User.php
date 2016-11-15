@@ -3,6 +3,7 @@
 namespace App;
 
 use Illuminate\Foundation\Auth\User as Authenticatable;
+use Illuminate\Support\Facades\Hash;
 use Zizaco\Entrust\Traits\EntrustUserTrait;
 use Fenos\Notifynder\Traits\Notifable as NotifableTrait;
 
@@ -35,7 +36,7 @@ class User extends Authenticatable
 
    //    //setear el password, ya no es necesario encriptar pass en controlador
     public function setPasswordAttribute($value){
-        if (!empty ($value)) {
+        if (!empty ($value)){
             $this->attributes['password'] =bcrypt($value);
         }
     }
