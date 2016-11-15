@@ -7,6 +7,7 @@
         <div class="row">
             <div class="col-sm-6">
                 @include('alert.request')
+                @include('alert.success')
                 {!! Form::open(['route'=>'admin.tasks.store', 'method'=>'POST','role'=>'form', 'id'=>'add-event-form']) !!}
                 <div class="form-group">
                     <div class="form-group">

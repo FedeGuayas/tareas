@@ -40,10 +40,14 @@
                             <td>{{$notifi->name}}</td>
                             <td>{{$notifi->text}}</td>
                             <td>
+                                @permission('edit-user')
                                 <a href="{{ route('admin.notifications.edit', $notifi->id )}}" class="btn btn-xs btn-warning tip" data-placement="top" title="Editar"><i class="fa fa-pencil" aria-hidden="true"></i>
                                 </a>
+                                @endpermission
+                                @permission('delete-user')
                                 <a href="" data-target="#modal-delete-{{ $notifi->id }}" data-toggle="modal" class="btn btn-xs btn-danger tip"  data-placement="top" title="Elimminar"><i class="fa fa-trash" aria-hidden="true"></i>
                                 </a>
+                                @endpermission
                             </td>
                         </tr>
                         @include('notifications.modal')

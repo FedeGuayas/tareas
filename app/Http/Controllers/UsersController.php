@@ -76,9 +76,11 @@ class UsersController extends Controller
             $user->phone=$request->input('phone');
             $area_id=$request->input('area_id');
             $area=Area::findOrFail($area_id);
+
 //            $user->area()->associate($area);
             $area->users()->save($user);//Agrega el id del area al user y lo salva, por las relaciones
-
+            $role=Role::where('name','empleado')->first();
+            $user->attachRole($role);
             Event::fire(new UserCreated($user,$pass));
             DB::commit();
 

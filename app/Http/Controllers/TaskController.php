@@ -21,9 +21,16 @@ use Fenos\Notifynder\Facades\Notifynder;
 use Illuminate\Support\Collection as Collection;
 
 use App\Http\Requests;
+use Zizaco\Entrust\Entrust;
 
 class TaskController extends Controller
 {
+    public function __construct()
+    {
+        $this->middleware('auth');
+        $this->middleware(['role:supervisor'],['except'=>['index','userTaskEnd']]);
+
+    }
     
     /**
      * Colores de estado de la tarea
@@ -60,12 +67,13 @@ class TaskController extends Controller
      */
     public function create()
     {
-        if(Auth::check()){
+        if(Auth::user()->can('create-task')){
             $areas_coll = Area::all();
             $list_areas = $areas_coll->pluck('area', 'id');
             return view('tasks.create', ['areas' => $list_areas]);
         }else{
-            return "Inicie sesión para poder crear Tareas";
+            Session::flash('message_danger','No tiene permisos para crear tareas');
+            return redirect()->back();
         }
     }
 
@@ -80,7 +88,8 @@ class TaskController extends Controller
     {
 
 //        hacemos uso de las funciones para verificar el rol del usuario
-        if(Auth::user()->hasRole(['supervisor','administrador'])) {
+//        if(Auth::user()->hasRole(['supervisor','administrador'])) {
+        if(Auth::user()->hasRole(['supervisor'])) {
         try {
             DB::beginTransaction();
 
@@ -92,7 +101,7 @@ class TaskController extends Controller
         $task->end_day = null;
         $task->state = false;//no terminada
         $task->user_id = $request->input('user_id');
-        $task->color = "#d9edf7";//info tarea recien creada
+        $task->color = "#286090";//tarea recien creada
         $repeats = $request->input('repeats');
         $weekday = date('N', strtotime($request->input('start_day')));
 
@@ -184,9 +193,7 @@ class TaskController extends Controller
             Session::flash('message_danger','Error'.$e->getMessage());
             return redirect()->route('admin.tasks.create');
         }
-//            $task->save();
-//            Session::flash('message', 'Tarea creada correctamente');
-//            return redirect()->route('admin.tasks.index');
+
         }else{
 //            //si el usuario no cumple con los requisitos, retornamos un error 403
             return abort(403);
@@ -219,10 +226,13 @@ class TaskController extends Controller
      */
     public function edit($id)
     {
-        $task = Task::findOrFail($id);
-        $areas_coll = Area::all();
-        $list_areas = $areas_coll->pluck('area', 'id');
-        return view('tasks.edit', ['task' => $task, 'areas' => $list_areas]);
+
+            $task = Task::findOrFail($id);
+            $areas_coll = Area::all();
+            $list_areas = $areas_coll->pluck('area', 'id');
+            return view('tasks.edit', ['task' => $task, 'areas' => $list_areas]);
+
+
     }
 
 
@@ -236,7 +246,8 @@ class TaskController extends Controller
     public function update(Request $request, $id)
     {
         $task = Task::findOrFail($id);
-        if(Auth::user()->hasRole(['supervisor','administrador'])){//verificamos los roles
+//        if(Auth::user()->hasRole(['supervisor','administrador'])){//verificamos los roles
+        if(Auth::user()->hasRole(['supervisor'])){
         try {
             DB::beginTransaction();
 
@@ -275,7 +286,8 @@ class TaskController extends Controller
         Session::flash('message', 'Tarea actualizada correctamente');
         return redirect()->route('admin.tasks.index');
         } else{
-            return "usted no tiene permisos para actualizar esta tarea";
+            Session::flash('message_danger','No tiene permisos para actualizar tareas');
+            return redirect()->back();
         }
     }
 
@@ -292,7 +304,8 @@ class TaskController extends Controller
         Session::flash('message_danger','Tarea eliminada');
         return redirect()->route('admin.tasks.index');
         }else{
-            return "no estas autorizado para eliminar tareas";
+            Session::flash('message_danger','No estas autorizado para eliminar tareas');
+            return redirect()->back();
         }
     }
 
@@ -366,7 +379,7 @@ class TaskController extends Controller
             return response()->json(["message"=>"Aprobación enviada"]);
         }
         }else{
-            return response()->json(["message"=>"no estas autorizado para aprobar finalizacion de tareas"]);
+            return response()->json(["message"=>"No estas autorizado para aprobar finalizacion de tareas"]);
         }
     }
 

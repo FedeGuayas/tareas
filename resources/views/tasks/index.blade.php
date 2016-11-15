@@ -78,6 +78,7 @@
                             </td>
 
                             <td>
+                                @role('supervisor')
                                 @if ($task->repeats==0)
                                     <a href="{{ route('admin.tasks.edit', $task )}}" class="btn btn-xs btn-warning" data-placement="top" title="Editar"><i class="fa fa-pencil" aria-hidden="true"></i>
                                     </a>
@@ -91,7 +92,9 @@
                                         <a href="" id="{{$task->id}}" class="btn btn-xs btn-primary aprobEndTask" data-placement="top" title="Aprobar"><i class="fa fa-thumbs-up" aria-hidden="true"></i>
                                         </a>
                                     @endif
+                                @endrole
                             </td>
+
                         </tr>
                         @include('tasks.modal')
                     @endforeach

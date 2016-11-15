@@ -9,14 +9,19 @@ use Illuminate\Http\Request;
 
 use App\Http\Requests;
 
+use Illuminate\Support\Facades\Auth;
 use Session;
 
 class AreasController extends Controller
 {
     public function __construct()
     {
+        /**
+         * Solo puede CRUD de las areas el supervisor y listarlas cualkiera mientras este autenticado
+         */
         $this->middleware('auth');
-//        $this->middleware(['role:supervisor']);
+        $this->middleware(['role:supervisor'],['except'=>['index']]);
+
     }
     /**
      * Display a listing of the resource.
@@ -53,6 +58,7 @@ class AreasController extends Controller
      */
     public function store(Request $request)
     {
+        
         $area=new Area();
         $area->area=$request->input('area');
         $area->description=$request->input('description');

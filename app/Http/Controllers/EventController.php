@@ -164,6 +164,9 @@ class EventController extends Controller
                     $event->update();
                 }
 
+            }else{
+                Session::flash('message_danger','No tien permisos para realizar esta acción');
+                return redirect()->back();
             }
         }
     }

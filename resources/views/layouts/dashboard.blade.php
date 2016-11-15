@@ -201,6 +201,8 @@
                         {{--<li {{ (Request::is('*forms') ? 'class="active"' : '') }}>--}}
                             {{--<a href="{{ url ('forms') }}"><i class="fa fa-edit fa-fw"></i> Forms</a>--}}
                         {{--</li>--}}
+                        {{--@role('supervisor','administrador')--}}
+                        @if (Auth::user()->hasRole(['supervisor', 'administrador']))
                         <li >
                             <a href="#"><i class="fa fa-files-o" aria-hidden="true"></i> Reportes<span class="fa arrow"></span></a>
                             <ul class="nav nav-second-level">
@@ -214,7 +216,7 @@
                             <!-- /.nav-second-level -->
                         </li>
 
-                        <li>
+                            <li>
                             <a href="#"><i class="fa fa-cogs" aria-hidden="true"></i> Gestión<span class="fa arrow"></span></a>
                             <ul class="nav nav-second-level">
                                 <li>
@@ -266,6 +268,7 @@
                             </ul>
                             <!-- /.nav-second-level -->
                         </li>
+                        @endif
                         @role('administrador')
                         <li>
                             <a href="#"><i class="fa fa-lock fa-fw" aria-hidden="true"></i> Administración<span class="fa arrow"></span></a>

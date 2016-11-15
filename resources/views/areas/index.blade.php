@@ -46,10 +46,14 @@
                                 @endforeach
                             </td>
                             <td>
+                                @permission('edit-area')
                                 <a href="{{ route('admin.areas.edit', $area->id )}}" class="btn btn-xs btn-warning tip" data-placement="top" title="Editar"><i class="fa fa-pencil" aria-hidden="true"></i>
                                 </a>
+                                @endpermission
+                                @permission('delete-area')
                                 <a href="" data-target="#modal-delete-{{ $area->id }}" data-toggle="modal" class="btn btn-xs btn-danger tip"  data-placement="top" title="Elimminar"><i class="fa fa-trash" aria-hidden="true"></i>
                                 </a>
+                                @endpermission
                             </td>
                         </tr>
                         @include('areas.modal')
