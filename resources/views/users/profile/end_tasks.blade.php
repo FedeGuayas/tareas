@@ -1,6 +1,7 @@
 <div class="modal fade modal-slide-in-right" aria-hidden="true"
      role="dialog" tabindex="-1" id="modal-coment-{{ $task->id }}">
-    {{Form::open(['route'=>['user.task.end',$task->id],'method'=>'DELETE'])}}
+
+    {{Form::open(['route'=>['user.task.end',$task->id],'method'=>'POST'])}}
 
     <div class="modal-dialog">
         <div class="modal-content">
@@ -15,9 +16,12 @@
             </div>
             <div class="modal-footer">
                 <button type="button" class="btn btn-default" data-dismiss="modal">Cerrar</button>
-                <button type="submit" class="btn btn-primary">Confirmar</button>
+
+                    <button type="submit" class="btn btn-primary " >Confirmar</button>
+
             </div>
         </div>
     </div>
+
     {{Form::Close()}}
 </div>

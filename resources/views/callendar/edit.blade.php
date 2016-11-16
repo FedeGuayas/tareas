@@ -255,7 +255,7 @@
                         defaultTimedEventDuration: "00:30:00";
                     } else {
                         var allDay = true;
-                        defaultTimedEventDuration: "00:30:00";
+                        defaultTimedEventDuration: "08:00:00";
                     }
 
                     var title = event.title; //igual al titulo de la tarea task
@@ -264,7 +264,7 @@
 
                     //compruebo si el evento tiene fecha de fin, sino da error el hacer resize
                     if (event.end) {
-                        var end = event.end.format("YYYY-MM-DD HH:MM");
+                        var end = event.end.format("YYYY-MM-DD 18:00");
                     } else {
                         var end = "NULL";
                     }

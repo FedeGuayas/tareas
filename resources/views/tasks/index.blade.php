@@ -18,17 +18,16 @@
         <div class="row">
             <div class="col-lg-12">
 
-                <table id="task_table" class="table table-striped table-bordered" cellspacing="0" width="100%"
-                       data-order='[[ 0, "asc" ]]' style="display: none">
+                <table id="task_table" class="table table-striped table-bordered" cellspacing="0" width="100%" data-order='[[ 3, "desc"]]' style="display: none">
                     <thead>
                     <tr>
                         {{--<th>id</th>--}}
                         <th>Tarea</th>
                         <th>Trabajador</th>
                         <th>Area</th>
-                        <th>Inicio</th>
-                        <th>Termino P</th>
-                        <th>Termino R</th>
+                        <th>Fecha Inicio</th>
+                        <th>Fecha Termino Planificado</th>
+                        <th>Fecha Termino Real</th>
                         <th>Estado</th>
                         <th>Acción</th>
                     </tr>
@@ -65,7 +64,7 @@
                             <td>{{$task->end_day}}</td>
                             <td>
                                 @if ($task->state==0)
-                                    <span class="label label-warning">Activa</span>
+                                    <span class="label label-warning">Pendiente</span>
 
                                 @else
                                     @if ($task->end_day > $task->performance_day)
@@ -78,7 +77,7 @@
                             </td>
 
                             <td>
-                                @role('supervisor')
+                                @role(['supervisor','administrador'])
                                 @if ($task->repeats==0)
                                     <a href="{{ route('admin.tasks.edit', $task )}}" class="btn btn-xs btn-warning" data-placement="top" title="Editar"><i class="fa fa-pencil" aria-hidden="true"></i>
                                     </a>
@@ -178,7 +177,7 @@
                 contentType: 'application/x-www-form-urlencoded',
                 data: {datos},
                 success: function(json) {
-                    console.log(json);
+//                    console.log(json);
                     $("#send").html(json.message);
                     $("#msg-send").fadeIn();
                 },

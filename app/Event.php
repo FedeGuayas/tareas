@@ -12,7 +12,7 @@ class Event extends Model
 //        'end'
 //    ];
     
-    protected $fillable = ['task_id','start','end','title',];
+    protected $fillable = ['task_id','start','end','title','end_day','state',];
     protected $hidden = ['id'];
 
     public function task(){

@@ -26,7 +26,7 @@ class UsersController extends Controller
         Carbon::setLocale('es');
     }
     /**
-     * Display a listing of the resource.
+     * Obtener listado de todos los usuarios , el area k pertenece y sus tareas asignadas
      *
      * @return \Illuminate\Http\Response
      */
@@ -43,7 +43,7 @@ class UsersController extends Controller
     }
 
     /**
-     * Show the form for creating a new resource.
+     * Mostrar el formulario de crear usuarios(trabajadores)
      *
      * @return \Illuminate\Http\Response
      */
@@ -55,7 +55,7 @@ class UsersController extends Controller
     }
 
     /**
-     * Store a newly created resource in storage.
+     * Crear el nuevo trabajador y enviarle correo de activacion de cuenta
      *
      * @param  \Illuminate\Http\Request  $request
      * @return \Illuminate\Http\Response
@@ -79,7 +79,7 @@ class UsersController extends Controller
 
 //            $user->area()->associate($area);
             $area->users()->save($user);//Agrega el id del area al user y lo salva, por las relaciones
-            $role=Role::where('name','empleado')->first();
+            $role=Role::where('name','empleado')->first();//le asigno el roll de empleado por defecto
             $user->attachRole($role);
             Event::fire(new UserCreated($user,$pass));
             DB::commit();
@@ -89,23 +89,13 @@ class UsersController extends Controller
             return redirect()->back()->with('message_danger','ERROR!! '.$e->getMessage());
         }
 
-        Session::flash('message','Trabajador agregado correctamente');
+        Session::flash('message','Trabajador creado, se le ha enviado correo de activación de cuenta');
         return redirect()->route('admin.users.index');
     }
 
+   
     /**
-     * Display the specified resource.
-     *
-     * @param  int  $id
-     * @return \Illuminate\Http\Response
-     */
-    public function show($id)
-    {
-        //
-    }
-
-    /**
-     * Miestra el Formulario para editar akl trabajador
+     * Muestra el Formulario para editar al trabajador
      *
      * @param  int  $id
      * @return \Illuminate\Http\Response
@@ -119,7 +109,7 @@ class UsersController extends Controller
     }
 
     /**
-     * Update the specified resource in storage.
+     * Actualizar los datos del trabajador.
      *
      * @param  \Illuminate\Http\Request  $request
      * @param  int  $id
@@ -143,7 +133,7 @@ class UsersController extends Controller
 
 
     /**
-     * Remove the specified resource from storage.
+     * Elimina un trabajador, y todas sus notificaciones de la bd.
      *
      * @param  int  $id
      * @return \Illuminate\Http\Response
@@ -181,34 +171,74 @@ class UsersController extends Controller
 
 
     /**
-     * Muestra el perfil general del usuario
+     * Muestra el perfil del usuario con sus notificaciones, sus tareas  
      * @param Request $request
      * @return mixed
      */
 
     public function getProfile(Request $request){
-        
-        
+
+        $dt=Carbon::now();
         $user=$request->user();
 
-        $notifications = $user->getNotifications(10, 'asc');
-        $tasks=Task::where('user_id',$user->id)->paginate(5);
-        $total=$user->tasks->count();//total de tareas
-        $tasksOn=$user->tasks->where('state',0)->count();//tareas activas
-        $tasksOff=$total-$tasksOn;//tareas inacctivas
+        $notifications = $user->getNotifications(10, 'desc');
+//        $tasks=Task::where('user_id',$user->id)->paginate(5);
+//        $total=$user->tasks->count();//total de tareas
+//        $tasksOn=$user->tasks->where('state',0)->count();//tareas pendientes
+//        $tasksOff=$total-$tasksOn;//tareas terminadas
 
+        $inicioMes=$dt->firstOfMonth()->toDateString();
+        $finMes=$dt->lastOfMonth()->toDateString();
 
+        //eventos del mes
+        $events=\App\Event::
+        join('tasks as t','t.id','=','e.task_id',' as e')
+            ->join('users as u','u.id','=','t.user_id')
+            ->where([
+                ['start', '>=',  $inicioMes],
+                ['start', '<=', $finMes]
+            ])
+            ->where('t.user_id',$user->id)
+            ->get();
+
+        //todos los eventos del usuario paginados para la linea del tiempo
+        $eventsAll=\App\Event::
+        join('tasks as t','t.id','=','e.task_id',' as e')
+            ->join('users as u','u.id','=','t.user_id')
+            ->where('t.user_id',$user->id)
+            ->paginate(5);
+
+        //para contarlos
+        $eventsCount=\App\Event::
+        join('tasks as t','t.id','=','e.task_id',' as e')
+            ->join('users as u','u.id','=','t.user_id')
+            ->where('t.user_id',$user->id)
+            ->get();
+
+        $total=$eventsCount->count();
+        $tasksOn=$eventsCount->where('state',0)->count();//tareas pendientes
+        $tasksOff=$total-$tasksOn;//tareas terminadas
+       
+
+//        $eventsAllArray=[];
+//        foreach ($eventsAll as $event){
+//            $eventsAllArray[]=[
+//                'total'=>$event-$total,
+//            ];
+//
+//        }
 //        dd($user->notifications()->byRead(1)->get());
-        return view('users.profile.profile',compact('user','tasks','tasksOn','tasksOff','notifications'));
+        
+        return view('users.profile.profile',compact('user','tasksOn','tasksOff','notifications','events','eventsAll'));
     }
 
 
     /**
-     * cargar el form para editar la contraseña del usuario
+     * Cargar el form para editar la contraseña del usuario
      * @param Request $request
      * @return mixed
      */
-    public function getProfileEdit(Request $request){
+    public function getPasswordEdit(Request $request){
 
         $user=$request->user();
         
@@ -217,11 +247,12 @@ class UsersController extends Controller
 
     /**
      * Cambio de contraseña de usuario
+     *
      * @param ChangePasswordRequest $request
      * @param User $user
      * @return mixed
      */
-    public function postProfile(ChangePasswordRequest $request,User $user){
+    public function postPassword(ChangePasswordRequest $request,User $user){
 
         $new_pass=$request->password_new;
         $user->password = $new_pass;
@@ -229,6 +260,13 @@ class UsersController extends Controller
         return redirect()->route('user.profile')->with('message','Contraseña Actualizada');
     }
 
+
+    /**
+     * Obtener los eventos del usuario en el mes actual para mostrarlo en la tabla de tareas del usuario
+     * 
+     * @param Request $request
+     * @return mixed
+     */
     public function  userTasks(Request $request){
         $user=$request->user();
         $dt=Carbon::now();
@@ -241,18 +279,20 @@ class UsersController extends Controller
         //eventos del mes
         $tasks=\App\Event::
             join('tasks as t','t.id','=','e.task_id',' as e')
+            ->join('users as u','u.id','=','t.user_id')
             ->where([
-                ['start', '<', $finMes],
-                ['start', '>',  $inicioMes]
+                ['start', '>=',  $inicioMes],
+                ['start', '<=', $finMes]
             ])
+            ->where('t.user_id',$user->id)
             ->get();
-
+//dd($tasks);
 //        $tasks=$user->tasks;
 //        $tasks->each(function($tasks){
 //            $tasks->events;
 //        });
         
-        return view('users.profile.task',compact('tasks'));
+        return view('users.profile.task',compact('tasks','user'));
     }
 
 

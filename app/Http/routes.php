@@ -70,10 +70,10 @@ Route::group(['prefix'=>'user'],function(){
         Route::get('/profile', [ 'uses' => 'UsersController@getProfile','as' => 'user.profile' ]);
 
         //vista para editar la contraseña del perfil de usuario
-        Route::get('/profile/edit', ['uses' => 'UsersController@getProfileEdit','as' => 'user.profile.edit']);
+        Route::get('/password/edit', ['uses' => 'UsersController@getPasswordEdit','as' => 'user.password.edit']);
         
         //actualizar la contraseña del perfil de usuario
-        Route::put('{user}/profile/edit', ['uses' => 'UsersController@postProfile','as' => 'user.profile.update']);
+        Route::put('{user}/profile/edit', ['uses' => 'UsersController@postPassword','as' => 'user.password.update']);
         
         //tasreas del usuario
         Route::get('/tasks', ['uses' => 'UsersController@userTasks','as' => 'user.profile.tasks']);
@@ -90,7 +90,7 @@ Route::group(['prefix'=>'user'],function(){
         //todas las notificaciones del usuarios
         Route::get('/notifications', ['uses'=>'NotificationController@getIndex','as'=>'user.notifications.all']);
 
-        //leer una notificacion marcandola como leida
+        //ir a la url de la notificacion y marcarla como leida
         Route::get('/notifications{notification}', ['uses'=>'NotificationController@getRead','as'=>'user.notifications.read']);
 
         //eliminar una notificacion 

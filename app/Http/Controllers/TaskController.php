@@ -28,7 +28,7 @@ class TaskController extends Controller
     public function __construct()
     {
         $this->middleware('auth');
-        $this->middleware(['role:supervisor'],['except'=>['index','userTaskEnd']]);
+        $this->middleware(['role:supervisor|administrador'],['except'=>['index','userTaskEnd']]);
 
     }
     
@@ -89,7 +89,7 @@ class TaskController extends Controller
 
 //        hacemos uso de las funciones para verificar el rol del usuario
 //        if(Auth::user()->hasRole(['supervisor','administrador'])) {
-        if(Auth::user()->hasRole(['supervisor'])) {
+        if(Auth::user()->hasRole(['supervisor','administrador'])) {
         try {
             DB::beginTransaction();
 
@@ -105,12 +105,20 @@ class TaskController extends Controller
         $repeats = $request->input('repeats');
         $weekday = date('N', strtotime($request->input('start_day')));
 
+            if ($request->hasFile('file')) {
+                $file = $request->file('file');
+                $name='requerimiento_'.time().'.'.$file->getClientOriginalExtension();
+                $path=public_path().'/dist/files/';//ruta donde se guardara
+                $file->move($path,$name);//lo copio a $path con el nombre $name
+                $task->file=$name;//ahora se guarda  en el atributo foto_ced la imagen
+            }
+
         if (!$repeats) {
             // El usuario no marcó checkbox tarea recurrente
             $task->repeats = 0;
             $task->repeats_freq = 0;
             $task->weekday=$weekday;
-            $task->allDay = false; //no resize en calendario
+            $task->allDay = true; //no resize en calendario
             $task->save();
             $event=new Event([
                 'start' =>$task->start_day,
@@ -299,7 +307,7 @@ class TaskController extends Controller
     public function destroy($id)
     {
         $task=Task::findOrFail($id);
-        if(Auth::user()->hasRole('supervisor')){
+        if(Auth::user()->hasRole(['supervisor','administrador'])){
         $task->delete();
         Session::flash('message_danger','Tarea eliminada');
         return redirect()->route('admin.tasks.index');
@@ -311,13 +319,14 @@ class TaskController extends Controller
 
 
     /**
-     * Solicitud de terminio de tarea por parte del usuario
+     * Solicitud de terminio de tarea por parte del usuario por ajax
      * @param Request $request
      * @param $id
      */
     public function userTaskEnd(Request $request){
 
         $id=$request->get('datos');
+
         if ($request->ajax()){
 
             $task=Task::findOrFail($id);
@@ -334,7 +343,7 @@ class TaskController extends Controller
 
 //            //notificacion multiple a todos los supervisores
         \Notifynder::loop($receivers, function(\Fenos\Notifynder\Builder\Builder $builder, $receiver) use ($sender) {
-            $builder->category('task.end.sol')// define the category to send
+            $builder->category('task.end.sol')// definir la categoria de notificacion a enviar
             ->from($sender)
                 ->to($receiver)
                 ->url('/admin/tasks')

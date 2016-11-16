@@ -4,7 +4,7 @@
 @section('section')
     <div class="col-sm-12">
         <div class="row">
-            {!! Form::model($user,['route'=>['user.profile.update',$user], 'method'=>'PUT','role'=>'form']) !!}
+            {!! Form::model($user,['route'=>['user.password.update',$user], 'method'=>'PUT','role'=>'form']) !!}
             <div class="col-lg-4 col-md-6 col-sm-12 col-lg-offset-1">
                 @include('alert.success')
                 @include('alert.request')

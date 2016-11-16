@@ -17,7 +17,7 @@
                         <th>Notificación</th>
                         <th>Fecha Notificación</th>
                         <th>Estado</th>
-                        <th>Tareas</th>
+                        <th>Link</th>
                         <th>Acción</th>
                     </tr>
                     </thead>
@@ -28,7 +28,7 @@
                         <th>Notificación</th>
                         <th>Fecha Notificación</th>
                         <th>Estado</th>
-                        <th>Tareas</th>
+                        <th>Link</th>
                         <th>Acción</th>
                     </tr>
                     </tfoot>

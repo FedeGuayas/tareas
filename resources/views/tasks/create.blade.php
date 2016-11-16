@@ -112,9 +112,11 @@
                 showClear:true,
                 showClose:true,
                 minDate: moment(),
-                enabledHours: [9, 10, 11, 12, 13, 14, 15, 16, 17, 18],
+//                disabledTimeIntervals:[],
+//                enabledHours: [9, 10, 11, 12, 13, 14, 15, 16, 17, 18],
                 locale:'es',
-                format:'YYYY-MM-DD HH:mm:ss'
+                format:'YYYY-MM-DD 09:00:00'
+
 
             });
             $('#performance_day_datetimepicker').datetimepicker({
@@ -122,9 +124,9 @@
                 showClear:true,
                 showClose:true,
                 useCurrent: false, //Important! See issue #1075
-                enabledHours: [9, 10, 11, 12, 13, 14, 15, 16, 17, 18],
+//                enabledHours: [9, 10, 11, 12, 13, 14, 15, 16, 17, 18],
                 locale:'es',
-                format:'YYYY-MM-DD HH:mm:ss'
+                format:'YYYY-MM-DD 18:00:00'
 
             });
             $("#start_day_datetimepicker").on("dp.change", function (e) {

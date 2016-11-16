@@ -20,7 +20,7 @@ class AreasController extends Controller
          * Solo puede CRUD de las areas el supervisor y listarlas cualkiera mientras este autenticado
          */
         $this->middleware('auth');
-        $this->middleware(['role:supervisor'],['except'=>['index']]);
+        $this->middleware(['role:supervisor|administrador'],['except'=>['index','getUsers']]);
 
     }
     /**

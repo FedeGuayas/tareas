@@ -26,6 +26,8 @@ class CreateTasksTable extends Migration
             $table->string('color')->nullable();
             $table->integer('repeats')->nullable();//1 para recurrentes, 0 no recurrente
             $table->integer('repeats_freq')->nullable();// 0 no recurrente, 1 diario, 7 semanal, 14 2semanas, 28 mensual, etc.
+            $table->integer('repeats_freq')->nullable();
+            $table->string('file')->nullable();
             $table->timestamps();
 
             $table->foreign('user_id')->references('id')->on('users')

@@ -19,7 +19,7 @@ class NotificationController extends Controller
     }
 
     /**
-     * Display a listing of the resource.
+     * Listado de notificaciones creadas
      *
      * @return \Illuminate\Http\Response
      */
@@ -64,16 +64,6 @@ class NotificationController extends Controller
         return redirect()->route('admin.notifications.index');
     }
 
-    /**
-     * Display the specified resource.
-     *
-     * @param  int  $id
-     * @return \Illuminate\Http\Response
-     */
-    public function show($id)
-    {
-        //
-    }
 
     /**
      * Show the form for editing the specified resource.
@@ -117,6 +107,11 @@ class NotificationController extends Controller
         return redirect()->back();
     }
 
+    /**
+     * El usuario elimina una notificacion suya
+     * @param $id
+     * @return mixed
+     */
     public function notifyUserDelete($id)
     {
         $notification=Notification::findOrFail($id);
@@ -133,7 +128,7 @@ class NotificationController extends Controller
     public function getIndex(){
 
         $user = Auth::user();
-        //todas las notificaciones que no han expirado, y ordenadas por estado de si se han leido o no lectura
+        //todas las notificaciones que no han expirado, y ordenadas por estado de si se han leido o no 
         $notifications = $user->getNotificationRelation()//->where('category_id', ) //por categori
             ->where(function($query) {
                 $query->whereNull('expires_at')->orWhere('expires_at', '>=', Carbon::now());
@@ -151,7 +146,10 @@ class NotificationController extends Controller
         return view('notifications.user.index',compact('user', 'notifications'));
     }
 
-    /** El usuario va a la url y marca la notificacion como leida
+    /**
+     * Para el panel de notificaciones
+     * El usuario va a la url y marca la notificacion como leida, por lo que no se mostrara mas en el panel
+     *
      * @param Notification $notification
      * @return mixed
      */
