@@ -43,25 +43,25 @@
                             <td>{{$user->phone}}</td>
                             <td>{{$user->email}}</td>
                             <td>{{$user->area['area']}}</td>
-                            <td>
-                                <a href="#!" class="btn btn-xs bg-info">Total  <span class="badge">{{$user->tasks->count()}}</span></a>
+                            {{--<td>--}}
+                                {{--<a href="#!" class="btn btn-xs bg-info">Total  <span class="badge">{{$user->tasks->count()}}</span></a>--}}
 
-                                @foreach($user->tasks as $task)
-                                    @if ($task->repeats==1){{--repetitiva--}}
-                                        <a href="#!" class="btn btn-xs bg-primary">Recurrentes <span class="badge">{{$task->events->count()}}</span></a>
-                                    @endif
-                                @endforeach
-                            </td>
-                            <td>
-                                <a href="{{ route('admin.users.edit', $user->id )}}" class="btn btn-xs btn-warning tip" data-placement="top" title="Editar"><i class="fa fa-pencil" aria-hidden="true"></i>
-                                </a>
-                                <a href="" data-target="#modal-delete-{{ $user->id }}" data-toggle="modal" class="btn btn-xs btn-danger tip"  data-placement="top" title="Elimminar"><i class="fa fa-trash" aria-hidden="true"></i>
-                                </a>
-                                @permission('admin-roles')
-                                <a href="{{ route('admin.users.roles', $user->id )}}" class="btn btn-xs btn-warning tip" data-placement="top" title="Roles"><i class="fa fa-key" aria-hidden="true"></i>
-                                </a>
-                                @endpermission
-                            </td>
+                                {{--@foreach($user->tasks as $task)--}}
+                                    {{--@if ($task->repeats==1)--}}{{--repetitiva--}}
+                                        {{--<a href="#!" class="btn btn-xs bg-primary">Recurrentes <span class="badge">{{$task->events->count()}}</span></a>--}}
+                                    {{--@endif--}}
+                                {{--@endforeach--}}
+                            {{--</td>--}}
+                            {{--<td>--}}
+                                {{--<a href="{{ route('admin.users.edit', $user->id )}}" class="btn btn-xs btn-warning tip" data-placement="top" title="Editar"><i class="fa fa-pencil" aria-hidden="true"></i>--}}
+                                {{--</a>--}}
+                                {{--<a href="" data-target="#modal-delete-{{ $user->id }}" data-toggle="modal" class="btn btn-xs btn-danger tip"  data-placement="top" title="Elimminar"><i class="fa fa-trash" aria-hidden="true"></i>--}}
+                                {{--</a>--}}
+                                {{--@permission('admin-roles')--}}
+                                {{--<a href="{{ route('admin.users.roles', $user->id )}}" class="btn btn-xs btn-warning tip" data-placement="top" title="Roles"><i class="fa fa-key" aria-hidden="true"></i>--}}
+                                {{--</a>--}}
+                                {{--@endpermission--}}
+                            {{--</td>--}}
                         </tr>
                         @include('users.modal')
                     @endforeach

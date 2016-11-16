@@ -11,9 +11,10 @@ $("#area_id").change(function(event){
        for (i=0; i<response.length; i++){
            $("#user_id").append("<option value='"+response[i].id+"'>"+response[i].first_name+' ' +response[i].last_name+"</option>");
        }
+       $("#user_id").trigger("chosen:updated");//estas dos lineas son solo para actualizar el choosen js
+       $("#user_id").trigger("liszt:updated");
    });
 });
-
 
 
 

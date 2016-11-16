@@ -41,4 +41,5 @@ $factory->define(User::class, function (Generator $faker) {
         'area_id' => $area_id,
     ];
     return $array;
+    
 });

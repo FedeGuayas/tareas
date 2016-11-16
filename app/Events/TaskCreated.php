@@ -12,6 +12,7 @@ class TaskCreated extends Event
 {
     use SerializesModels;
 
+    public $receivers;
     public $sender;
     public $task;
     /**
@@ -19,8 +20,9 @@ class TaskCreated extends Event
      *
      * @return void
      */
-    public function __construct($sender, Task $task )
+    public function __construct($sender, Task $task, $receivers)
     {
+        $this->receivers=$receivers;
         $this->sender=$sender;
         $this->task=$task;
     }

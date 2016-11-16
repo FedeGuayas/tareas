@@ -32,7 +32,7 @@ class Task extends Model
      * @var array
      */
     protected $fillable = [
-        'task', 'description', 'start_day','performance_day','end_day','state','user_id','allDay','color','weekday','repeats','repeats_freq'
+        'task', 'description', 'start_day','performance_day','end_day','state','allDay','color','weekday','repeats','repeats_freq','file','area_id'
 
     ];
 
@@ -40,12 +40,12 @@ class Task extends Model
         'id'
     ];
 
-    public function user(){
-        return $this->belongsTo('App\User');
+    public function users(){
+        return $this->belongsToMany('App\User');
     }
 
     public function area(){
-        return $this->belongsTo('App\User');
+        return $this->belongsTo('App\Area');
     }
 
     public function events(){

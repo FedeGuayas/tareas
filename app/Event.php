@@ -12,10 +12,11 @@ class Event extends Model
 //        'end'
 //    ];
     
-    protected $fillable = ['task_id','start','end','title','end_day','state',];
+    protected $fillable = ['task_id','start','end','title','end_day','state','allDay'];
     protected $hidden = ['id'];
 
     public function task(){
         return $this->belongsTo('App\Task');
     }
+    
 }

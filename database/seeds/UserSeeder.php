@@ -12,6 +12,7 @@ class UserSeeder extends Seeder
      */
     public function run()
     {
+
         DB::table('users')->insert([
             'area_id'=>null,
             'name'=>'Admin',
@@ -22,7 +23,9 @@ class UserSeeder extends Seeder
             'password' => bcrypt('admin'),
             'activated'=>true,
         ]);
-//        factory(App\User::class,20)->create();
+
+       
+        factory(App\User::class,20)->create();
         
     }
 }

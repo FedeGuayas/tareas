@@ -8,22 +8,18 @@
             <div class="col-lg-10 col-lg-offset-1">
                 @include('alert.success')
                 <table id="area_table" class="table table-striped table-bordered" cellspacing="0" width="100%"
-                       data-order='[[ 1, "asc" ]]' style="display: none">
+                       data-order='[[ 0, "asc" ]]' style="display: none">
                     <thead>
-                    <tr>
-                        {{--<th>id</th>--}}
-                        <th>Area</th>
-                        {{--<th>Descripción</th>--}}
-                        <th>Trabajadores</th>
-                        <th>Tareas</th>
-                        <th>Acción</th>
-                    </tr>
+                        <tr>
+                            <th>Area</th>
+                            <th>Trabajadores</th>
+                            <th>Tareas</th>
+                            <th>Acción</th>
+                        </tr>
                     </thead>
                     <tfoot>
                     <tr>
-                        {{--<th>id</th>--}}
                         <th>Area</th>
-                        {{--<th>Descripción</th>--}}
                         <th>Trabajadores</th>
                         <th>Tareas</th>
                         <th>Acción</th>
@@ -32,9 +28,7 @@
                     <tbody>
                     @foreach($areas as $area)
                         <tr>
-                            {{--<td>{{$area->id}}</td>--}}
                             <td>{{$area->area}}</td>
-{{--                            <td>{{$area->description}}</td>--}}
                             <td>
                                 @foreach($area->users as $user)
                                     {{$user->getFullName()}}<br>
@@ -46,14 +40,14 @@
                                 @endforeach
                             </td>
                             <td>
-                                @permission('edit-area')
+                                {{--@permission('edit-area')--}}
                                 <a href="{{ route('admin.areas.edit', $area->id )}}" class="btn btn-xs btn-warning tip" data-placement="top" title="Editar"><i class="fa fa-pencil" aria-hidden="true"></i>
                                 </a>
-                                @endpermission
-                                @permission('delete-area')
+                                {{--@endpermission--}}
+                                {{--@permission('delete-area')--}}
                                 <a href="" data-target="#modal-delete-{{ $area->id }}" data-toggle="modal" class="btn btn-xs btn-danger tip"  data-placement="top" title="Elimminar"><i class="fa fa-trash" aria-hidden="true"></i>
                                 </a>
-                                @endpermission
+                                {{--@endpermission--}}
                             </td>
                         </tr>
                         @include('areas.modal')

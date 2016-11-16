@@ -36,7 +36,9 @@ class AreasController extends Controller
         $areas->each(function ($areas) {
             $areas->users;
             $areas->tasks;
+            $areas->events;
         });
+        
         return view('areas.index',['areas'=>$areas]);
     }
 
@@ -126,7 +128,7 @@ class AreasController extends Controller
         return redirect()->route('admin.areas.index');
     }
 
-    //obtener todos los usuarios apar un area y devolver un json para select dinamico
+    //obtener todos los usuarios para un area y devolver un json para select dinamico
     public function getUsers(Request $request,$id){
         if ($request->ajax()){
             $users=User::users($id);

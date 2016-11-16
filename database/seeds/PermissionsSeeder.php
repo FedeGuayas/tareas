@@ -17,6 +17,16 @@ class PermissionsSeeder extends Seeder
             'description'=>'Crea edita y elimina las areas',
         ]);
         DB::table('permissions')->insert([
+            'name'=>'edit-area',
+            'display_name'=>'Editar el area',
+            'description'=>'Crea edita y elimina las areas',
+        ]);
+        DB::table('permissions')->insert([
+            'name'=>'delete-area',
+            'display_name'=>'Eliminar el area',
+            'description'=>'Crea edita y elimina las areas',
+        ]);
+        DB::table('permissions')->insert([
             'name'=>'create-user',
             'display_name'=>'Crea usuarios',
             'description'=>'Crear trabajadores',

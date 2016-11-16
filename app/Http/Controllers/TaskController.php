@@ -28,7 +28,7 @@ class TaskController extends Controller
     public function __construct()
     {
         $this->middleware('auth');
-        $this->middleware(['role:supervisor|administrador'],['except'=>['index','userTaskEnd']]);
+//        $this->middleware(['role:supervisor|administrador'],['except'=>['index','userTaskEnd']]);
 
     }
     
@@ -51,13 +51,14 @@ class TaskController extends Controller
         $areas=Area::all();
 
         $tasks->each(function ($tasks) {
-            $tasks->user;
+            $tasks->events;
+            $tasks->users;
         });
 
         $areas->each(function ($areas)  {
-            $areas->tasks;
+            $areas->events;
         });
-
+dd($tasks);
         return view('tasks.index', ['tasks' => $tasks,'areas' => $areas]);
     }
 
@@ -67,20 +68,21 @@ class TaskController extends Controller
      */
     public function create()
     {
-        if(Auth::user()->can('create-task')){
+//        if(Auth::user()->can('create-task')){
             $areas_coll = Area::all();
             $list_areas = $areas_coll->pluck('area', 'id');
             return view('tasks.create', ['areas' => $list_areas]);
-        }else{
-            Session::flash('message_danger','No tiene permisos para crear tareas');
-            return redirect()->back();
-        }
+//        }else{
+//            Session::flash('message_danger','No tiene permisos para crear tareas');
+//            return redirect()->back();
+//        }
     }
 
 
     /**
      * 
      * Almacena la nueva tarea en la bd, notifica al usuario en el sistema y le envia correo
+     *
      * @param TaskStoreRequest $request
      * @return mixed
      */
@@ -88,139 +90,159 @@ class TaskController extends Controller
     {
 
 //        hacemos uso de las funciones para verificar el rol del usuario
-//        if(Auth::user()->hasRole(['supervisor','administrador'])) {
-        if(Auth::user()->hasRole(['supervisor','administrador'])) {
-        try {
-            DB::beginTransaction();
+            if (Auth::user()->hasRole(['supervisor', 'administrador'])) {
+                try {
+                    DB::beginTransaction();
 
-        $task = new Task;
-        $task->task = $request->input('task');
-        $task->description = $request->input('description');
-        $task->start_day = $request->input('start_day');
-        $task->performance_day = $request->input('performance_day');
-        $task->end_day = null;
-        $task->state = false;//no terminada
-        $task->user_id = $request->input('user_id');
-        $task->color = "#286090";//tarea recien creada
-        $repeats = $request->input('repeats');
-        $weekday = date('N', strtotime($request->input('start_day')));
+                    $task = new Task;
+                    $task->task = $request->input('task');
+                    $task->description = $request->input('description');
+                    $task->start_day = $request->input('start_day');
+                    $task->performance_day = $request->input('performance_day');
+                    $task->end_day = null;
+                    $task->state = false;//no terminada
+                    $task->color = "#286090";//tarea recien creada
+                    $repeats = $request->input('repeats');
+                    $weekday = date('N', strtotime($request->input('start_day')));
+                    $task->area_id = $request->input('area_id');
 
-            if ($request->hasFile('file')) {
-                $file = $request->file('file');
-                $name='requerimiento_'.time().'.'.$file->getClientOriginalExtension();
-                $path=public_path().'/dist/files/';//ruta donde se guardara
-                $file->move($path,$name);//lo copio a $path con el nombre $name
-                $task->file=$name;//ahora se guarda  en el atributo foto_ced la imagen
-            }
+                    if ($request->hasFile('file')) {
+                        $file = $request->file('file');
+                        $name = 'requerimiento_' . time() . '.' . $file->getClientOriginalExtension();
+                        $path = public_path() . '/dist/files/';//ruta donde se guardara
+                        $file->move($path, $name);//lo copio a $path con el nombre $name
+                        $task->file = $name;//ahora se guarda  en el atributo foto_ced la imagen
+                    }
 
-        if (!$repeats) {
-            // El usuario no marcó checkbox tarea recurrente
-            $task->repeats = 0;
-            $task->repeats_freq = 0;
-            $task->weekday=$weekday;
-            $task->allDay = true; //no resize en calendario
-            $task->save();
-            $event=new Event([
-                'start' =>$task->start_day,
-                'end' =>$task->performance_day,
-                'title' =>$task->task
-            ]);
-            $event->task()->associate($task);
-            $event->save();
+                    if (!$repeats) {
+                        // El usuario no marcó checkbox tarea no recurrente
+                        $task->repeats = 0;
+                        $task->repeats_freq = 0;
+                        $task->weekday = $weekday;
+                        $task->allDay = true; //resize en calendario
+                        $task->save();
+                        $event = new Event([
+                            'title' => $task->task,
+                            'start' => $task->start_day,
+                            'end' => $task->performance_day,
+                            'end_day' => $task->end_day,
+                            'state' => $task->state,
+                            'allDay' => $task->allDay
+                        ]);
+                        $event->task()->associate($task);
+                        $event->save();
 
-        } else {
-            // El usuario marcó checkbox tarea recurrente
-            $start_day=$request->input('start_day');
-            $performance_day = $request->input('performance_day');
-            $repeats = $request->input('repeats');
-            $repeats_freq= $request->input('repeat-freq');
-            $task->allDay = true; //el evento ocupa all  dia por lo k se puede resuze en el calendario
+                    } else {
+                        // El usuario marcó checkbox tarea recurrente
+                        $start_day = $request->input('start_day');
+                        $performance_day = $request->input('performance_day');
+                        $repeats = $request->input('repeats');
+                        $repeats_freq = $request->input('repeat-freq');
+                        $task->allDay = true;
 //            $until = (365/$repeats_freq);
 //            if ($repeats_freq == 1){ //diario
 //                $weekday = 0;
 //            }
-            if ($repeats_freq==7){
-                //convierto el start_day en objeto carbon
-                $inicio = new Carbon($start_day);
-                $fin = new Carbon($performance_day);
-                //le adiciono 1 año y calculo la diferencia de semanas, esto me da las semanas del año
-                $until=$inicio->diffInWeeks($inicio->copy()->addYear());
+                        if ($repeats_freq == 7) {
+                            //convierto el start_day en objeto carbon
+                            $inicio = new Carbon($start_day);
+                            $fin = new Carbon($performance_day);
+                            //le adiciono 1 año y calculo la diferencia de semanas, esto me da las semanas del año
+                            $until = $inicio->diffInWeeks($inicio->copy()->addYear());
+                            $task->repeats = $repeats;
+                            $task->repeats_freq = $repeats_freq;
+                            $task->weekday = $weekday;
+                            $task->save();
+                            $start_week = $inicio;
+                            $end_week = $fin;
+                            for ($i = 0; $i < $until; $i++) {
+                                $event = new Event([
+                                    'title' => $task->task,
+                                    'start' => $start_week,
+                                    'end' => $end_week,
+                                    'end_day' => null,
+                                    'state' => false,
+                                    'allDay' => true
+                                ]);
+                                $event->task()->associate($task);
+                                $event->save();
+                                $start_week = $inicio->addWeek();
+                                $end_week = $fin->addWeek();
+                            }
+                        }
+                        if ($repeats_freq == 30) {
+                            $inicio = new Carbon($start_day);
+                            $fin = new Carbon($performance_day);
+                            //le adiciono 1 año y calculo la diferencia de meses, esto me da los meses del año
+                            $until = $inicio->diffInMonths($inicio->copy()->addYear());
 
-                $task->repeats = $repeats;
-                $task->repeats_freq =$repeats_freq;
-                $task->weekday=$weekday;
+                            $task->repeats = $repeats;
+                            $task->repeats_freq = $repeats_freq;
+                            $task->weekday = $weekday;
+                            $task->save();
+                            $start_month = $inicio;
+                            $end_month = $fin;
 
-                $task->save();
-                $start_week=$inicio;
-                $end_week=$fin;
-                for ($i=0; $i<$until; $i++){
-                    $event=new Event([
-                        'start' =>$start_week,
-                        'end' =>$end_week,
-                        'title' =>$task->task
-                    ]);
-                    $event->task()->associate($task);
-                    $event->save();
-                    $start_week=$inicio->addWeek();
-                    $end_week=$fin->addWeek();
+                            for ($i = 0; $i < $until; $i++) {
+                                $event = new Event([
+                                    'title' => $task->task,
+                                    'start' => $start_month,
+                                    'end' => $end_month,
+                                    'end_day' => null,
+                                    'state' => false,
+                                    'allDay' => true
+                                ]);
+                                $event->task()->associate($task);
+                                $event->save();
+                                $start_month = $inicio->addMonth();
+                                $end_month = $fin->addMonth();
+                            }
+                        }
+                    }
+                    //Usuarios a los k se les asigno la tarea
+                    $usersId = $request->input('user_id');
+                    $task->users()->attach($usersId);
+
+                    DB::commit();
+                } catch (\Exception $e) {
+                    DB::rollback();
+
+                    Session::flash('message_danger', 'Error' . $e->getMessage());
+                    return redirect()->route('admin.tasks.create');
                 }
-            }
-            if ($repeats_freq==30){
-                //convierto el start_day en objeto carbon
-                $inicio = new Carbon($start_day);
-                $fin = new Carbon($performance_day);
-                //le adiciono 1 año y calculo la diferencia de meses, esto me da los meses del año
-                $until=$inicio->diffInMonths($inicio->copy()->addYear());
 
-                $task->repeats = $repeats;
-                $task->repeats_freq =$repeats_freq;
-                $task->weekday=$weekday;
-
-                $task->save();
-                $start_month=$inicio;
-                $end_month=$fin;
-
-                for ($i=0; $i<$until; $i++){
-
-                    $event=new Event([
-                        'start' =>$start_month,
-                        'end' =>$end_month,
-                        'title' =>$task->task
-                    ]);
-                    $event->task()->associate($task);
-                    $event->save();
-                    $start_month=$inicio->addMonth();
-                    $end_month=$fin->addMonth();
-                }
-            }
-        }
-            DB::commit();
-        }catch (\Exception $e) {
-            DB::rollback();
-
-            Session::flash('message_danger','Error'.$e->getMessage());
-            return redirect()->route('admin.tasks.create');
-        }
-
-        }else{
+            } else {
 //            //si el usuario no cumple con los requisitos, retornamos un error 403
-            return abort(403);
-        }
+                return abort(403);
+            }
 
-        $receiver=User::findOrFail($task->user_id);
+//        $receiver=User::findOrFail($task->user_id);
+        //notificacion del sistema a un usuario
+//        \Notifynder::category('task.new')
+//        ->from($request->user())
+//        ->to($receiver)
+//        ->url('/user/tasks')
+//        ->extra(['message' => 'Nueva tarea creada'])
+//        ->expire(Carbon::now()->addDays(7))//expirara a la semana
+//        ->send();
 
-        //notificacion del sistema
-        \Notifynder::category('task.new')
-        ->from($request->user())
-        ->to($receiver)
-        ->url('/user/tasks')
-        ->extra(['message' => 'Nueva tarea creada'])
-        ->expire(Carbon::now()->addDays(7))//expirara a la semana
-        ->send();
+        $receivers=User::findOrFail($usersId);
 
         //correo de notificacion
         $sender=$request->user();
-        event(new TaskCreated($sender,$task));
+        event(new TaskCreated($sender,$task,$receivers));
+
+
+        //notificacion multiple a todos los usuarios de la tarea
+        \Notifynder::loop($receivers, function(\Fenos\Notifynder\Builder\Builder $builder, $receiver) use ($sender) {
+            $builder->category('task.end.sol')// definir la categoria de notificacion a enviar
+            ->from($sender)
+                ->to($receiver)
+                ->url('/user/tasks')
+                ->extra(['message' => 'Nueva tarea asignada'])
+                ->expire(Carbon::now()->addDays(7));
+        })->send();
+
 
         Session::flash('message', 'Tarea creada correctamente');
         return redirect()->route('admin.tasks.index');
@@ -399,24 +421,23 @@ class TaskController extends Controller
      * @param $pass
      */
 
-    public function sendNewTaskMail($sender,$task){
+    public function sendNewTaskMail($sender,$task,$receivers){
 
-        $receiver_id=$task->user_id;
-        $receiver=User::findOrFail($receiver_id);
-        
-        //mensaje
-//        $message = sprintf('Activate account <a href="%s">%s</a>', $link, $link);
-        //cambiando raw por send se puede utilizar una plantilla html para el mail
-//        $this->mailer->raw($message, function (Message $m) use ($user) {
-//            $m->to($user->email)->subject('Activation mail');
-//        });
+        $correos=[];
+        foreach ($receivers as $receiver) {
+         $correos[]= [
+             'email'=>$receiver->email
+         ];
+        }
+        $array=array_flatten($correos);
 
-
-        Mail::send('emails.new_task', ['sender' => $sender,'receiver'=>$receiver,'task'=>$task], function ($message) use ($receiver){
+        Mail::send('emails.new_task', ['sender' => $sender,'receivers'=>$receivers,'task'=>$task], function ($message) use ($array){
             $message->from('admin@fedeguayas.com.ec', 'Gestion de Tareas');
             $message->subject('Nueva Tarea asignada');
-            $message->to($receiver->email);
+             $message->to($array);
+
         });
+
     }
     
     

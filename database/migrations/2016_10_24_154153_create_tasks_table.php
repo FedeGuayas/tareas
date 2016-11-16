@@ -14,7 +14,7 @@ class CreateTasksTable extends Migration
     {
         Schema::create('tasks', function (Blueprint $table) {
             $table->increments('id');
-            $table->integer('user_id')->unsigned();
+            $table->integer('area_id')->unsigned();
             $table->string('task',100);
             $table->string('description',150)->nullable();
             $table->integer('weekday')->nullable();//1 Lun , 2 Martes etc.  0 si se repite el evento diario, por lo k no importaria en dia de la semana de comienzo del evento.
@@ -26,11 +26,10 @@ class CreateTasksTable extends Migration
             $table->string('color')->nullable();
             $table->integer('repeats')->nullable();//1 para recurrentes, 0 no recurrente
             $table->integer('repeats_freq')->nullable();// 0 no recurrente, 1 diario, 7 semanal, 14 2semanas, 28 mensual, etc.
-            $table->integer('repeats_freq')->nullable();
             $table->string('file')->nullable();
             $table->timestamps();
 
-            $table->foreign('user_id')->references('id')->on('users')
+            $table->foreign('area_id')->references('id')->on('areas')
                 ->onUpdate('cascade')->onDelete('cascade');
         });
     }

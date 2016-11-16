@@ -33,10 +33,10 @@ class UsersController extends Controller
     public function index()
     {
         $users=User::where('activated',true)->get();
-        $users->each(function ($users) {
-            $users->area;
-            $users->tasks;
-        });
+//        $users->each(function ($users) {
+//            $users->area;
+//            $users->tasks;
+//        });
         
 
         return view('users.index',['users'=>$users]);
@@ -219,7 +219,6 @@ class UsersController extends Controller
         $tasksOn=$eventsCount->where('state',0)->count();//tareas pendientes
         $tasksOff=$total-$tasksOn;//tareas terminadas
        
-
 //        $eventsAllArray=[];
 //        foreach ($eventsAll as $event){
 //            $eventsAllArray[]=[

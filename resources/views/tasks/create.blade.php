@@ -1,6 +1,12 @@
 @extends('layouts.dashboard')
 
+@section('style')
+    <link rel="stylesheet" href="{{ asset("plugins/choosenjs/chosen.min.css") }}" />
+@endsection
+
 @section('page_heading','Crear Tarea')
+
+
 @section('section')
 
     <div class="col-sm-12">
@@ -77,7 +83,8 @@
                     <div class="col-sm-6">
                         <div class="form-group">
                             {!! Form::label('user_id','Trabajador:') !!}
-                            {!! Form::select('user_id',['placeholder'=>'Seleccione trabajador'],null,['class'=>'form-control']) !!}
+                            {{--<select data-placeholder="Seleccione trabajador..." style="width:350px;" multiple class="chosen-select" id="user_id"></select>--}}
+                            {!! Form::select('user_id[]',['placelholder'=>'Seleccione trabajadores'],null,['class'=>'form-control chosen-trabajador','id'=>'user_id', 'multiple'=>'multiple']) !!}
                         </div>
                     </div>
                 </div>
@@ -103,7 +110,11 @@
 @section('script')
 
     {{--Script para select condicional dropdown de personas por areas--}}
+
     <script src="{{ asset("assets/scripts/dropdown.js") }}" type="text/javascript"></script>
+    <script src="{{ asset("plugins/choosenjs/chosen.jquery.min.js") }}" type="text/javascript"></script>
+    <script src="{{ asset("plugins/choosenjs/chosen.proto.min.js") }}" type="text/javascript"></script>
+
 
     <script type="text/javascript">
         $(function () {
@@ -147,7 +158,17 @@
                 }
 
             });
+
         });
+
+        $(".chosen-trabajador").chosen({
+//            disable_search_threshold: 10,
+            no_results_text: "No encontrado!",
+            width: "95%",
+            placeholder_text_multiple: "Seleccione trabajadores",
+            search_contains:true
+        });
+
     </script>
 
 

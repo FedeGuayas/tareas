@@ -17,11 +17,13 @@ class CreateTableEvents extends Migration
             $table->integer('task_id')->unsigned();
             $table->datetime('start');
             $table->datetime('end')->nullable();
+            $table->mediumText('title')->nullable();
             $table->dateTime('end_day')->nullable()->default(null);//dia real de terminacion
             $table->boolean('state')->default(false);//estado de la tarea terminada 1, pendiente 0
-            $table->mediumText('title')->nullable();
+            $table->boolean('allDay')->nullable();
+
             $table->timestamps();
-            
+
             $table->foreign('task_id')->references('id')->on('tasks')
                 ->onUpdate('cascade')->onDelete('cascade');
         });
