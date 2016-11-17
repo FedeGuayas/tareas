@@ -95,7 +95,9 @@
     <br>
     {!! Form::submit('Crear',['class'=>'btn btn-success','type'=>'button']) !!}
     {!! Form::reset('Limpiar',['class'=>'btn btn-danger']) !!}
-
+    <a href="{{route('admin.tasks.index')}}" >
+        {!! Form::button('Regresar',['class'=>'btn btn-primary']) !!}
+    </a>
 </div>
 
                 {!! Form::close() !!}

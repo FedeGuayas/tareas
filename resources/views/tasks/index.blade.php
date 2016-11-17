@@ -1,6 +1,8 @@
 @extends ('layouts.dashboard')
-{{--@section('title','Tareas')--}}
+@section('title','Tareas')
 @section('page_heading','Listado de Tareas')
+
+
 
 @section('section')
     <div class="col-sm-12 col-lg-6">

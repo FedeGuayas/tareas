@@ -34,10 +34,12 @@
                             {!! Form::select('area_id',$areas,null,['class'=>'form-control','placeholder'=>'Seleccione el area...','required']) !!}
                         </div>
                     </div>
-                    <div class="form-group pull-right">
-                        <div class="clerafix"></div>
+                    <div class="form-group">
                         {!! Form::submit('Crear',['class'=>'btn btn-success','type'=>'button']) !!}
                         {!! Form::reset('Limpiar',['class'=>'btn btn-danger']) !!}
+                        <a href="{{route('admin.users.index')}}" >
+                            {!! Form::button('Regresar',['class'=>'btn btn-primary']) !!}
+                        </a>
                     </div>
                 </div>
             </div>

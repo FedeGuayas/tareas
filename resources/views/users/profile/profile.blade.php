@@ -1,4 +1,5 @@
 @extends('layouts.dashboard')
+@section('title','Perfil')
 @section('page_heading','Perfil de Usuario')
 @section('section')
            

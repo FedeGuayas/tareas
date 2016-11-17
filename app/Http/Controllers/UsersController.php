@@ -3,9 +3,9 @@
 namespace App\Http\Controllers;
 
 use App\Area;
+use App\Task;
 use Illuminate\Support\Facades\Event;
 use App\Role;
-use App\Task;
 use Illuminate\Http\Request;
 use Carbon\Carbon;
 use App\Http\Requests;
@@ -33,13 +33,22 @@ class UsersController extends Controller
     public function index()
     {
         $users=User::where('activated',true)->get();
-//        $users->each(function ($users) {
-//            $users->area;
-//            $users->tasks;
-//        });
-        
+        $events =\App\Event::all();
+        $tasks =Task::all();
+        $tasks->each(function ($tasks) {
+            $tasks->user;
+            $tasks->events;
+            $tasks->area;
+        });
+        $events->each(function ($events) {
+           $events->task;
+        });
 
-        return view('users.index',['users'=>$users]);
+        $users->each(function ($users) {
+            $users->area;
+            $users->tasks;
+        });
+        return view('users.index',compact('users','events','tasks'));
     }
 
     /**

@@ -1,4 +1,5 @@
 @extends ('layouts.dashboard')
+@section('title','Notificaciones')
 @section('page_heading','Categorias de notificaciones')
 
 @section('section')

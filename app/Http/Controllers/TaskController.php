@@ -57,7 +57,6 @@ class TaskController extends Controller
         $areas->each(function ($areas)  {
             $areas->events;
         });
-//        dd($areas);
         return view('tasks.index', ['events' => $events,'areas' => $areas]);
     }
 

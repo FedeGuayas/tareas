@@ -27,7 +27,7 @@ class Area extends Model
         return $this->hasMany('App\Task');
     }
 
-    //accedo a las tareas a traves del usuario
+    //accedo a los eventos a traves de las tareas
     public function events(){
         return $this->hasManyThrough('App\Event','App\Task');
     }

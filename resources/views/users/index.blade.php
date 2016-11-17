@@ -1,8 +1,17 @@
 @extends('layouts.dashboard')
 
+@section('title','Trabajadores')
+
 @section('page_heading','Listado Trabajadores')
 
 @section('section')
+    <div class="col-sm-12 col-lg-6">
+        <div class="row">
+            <a href="{{ route('admin.users.create' )}}" class="btn btn-success tip pull-left" data-placement="right"
+               title="Crear"><i class="fa fa-user" aria-hidden="true"></i>
+                Nuevo</a>
+        </div>
+    </div>
 
     <div class="col-sm-12">
         <div class="row">
@@ -12,7 +21,6 @@
                        data-order='[[ 1, "asc" ]]' style="display: none">
                     <thead>
                     <tr>
-                        {{--<th>id</th>--}}
                         <th>Usuario</th>
                         <th>Nombre</th>
                         <th>Telefono</th>
@@ -24,7 +32,6 @@
                     </thead>
                     <tfoot>
                     <tr>
-                        {{--<th>id</th>--}}
                         <th>Usuario</th>
                         <th>Nombre</th>
                         <th>Telefono</th>
@@ -37,22 +44,38 @@
                     <tbody>
                     @foreach($users as $user)
                         <tr>
-                            {{--<td>{{$area->id}}</td>--}}
                             <td>{{$user->name}}</td>
                             <td>{{$user->getFullName()}}</td>
                             <td>{{$user->phone}}</td>
                             <td>{{$user->email}}</td>
                             <td>{{$user->area['area']}}</td>
-                            {{--<td>--}}
-                                {{--<a href="#!" class="btn btn-xs bg-info">Total  <span class="badge">{{$user->tasks->count()}}</span></a>--}}
+                            <td>
 
-                                {{--@foreach($user->tasks as $task)--}}
-                                    {{--@if ($task->repeats==1)--}}{{--repetitiva--}}
-                                        {{--<a href="#!" class="btn btn-xs bg-primary">Recurrentes <span class="badge">{{$task->events->count()}}</span></a>--}}
+                                    {{$user}}
+
+
+                                {{--@foreach($tasks as $task)--}}
+                                    {{--@if ($task->repeats==1)<!--repetitiva-->--}}
+                                {{--<a href="#!" class="btn btn-xs bg-info">Recurrentes  <span class="badge">{{$task->events->count()}}</span></a>--}}
+                                    {{--@foreach($task->users as $users)--}}
+                                        {{--@if($users->id==$user->id)--}}
+
+
+
+
+                                    {{--@endforeach--}}
                                     {{--@endif--}}
+{{--                                        {{$task->users}}<br>--}}
+                                    {{--@if( )--}}
+                                {{--@else--}}
+                                {{--<a href="#!" class="btn btn-xs bg-info">Total  <span class="badge">{{$task->count()}}</span></a>--}}
+                                {{----}}
+                                {{--@endif--}}
+
+
                                 {{--@endforeach--}}
-                            {{--</td>--}}
-                            {{--<td>--}}
+                            </td>
+                            <td>A
                                 {{--<a href="{{ route('admin.users.edit', $user->id )}}" class="btn btn-xs btn-warning tip" data-placement="top" title="Editar"><i class="fa fa-pencil" aria-hidden="true"></i>--}}
                                 {{--</a>--}}
                                 {{--<a href="" data-target="#modal-delete-{{ $user->id }}" data-toggle="modal" class="btn btn-xs btn-danger tip"  data-placement="top" title="Elimminar"><i class="fa fa-trash" aria-hidden="true"></i>--}}
@@ -61,7 +84,10 @@
                                 {{--<a href="{{ route('admin.users.roles', $user->id )}}" class="btn btn-xs btn-warning tip" data-placement="top" title="Roles"><i class="fa fa-key" aria-hidden="true"></i>--}}
                                 {{--</a>--}}
                                 {{--@endpermission--}}
-                            {{--</td>--}}
+                            </td>
+
+
+
                         </tr>
                         @include('users.modal')
                     @endforeach

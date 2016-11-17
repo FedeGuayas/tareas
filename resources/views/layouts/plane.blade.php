@@ -16,6 +16,7 @@
 	<link rel="stylesheet" href="{{asset('plugins/bootstrap/dist/css/bootstrap.min.css')}}">
 	<link rel="stylesheet" href="{{asset('plugins/fontawesome/css/font-awesome.css')}}">
 
+
 {{--	<link rel="stylesheet" href="{{ asset("plugins/datatables/media/css/jquery.dataTables.min.css") }}" />--}}
 
 	<link rel="stylesheet" href="{{ asset("assets/stylesheets/styles.css") }}" />
@@ -36,8 +37,7 @@
 </body>
 
 
-
-<script src="{{ asset("assets/scripts/frontend.js") }}" type="text/javascript"></script>
+<script src="{{ asset('assets/scripts/frontend.js') }}" type="text/javascript"></script>
 
 
 {{--FullCalendar--}}
@@ -57,6 +57,9 @@
 {{--Boostrap DateTimePicker--}}
 <script src="{{ asset("plugins/moment/min/moment-with-locales.min.js") }}" type="text/javascript"></script>
 <script src="{{ asset("plugins/bDateTimePicker/js/bootstrap-datetimepicker.min.js") }}" type="text/javascript"></script>
+
+
+<script src="{{asset('plugins/bootstrap/dist/js/bootstrap.js')}}"></script>
 
 
 
