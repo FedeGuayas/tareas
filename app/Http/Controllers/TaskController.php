@@ -47,19 +47,18 @@ class TaskController extends Controller
      */
     public function index()
     {
-        $tasks = Task::all();
+        $events = Event::all();
         $areas=Area::all();
 
-        $tasks->each(function ($tasks) {
-            $tasks->events;
-            $tasks->users;
+        $events->each(function ($events) {
+            $events->task;
         });
 
         $areas->each(function ($areas)  {
             $areas->events;
         });
-dd($tasks);
-        return view('tasks.index', ['tasks' => $tasks,'areas' => $areas]);
+//        dd($areas);
+        return view('tasks.index', ['events' => $events,'areas' => $areas]);
     }
 
     /**

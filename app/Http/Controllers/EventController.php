@@ -230,7 +230,4 @@ class EventController extends Controller
         return $data;
     }
 
-
-
-
 }

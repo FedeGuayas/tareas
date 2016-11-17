@@ -1,4 +1,5 @@
 @extends ('layouts.dashboard')
+{{--@section('title','Tareas')--}}
 @section('page_heading','Listado de Tareas')
 
 @section('section')
@@ -45,64 +46,55 @@
                         </tr>
                     </tfoot>
                     <tbody>
-                    {{--@foreach($tasks as $task)--}}
+                    @foreach($events as $event)
                         <tr>
-                            <td>1</td>
-                            <td>1</td>
-                            <td>1</td>
-                            <td>1</td>
-                            <td>1</td>
-                            <td>1</td>
-                            <td>1</td>
-                            <td>1</td>
-                            {{--<td>{{$task->task}}</td>--}}
-                            {{--<td>{{$task->user->getFullName()}}</td>--}}
-                            {{--<td>--}}
-                                {{--@foreach($areas as $area)--}}
-                                    {{-- $task->user->area_id //area del usuario--}}
-                                    {{--@if ($task->user->area_id==$area->id)--}}
-                                        {{--{{$area->area}}<br><br>--}}
-                                    {{--@endif--}}
-                                {{--@endforeach--}}
-                            {{--</td>--}}
-                            {{--<td>{{$task->start_day}}</td>--}}
-                            {{--<td>{{$task->performance_day}}</td>--}}
-                            {{--<td>{{$task->end_day}}</td>--}}
-                            {{--<td>--}}
-                                {{--@if ($task->state==0)--}}
-                                    {{--<span class="label label-warning">Pendiente</span>--}}
 
-                                {{--@else--}}
-                                    {{--@if ($task->end_day > $task->performance_day)--}}
-                                        {{--<span class="label label-danger">Terminada</span>--}}
-                                    {{--@else--}}
-                                        {{--<span class="label label-success">Terminada</span>--}}
-                                    {{--@endif--}}
+                            <td>{{$event->title}}</td>
+                            <td>
+                                @foreach($event->task->users as $user)
+                                    {{$user->getFullName()}}
+                                @endforeach
+                            </td>
+                            <td>{{$event->task->area->area}}</td>
+                            <td>{{$event->start}}</td>
+                            <td>{{$event->end}}</td>
+                            <td>{{$event->end_day}}</td>
+                            <td>
+                                @if ($event->state==0)
+                                    <span class="label label-warning">Pendiente</span>
+                                @else
+                                    @if ($event->end_day > $event->end)
+                                        <span class="label label-danger">Terminada</span>
+                                    @else
+                                        <span class="label label-success">Terminada</span>
+                                    @endif
 
-                                {{--@endif--}}
-                            {{--</td>--}}
+                                @endif
+                            </td>
+                            <td>
+                                @role(['supervisor','administrador'])
+                                @if ($event->task->repeats==0)
+                                <a href="{{ route('admin.tasks.edit', $event->task_id )}}" class="btn btn-xs btn-warning" data-placement="top" title="Editar"><i class="fa fa-pencil" aria-hidden="true"></i>
+                                </a>
+                                 <a href="" data-target="#modal-delete-{{ $event->task_id }}" data-toggle="modal" class="btn btn-xs btn-danger" data-placement="top" title="Elimminar"><i class="fa fa-trash" aria-hidden="true"></i>
+                                 </a>
+                                @else
+                                <a href="{{ route('admin.calendar.edit', $event->id)}}" class="btn btn-xs btn-warning" data-placement="top" title="Editar"><i class="fa fa-calendar" aria-hidden="true"></i>
+                                </a>
+                                @endif
+                                <a href="" data-target="#modal-delete-{{ $event->task_id }}" data-toggle="modal" class="btn btn-xs btn-danger" data-placement="top" title="Elimminar"><i class="fa fa-trash" aria-hidden="true"></i>
+                                </a>
+                                @if (!is_null($event->end_day) && ($event->state==0))
+                                <a href="" id="{{$event->id}}" class="btn btn-xs btn-primary aprobEndTask" data-placement="top" title="Aprobar"><i class="fa fa-thumbs-up" aria-hidden="true"></i>
+                                </a>
+                                @endif
+                                @endrole
+                            </td>
 
-                            {{--<td>--}}
-                                {{--@role(['supervisor','administrador'])--}}
-                                {{--@if ($task->repeats==0)--}}
-                                    {{--<a href="{{ route('admin.tasks.edit', $task )}}" class="btn btn-xs btn-warning" data-placement="top" title="Editar"><i class="fa fa-pencil" aria-hidden="true"></i>--}}
-                                    {{--</a>--}}
-                                {{--@else--}}
-                                    {{--<a href="{{ route('admin.calendar.edit', $task)}}" class="btn btn-xs btn-warning" data-placement="top" title="Editar"><i class="fa fa-calendar" aria-hidden="true"></i>--}}
-                                    {{--</a>--}}
-                                {{--@endif--}}
-                                {{--<a href="" data-target="#modal-delete-{{ $task->id }}" data-toggle="modal" class="btn btn-xs btn-danger" data-placement="top" title="Elimminar"><i class="fa fa-trash" aria-hidden="true"></i>--}}
-                                {{--</a>--}}
-                                    {{--@if (!is_null($task->end_day) && ($task->state==0))--}}
-                                        {{--<a href="" id="{{$task->id}}" class="btn btn-xs btn-primary aprobEndTask" data-placement="top" title="Aprobar"><i class="fa fa-thumbs-up" aria-hidden="true"></i>--}}
-                                        {{--</a>--}}
-                                    {{--@endif--}}
-                                {{--@endrole--}}
-                            {{--</td>--}}
 
                         </tr>
                         {{--@include('tasks.modal')--}}
-                    {{--@endforeach--}}
+                    @endforeach
                     </tbody>
                 </table>
             </div>
