@@ -1,5 +1,5 @@
 @extends ('layouts.dashboard')
-@section('page_heading','Sus tareas del mes, '.$user->getFullName().' ')
+@section('page_heading','Sus tareas del mes, '.$user->getFullNameAttribute().' ')
 
 @section('section')
 
@@ -38,32 +38,25 @@
                     </tr>
                     </tfoot>
                     <tbody>
-                    @foreach($tasks as $task)
+                    @foreach($events as $event)
                         <tr>
-                            {{--<td>{{$area->id}}</td>--}}
+                            <td>{{$event->title}}</td>
+                            <td>{{$event->start}}</td>
+                            <td>{{$event->end}}</td>
+                            <td>{{$event->end_day}}</td>
                             <td>
-                                @if ($task->repeats==1)
-                                    {{$task->title}}<br>
-                                @else
-                                    {{$task->task}}<br>
-                                @endif
-                            </td>
-                            <td>{{$task->start}}</td>
-                            <td>{{$task->performance_day}}</td>
-                            <td>{{$task->end_day}}</td>
-                            <td>
-                                @if ($task->state==0)
+                                @if ($event->state==0)
                                     <span class="label label-warning">Pendiente</span>
                                 @else
                                     <span class="label label-success">Terminada</span>
                                 @endif
                             </td>
                             <td>
-                                @if ($task->state==0)
+                                @if ($event->state==0)
                                     {{--</a>--}}
                                     {{--<a href="" data-target="#modal-coment-{{ $task->id }}" data-toggle="modal" class="btn btn-xs btn-primary" data-placement="top" title="Terminada"><i class="fa fa-hand-o-left" aria-hidden="true"></i>--}}
                                     {{--</a>--}}
-                                    <a href="#!" id="{{$task->task_id}}" class="solEndTask btn btn-xs btn-primary" data-placement="top" title="Terminada"><i class="fa fa-hand-o-left" aria-hidden="true"></i>
+                                    <a href="#!" id="{{$event->id}}" class="solEndTask btn btn-xs btn-primary" data-placement="top" title="Terminar"><i class="fa fa-hand-o-left" aria-hidden="true"></i>
                                     </a>
                                 @endif
                             </td>

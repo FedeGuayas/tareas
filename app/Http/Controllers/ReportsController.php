@@ -189,7 +189,7 @@ class ReportsController extends Controller
                 $estado='Terminada';}
             
             $taskArray[] = [
-                'trabajador' => $task->user->getFullName(),
+                'trabajador' => $task->user->getFullNameAttribute(),
                 'area'=> $task->user->area->area,
                 'tarea'=>   $task->task,
                 'inicio'=>$task->start_day,

@@ -35,7 +35,7 @@
                     <tbody>
                     @foreach($notifications as $notifi)
                         <tr>
-                            <td>{{$notifi->from->getFullName()}}</td>
+                            <td>{{$notifi->from->getFullNameAttribute()}}</td>
                             <td>{{$notifi->text}}</td>
                             <td>{{$notifi->created_at}}</td>
                             <td>

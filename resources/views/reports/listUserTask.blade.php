@@ -14,7 +14,7 @@
         <tbody>
         {{--@foreach($users as $user)--}}
         <tr>
-            <td>{{$user->getfullName()}}</td>
+            <td>{{$user->getFullNameAttribute()}}</td>
             <td>{{$user->area->area}}</td>
             <td>@foreach($tareas as $task)
                     {{$task->task}}<br>

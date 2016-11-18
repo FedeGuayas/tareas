@@ -70,13 +70,15 @@
                     <div class="col-sm-6">
                         <div class="form-group">
                             {!! Form::label('area_id','Area:') !!}
-                            {!! Form::select('area_id',$areas,$task->user->area_id,['class'=>'form-control']) !!}
+                            {!! Form::select('area_id',$areas,null,['class'=>'form-control']) !!}
                         </div>
                     </div>
                     <div class="col-sm-6">
                         <div class="form-group">
                             {!! Form::label('user_id','Trabajador:') !!}
-                            {!! Form::select('user_id',[$task->user_id=>$task->user->getFullName()],null,['class'=>'form-control']) !!}
+{{--                            {!! Form::select('user_id',[$task->user_id=>$task->user->getFullNameAttribute()],null,['class'=>'form-control']) !!}--}}
+{{--                            {!! Form::select('user_id[]',[$task->users=>$task->user->getFullNameAttribute()],null,['class'=>'form-control chosen-trabajador','id'=>'user_id', 'multiple'=>'multiple']) !!}--}}
+                            {!! Form::select('user_id[]',$users,null,['class'=>'form-control chosen-trabajador','id'=>'user_id', 'multiple'=>'multiple']) !!}
                         </div>
                     </div>
                 </div>
@@ -102,7 +104,7 @@
 @section('script')
 
     {{--Script para select condicional dropdown de personas por areas--}}
-    <script src="{{ asset("assets/scripts/dropdown.js") }}" type="text/javascript"></script>
+    {{--<script src="{{ asset("assets/scripts/dropdown.js") }}" type="text/javascript"></script>--}}
 
     <script type="text/javascript">
         $(function () {
@@ -142,6 +144,26 @@
                 }
 
             });
+        });
+
+        $("#area_id").change(function(event){
+            $.get("/users/"+event.target.value+"",function(response,state){
+                // console.log(response);
+                $("#user_id").empty();
+                for (i=0; i<response.length; i++){
+                    $("#user_id").append("<option value='"+response[i].id+"'>"+response[i].first_name+' ' +response[i].last_name+"</option>");
+                }
+                $("#user_id").trigger("chosen:updated");//estas dos lineas son solo para actualizar el choosen js
+                $("#user_id").trigger("liszt:updated");
+            });
+        });
+
+        $(".chosen-trabajador").chosen({
+//            disable_search_threshold: 10,
+            no_results_text: "No encontrado!",
+            width: "95%",
+            placeholder_text_multiple: "Seleccione trabajadores",
+            search_contains:true
         });
     </script>
 

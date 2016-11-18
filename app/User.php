@@ -46,13 +46,13 @@ class User extends Authenticatable
         return User::where('area_id',$id)->get();
     }
 
-    public function getFullName(){
+    public function getFullNameAttribute(){
         return $this->first_name.' '.$this->last_name;
     }
 
     public function tasks()
     {
-        return $this->hasMany('App\Task');
+        return $this->belongsToMany('App\Task');
     }
 
     public function area()

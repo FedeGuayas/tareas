@@ -233,7 +233,7 @@ class TaskController extends Controller
 
         //notificacion multiple a todos los usuarios de la tarea
         \Notifynder::loop($receivers, function(\Fenos\Notifynder\Builder\Builder $builder, $receiver) use ($sender) {
-            $builder->category('task.end.sol')// definir la categoria de notificacion a enviar
+            $builder->category('task.new')// definir la categoria de notificacion a enviar
             ->from($sender)
                 ->to($receiver)
                 ->url('/user/tasks')
@@ -255,10 +255,23 @@ class TaskController extends Controller
     public function edit($id)
     {
 
+//        $horarios=[] + Horario::select(DB::raw('CONCAT(start_time, " - ", end_time) AS horario'), 'id')->lists('horario','id')->all();
+
+
             $task = Task::findOrFail($id);
+//        $users->each(function ($user) {
+//            $user->getFullNameAttribute();
+//        });
+
+        $users=$task->users->pluck('full_name','id');
+//            $users = [] + User::where('id', $task->users)->select(DB::raw('CONCAT(first_name, " ", last_name) AS name'),'id')->
+//                pluck('name', 'id')->all();
+
+
+        
             $areas_coll = Area::all();
-            $list_areas = $areas_coll->pluck('area', 'id');
-            return view('tasks.edit', ['task' => $task, 'areas' => $list_areas]);
+            $areas = $areas_coll->pluck('area', 'id');
+            return view('tasks.edit', compact('task', 'areas','users'));
 
 
     }
@@ -274,8 +287,8 @@ class TaskController extends Controller
     public function update(Request $request, $id)
     {
         $task = Task::findOrFail($id);
-//        if(Auth::user()->hasRole(['supervisor','administrador'])){//verificamos los roles
-        if(Auth::user()->hasRole(['supervisor'])){
+        if(Auth::user()->hasRole(['supervisor','administrador'])){//verificamos los roles
+//        if(Auth::user()->hasRole(['supervisor'])){
         try {
             DB::beginTransaction();
 
@@ -283,24 +296,49 @@ class TaskController extends Controller
             $task->description = $request->input('description');
             $task->start_day = $request->input('start_day');
             $task->performance_day = $request->input('performance_day');
-    //        $task->end_day = null;
-    //        $task->state = false;//no terminada
-            $task->user_id = $request->input('user_id');
-    //        $task->allDay = false;
-            $task->color = "#d9edf7";//info tarea recien creada
+//            $task->end_day = null;
+//            $task->state = false;//no terminada
+//            $task->color = "#286090";//tarea recien creada
             $repeats = $request->input('repeats');
             $weekday = date('N', strtotime($request->input('start_day')));
-    //        $task->repeats = 0;
-    //        $task->repeats_freq = 0;
-            $task->weekday=$weekday;
+            $task->area_id = $request->input('area_id');
 
-            $event=Event::where('task_id',$id)->first();
-            $event->start =$task->start_day;
-            $event->end=$task->performance_day;
-            $event->title =$task->task;
-            $task->update();
-            $event->task()->associate($task);
-            $event->update();
+            if (!$repeats) {
+                // El usuario no marcó checkbox tarea no recurrente
+                $task->repeats = 0;
+                $task->repeats_freq = 0;
+                $task->weekday = $weekday;
+                $task->allDay = true; //resize en calendario
+                $task->update();
+                $event=\App\Event::where('task_id',$id)->first();
+                $event->title = $task->task;
+                $event->start= $task->start_day;
+                $event->end = $task->performance_day;
+                $event->end_day= $task->end_day;
+                $event->state = $task->state;
+                $event->allDay = $task->allDay;
+
+                $event->task()->associate($task);
+                $event->update();
+
+            }
+
+            //Usuarios a los k se les asigno la tarea
+            $usersId = $request->input('user_id');
+            $task->users()->attach($usersId);
+
+
+
+
+            /*******/
+            ////
+
+//            $event->start =$task->start_day;
+//            $event->end=$task->performance_day;
+//            $event->title =$task->task;
+//            $task->update();
+//            $event->task()->associate($task);
+//            $event->update();
 
             DB::commit();
 

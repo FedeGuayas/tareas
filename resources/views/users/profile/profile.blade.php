@@ -119,6 +119,7 @@
                                     <div class="timeline-panel">
                                         <div class="timeline-heading">
                                             <h4 class="timeline-title">{{$event->title}}</h4>
+                                            <p><small><i class="fa fa-star"></i>Inicio: {{$event->start}}</small></p>
                                             <p><small class="text-muted"><i class="fa fa-clock-o"></i> {{$event->created_at->diffForHumans()}}</small>
                                             </p>
                                         </div>
@@ -178,7 +179,7 @@
                             @endforeach
                         </div>
                             <!-- /.list-group -->
-                            <a href="{{route('user.notifications.all')}}" class="btn btn-default btn-block">Ver todas</a>
+                            <a href="{{route('user.notifications.all')}}" class="btn btn-default btn-block">Ver todas las notificaciones</a>
 
                         <!-- /.panel-body -->
 

@@ -51,7 +51,7 @@
                             {{--<td>{{$area->id}}</td>--}}
                             <td>{{$task->task}}</td>
                             <td>{{$task->area->area}}</td>
-                            <td>{{$task->person->getFullName()}}</td>
+                            <td>{{$task->person->getFullNameAttribute()}}</td>
                             <td>{{$task->start_day}}</td>
                             <td>{{$task->performance_day}}</td>
                             <td>{{$task->end_day}}</td>

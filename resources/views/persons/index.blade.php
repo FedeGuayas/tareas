@@ -33,7 +33,7 @@
                     @foreach($persons as $person)
                         <tr>
                             {{--<td>{{$area->id}}</td>--}}
-                            <td>{{$person->getFullName()}}</td>
+                            <td>{{$person->getFullNameAttribute()}}</td>
                             <td>{{$person->phone}}</td>
                             <td>{{$person->user->email}}</td>
                             <td>{{$person->area->area}}</td>

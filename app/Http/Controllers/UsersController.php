@@ -33,22 +33,13 @@ class UsersController extends Controller
     public function index()
     {
         $users=User::where('activated',true)->get();
-        $events =\App\Event::all();
-        $tasks =Task::all();
-        $tasks->each(function ($tasks) {
-            $tasks->user;
-            $tasks->events;
-            $tasks->area;
-        });
-        $events->each(function ($events) {
-           $events->task;
-        });
-
         $users->each(function ($users) {
             $users->area;
             $users->tasks;
         });
-        return view('users.index',compact('users','events','tasks'));
+
+
+        return view('users.index',compact('users'));
     }
 
     /**
@@ -156,7 +147,7 @@ class UsersController extends Controller
         });
         $flag=$user->delete();
         if ($flag){
-            return redirect()->route('admin.users.index')->with('message_danger', 'El usuario '.$user->getFullName().' ha sido eliminado');
+            return redirect()->route('admin.users.index')->with('message_danger', 'El usuario '.$user->getFullNameAttribute().' ha sido eliminado');
         }else{
             return redirect()->route('admin.users.index')->with('message_danger', 'Ah ocurrido un error');
         }
@@ -201,7 +192,7 @@ class UsersController extends Controller
 
         //eventos del mes
         $events=\App\Event::
-        join('tasks as t','t.id','=','e.task_id',' as e')
+            join('task_user as t','t.task_id','=','e.task_id',' as e')
             ->join('users as u','u.id','=','t.user_id')
             ->where([
                 ['start', '>=',  $inicioMes],
@@ -212,14 +203,14 @@ class UsersController extends Controller
 
         //todos los eventos del usuario paginados para la linea del tiempo
         $eventsAll=\App\Event::
-        join('tasks as t','t.id','=','e.task_id',' as e')
+        join('task_user as t','t.task_id','=','e.task_id',' as e')
             ->join('users as u','u.id','=','t.user_id')
             ->where('t.user_id',$user->id)
             ->paginate(5);
 
         //para contarlos
         $eventsCount=\App\Event::
-        join('tasks as t','t.id','=','e.task_id',' as e')
+        join('task_user as t','t.task_id','=','e.task_id',' as e')
             ->join('users as u','u.id','=','t.user_id')
             ->where('t.user_id',$user->id)
             ->get();
@@ -227,16 +218,7 @@ class UsersController extends Controller
         $total=$eventsCount->count();
         $tasksOn=$eventsCount->where('state',0)->count();//tareas pendientes
         $tasksOff=$total-$tasksOn;//tareas terminadas
-       
-//        $eventsAllArray=[];
-//        foreach ($eventsAll as $event){
-//            $eventsAllArray[]=[
-//                'total'=>$event-$total,
-//            ];
-//
-//        }
-//        dd($user->notifications()->byRead(1)->get());
-        
+
         return view('users.profile.profile',compact('user','tasksOn','tasksOff','notifications','events','eventsAll'));
     }
 
@@ -285,8 +267,8 @@ class UsersController extends Controller
         $finMes=$dt->lastOfMonth()->toDateString();
 
         //eventos del mes
-        $tasks=\App\Event::
-            join('tasks as t','t.id','=','e.task_id',' as e')
+        $events=\App\Event::
+            join('task_user as t','t.task_id','=','e.task_id',' as e')
             ->join('users as u','u.id','=','t.user_id')
             ->where([
                 ['start', '>=',  $inicioMes],
@@ -294,16 +276,9 @@ class UsersController extends Controller
             ])
             ->where('t.user_id',$user->id)
             ->get();
-//dd($tasks);
-//        $tasks=$user->tasks;
-//        $tasks->each(function($tasks){
-//            $tasks->events;
-//        });
-        
-        return view('users.profile.task',compact('tasks','user'));
+
+        return view('users.profile.task',compact('events','user'));
     }
-
-
 
     /**
      * Cargar vista para otorgar roles

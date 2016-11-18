@@ -1,6 +1,6 @@
 <html>
     <body>
-    <div>Estimado: <b>{{$user->getFullName()}}</b><hr>
+    <div>Estimado: <b>{{$user->getFullNameAttribute()}}</b><hr>
         Se ha creado una cuenta para ud en el sistema de Gestión de Tareas de FEDEGUAYAS.
         <p>El siguiente link le permitirá activar  su cuenta. Este enlace será de un solo uso.
         </p>

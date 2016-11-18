@@ -45,57 +45,35 @@
                     @foreach($users as $user)
                         <tr>
                             <td>{{$user->name}}</td>
-                            <td>{{$user->getFullName()}}</td>
+                            <td>{{$user->getFullNameAttribute()}}</td>
                             <td>{{$user->phone}}</td>
                             <td>{{$user->email}}</td>
                             <td>{{$user->area['area']}}</td>
                             <td>
-
-                                    {{$user}}
-
-
-                                {{--@foreach($tasks as $task)--}}
-                                    {{--@if ($task->repeats==1)<!--repetitiva-->--}}
-                                {{--<a href="#!" class="btn btn-xs bg-info">Recurrentes  <span class="badge">{{$task->events->count()}}</span></a>--}}
-                                    {{--@foreach($task->users as $users)--}}
-                                        {{--@if($users->id==$user->id)--}}
-
-
-
-
-                                    {{--@endforeach--}}
-                                    {{--@endif--}}
-{{--                                        {{$task->users}}<br>--}}
-                                    {{--@if( )--}}
-                                {{--@else--}}
-                                {{--<a href="#!" class="btn btn-xs bg-info">Total  <span class="badge">{{$task->count()}}</span></a>--}}
-                                {{----}}
-                                {{--@endif--}}
-
-
-                                {{--@endforeach--}}
+                                @foreach($user->tasks as $task)
+                                    @if ($task->repeats==1)
+                                        {{$task->task}}<a href="#!" class="btn btn-xs bg-danger">R<span class="badge">{{$task->events->count()}}</span></a><br>
+                                    @else
+                                        {{$task->task}}<a href="#!" class="btn btn-xs bg-info">N<span class="badge"></span></a><br>
+                                    @endif
+                                @endforeach
                             </td>
-                            <td>A
-                                {{--<a href="{{ route('admin.users.edit', $user->id )}}" class="btn btn-xs btn-warning tip" data-placement="top" title="Editar"><i class="fa fa-pencil" aria-hidden="true"></i>--}}
-                                {{--</a>--}}
-                                {{--<a href="" data-target="#modal-delete-{{ $user->id }}" data-toggle="modal" class="btn btn-xs btn-danger tip"  data-placement="top" title="Elimminar"><i class="fa fa-trash" aria-hidden="true"></i>--}}
-                                {{--</a>--}}
+                            <td>
+                                <a href="{{ route('admin.users.edit', $user->id )}}" class="btn btn-xs btn-warning tip" data-placement="top" title="Editar"><i class="fa fa-pencil" aria-hidden="true"></i>
+                                </a>
+                                <a href="" data-target="#modal-delete-{{ $user->id }}" data-toggle="modal" class="btn btn-xs btn-danger tip"  data-placement="top" title="Elimminar"><i class="fa fa-trash" aria-hidden="true"></i>
+                                </a>
                                 {{--@permission('admin-roles')--}}
-                                {{--<a href="{{ route('admin.users.roles', $user->id )}}" class="btn btn-xs btn-warning tip" data-placement="top" title="Roles"><i class="fa fa-key" aria-hidden="true"></i>--}}
-                                {{--</a>--}}
+                                <a href="{{ route('admin.users.roles', $user->id )}}" class="btn btn-xs btn-warning tip" data-placement="top" title="Roles"><i class="fa fa-key" aria-hidden="true"></i>
+                                </a>
                                 {{--@endpermission--}}
                             </td>
-
-
-
                         </tr>
                         @include('users.modal')
                     @endforeach
                     </tbody>
                 </table>
-
-
-            </div>
+             </div>
         </div>
     </div>
 @endsection
@@ -153,7 +131,10 @@
 
 
             $(function () {
-                $('.tip').tooltip()
+                $('.tip').tooltip({
+                        selector: '[rel=tooltip]'
+                        }
+                )
             });
 
         } );

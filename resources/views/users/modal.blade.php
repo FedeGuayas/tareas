@@ -11,7 +11,7 @@
                 <h4 class="modal-title">Eliminar Trabajador</h4>
             </div>
             <div class="modal-body">
-                <p>Confirme si desea eliminar al Trabajador</p><em><b>{{$user->getFullName()}}</b></em><br>
+                <p>Confirme si desea eliminar al Trabajador</p><em><b>{{$user->getFullNameAttribute()}}</b></em><br>
 
                 <p class=""><i class="fa fa-exclamation-triangle fa-2x text-danger"></i> Si el Trabajador tiene tareas asignadas estas tambien serán eliminadas</p>
             </div>

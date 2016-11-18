@@ -45,7 +45,7 @@ class EventController extends Controller
                 'performance_day' => $event->task->performance_day,
                 'end_day' => $event->task->end_day,
                 'state' => $event->task->state,
-                'user_id' => $event->task->user->getFullName(),
+                'user_id' => $event->task->user->getFullNameAttribute(),
                 'allDay' => $event->task->allDay,
                 'color' => $event->task->color,
                 'weekday' => $event->task->weekday,

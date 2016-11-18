@@ -38,7 +38,7 @@
                             <td>{{$area->area}}</td>
                             <td>
                                 @foreach($area->users as $user)
-                                    {{$user->getFullName()}}<br>
+                                    {{$user->getFullNameAttribute()}}<br>
                                 @endforeach
                             </td>
                             <td>

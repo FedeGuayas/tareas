@@ -37,8 +37,8 @@
 </body>
 
 
-<script src="{{ asset('assets/scripts/frontend.js') }}" type="text/javascript"></script>
 
+<script src="{{ asset('assets/scripts/frontend.js') }}" type="text/javascript"></script>
 
 {{--FullCalendar--}}
 {{--<script src="{{asset('plugins/fullcalendar/lib/jquery.min.js')}}"></script>--}}
@@ -46,6 +46,8 @@
 <script src="{{asset('plugins/fullcalendar/lib/moment.min.js')}}"></script>
 <script src="{{asset('plugins/fullcalendar/fullcalendar.js')}}"></script>
 <script src="{{asset('plugins/fullcalendar/locale/es.js')}}"></script>
+
+
 
 {{--<script src="{{ asset("plugins/datatables/media/js/jquery.js") }}" type="text/javascript"></script>--}}
 <script src="{{ asset("plugins/datatables/media/js/jquery.dataTables.js") }}" type="text/javascript"></script>
@@ -58,8 +60,8 @@
 <script src="{{ asset("plugins/moment/min/moment-with-locales.min.js") }}" type="text/javascript"></script>
 <script src="{{ asset("plugins/bDateTimePicker/js/bootstrap-datetimepicker.min.js") }}" type="text/javascript"></script>
 
+{{--<script src="{{asset('plugins/bootstrap/dist/js/bootstrap.js')}}"></script>--}}
 
-<script src="{{asset('plugins/bootstrap/dist/js/bootstrap.js')}}"></script>
 
 
 

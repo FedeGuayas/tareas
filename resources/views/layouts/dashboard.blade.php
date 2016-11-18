@@ -177,7 +177,8 @@
                             </div>
                             <!-- /input-group -->
                         </li>
-                        <li {{ (Request::is('home') ? 'class="active"' : '') }}>
+                        <li>
+                        {{--<li {{ (Request::is('home') ? 'class="active"' : '') }}>--}}
                             <a href="{{ url ('/home') }}"><i class="fa fa-home fa-fw"></i> Home</a>
                         </li>
                         {{--<li {{ (Request::is('*charts') ? 'class="active"' : '') }}>--}}

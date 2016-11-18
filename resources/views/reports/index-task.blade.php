@@ -49,7 +49,7 @@
                             <tr>
                                 {{--<td>{{$area->id}}</td>--}}
                                 <td>{{$task->task}}</td>
-                                <td>{{$task->user->getFullName()}}</td>
+                                <td>{{$task->user->getFullNameAttribute()}}</td>
                                 <td>
                                     @foreach($areas as $area)
                                         {{-- $task->user->area_id //area del usuario--}}

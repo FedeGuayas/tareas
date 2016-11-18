@@ -3,11 +3,11 @@
     <div>
         <h3><b>
                 @foreach($receivers as $receiver)
-                    {{$receiver->getFullName()}},
+                    {{$receiver->getFullNameAttribute()}},
                 @endforeach
             </b></h3><hr>
 
-        <b> {{$sender->getFullname()}}</b> , ha creado un nuevo evento para ud en el sistema de Gestión de Tareas de FEDEGUAYAS.
+        <b> {{$sender->getFullNameAttribute()}}</b> , ha creado un nuevo evento para ud en el sistema de Gestión de Tareas de FEDEGUAYAS.
         <br>
 
         <div>

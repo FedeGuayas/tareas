@@ -1,6 +1,6 @@
 <div class="modal fade modal-slide-in-right" aria-hidden="true"
-     role="dialog" tabindex="-1" id="modal-delete-{{ $person->id }}">
-    {{Form::open(['route'=>['admin.persons.destroy',$person->id],'method'=>'DELETE'])}}
+     role="dialog" tabindex="-1" id="modal-delete-{{ $event->id }}">
+    {{Form::open(['route'=>['admin.tasks.destroy',$event->id],'method'=>'DELETE'])}}
 
     <div class="modal-dialog">
         <div class="modal-content">
@@ -8,10 +8,10 @@
                 <button type="button" class="close" data-dismiss="modal" aria-label="Cerrar">
                     <span aria-hiden="true">x</span>
                 </button>
-                <h4 class="modal-title">Eliminar Trabajador</h4>
+                <h4 class="modal-title">Eliminar Tarea</h4>
             </div>
             <div class="modal-body">
-                <p>Confirme si desea eliminar al Trabajador</p><em>{{$person->getFullNameAttribute()}}</em>
+                <p>Confirme si desea eliminar la Tarea</p><em>{{$event->task->task}}</em>
             </div>
             <div class="modal-footer">
                 <button type="button" class="btn btn-default" data-dismiss="modal">Cerrar</button>
