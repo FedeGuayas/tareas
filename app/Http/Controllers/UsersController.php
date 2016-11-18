@@ -270,6 +270,7 @@ class UsersController extends Controller
         $events=\App\Event::
             join('task_user as t','t.task_id','=','e.task_id',' as e')
             ->join('users as u','u.id','=','t.user_id')
+            ->select('e.id','e.task_id','e.start','e.end','e.title','e.end_day','e.state','e.created_at','e.updated_at','t.user_id','t.task_id','u.area_id','u.first_name','u.last_name','u.phone','u.email')
             ->where([
                 ['start', '>=',  $inicioMes],
                 ['start', '<=', $finMes]

@@ -8,7 +8,7 @@
             @include('alert.success')
             @include('alert.request')
             <div class="col-sm-6">
-                {!! Form::model($task,['route'=>['admin.tasks.update',$task->id], 'method'=>'PUT','role'=>'form']) !!}
+                {!! Form::model($task,['route'=>['admin.tasks.update',$task], 'method'=>'PUT','role'=>'form']) !!}
                 <div class="form-group">
                     <div class="form-group">
                         {!! Form::label('task','Tarea:') !!}
@@ -89,7 +89,9 @@
                     <br>
                     {!! Form::submit('Editar',['class'=>'btn btn-success','type'=>'button']) !!}
                     {!! Form::reset('Limpiar',['class'=>'btn btn-danger']) !!}
-
+                    <a href="{{route('admin.tasks.index')}}" >
+                        {!! Form::button('Regresar',['class'=>'btn btn-primary']) !!}
+                    </a>
                 </div>
 
                 {!! Form::close() !!}
@@ -114,7 +116,7 @@
                 showClose:true,
                 useCurrent: false,
                 locale:'es',
-                format:'YYYY-MM-DD HH:mm:ss'
+                format:'YYYY-MM-DD 09:00:00'
 
             });
             $('#performance_day_datetimepicker').datetimepicker({
@@ -123,7 +125,7 @@
                 showClose:true,
                 useCurrent: false, //Important! See issue #1075
                 locale:'es',
-                format:'YYYY-MM-DD HH:mm:ss'
+                format:'YYYY-MM-DD 18:00:00'
 
             });
             $("#start_day_datetimepicker").on("dp.change", function (e) {

@@ -21,7 +21,7 @@ class CreateTableEvents extends Migration
             $table->dateTime('end_day')->nullable()->default(null);//dia real de terminacion
             $table->boolean('state')->default(false);//estado de la tarea terminada 1, pendiente 0
             $table->boolean('allDay')->nullable();
-
+            
             $table->timestamps();
 
             $table->foreign('task_id')->references('id')->on('tasks')

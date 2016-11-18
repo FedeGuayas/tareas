@@ -18,5 +18,11 @@ class Event extends Model
     public function task(){
         return $this->belongsTo('App\Task');
     }
-    
+
+    public function files(){
+        return $this->hasMany('App\File');
+    }
+    public function comments(){
+        return $this->hasMany('App\Comments');
+    }
 }

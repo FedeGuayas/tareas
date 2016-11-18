@@ -75,8 +75,15 @@ Route::group(['prefix'=>'user'],function(){
         //actualizar la contraseña del perfil de usuario
         Route::put('{user}/profile/edit', ['uses' => 'UsersController@postPassword','as' => 'user.password.update']);
         
-        //tasreas del usuario
+        //tareas del usuario
         Route::get('/tasks', ['uses' => 'UsersController@userTasks','as' => 'user.profile.tasks']);
+
+        //cargar archivos y comentarios a un evento
+        Route::get('/tasks/{id}/fileUpload', ['uses' => 'EventController@getFileUpload','as' => 'user.task.getFileUpload']);
+        Route::post('/tasks/fileUpload', ['uses' => 'EventController@postFileUpload','as' => 'user.task.postFileUpload']);
+
+        //descarga de archivos
+        Route::get('/tasks/download/{file}' ,['uses' => 'EventController@downloadFile','as' => 'task.download.file']); 
 
         //el usuario solicita termino de tarea
         Route::post('/tasks/end-sol/{id?}', ['uses'=>'TaskController@userTaskEnd',
@@ -86,7 +93,6 @@ Route::group(['prefix'=>'user'],function(){
         Route::post('/tasks/end-aprob/{id?}', ['uses'=>'TaskController@taskEndAprob',
             'as'=>'user.task.end.aprob']);
         
-
         //todas las notificaciones del usuarios
         Route::get('/notifications', ['uses'=>'NotificationController@getIndex','as'=>'user.notifications.all']);
 

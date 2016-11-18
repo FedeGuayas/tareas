@@ -7,7 +7,7 @@ use Illuminate\Database\Eloquent\Model;
 class Comments extends Model
 {
    protected $fillable=[
-       'user_id','task_id','comment'
+       'user_id','event_id','title','body'
 ];
 
     public function user()
@@ -15,7 +15,7 @@ class Comments extends Model
         return $this->belongsTo('App\User');
     }
 
-    public function task()
+    public function event()
     {
         return $this->belongsTo('App\Task');
     }

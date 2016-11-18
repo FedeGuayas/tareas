@@ -51,9 +51,6 @@ class Task extends Model
     public function events(){
         return $this->hasMany('App\Event');
     }
-
-    public function comments(){
-        return $this->hasMany('App\Comment');
-    }
+    
    
 }

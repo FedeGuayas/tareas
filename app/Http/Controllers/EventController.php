@@ -3,10 +3,13 @@
 namespace App\Http\Controllers;
 
 use App\Area;
+use App\Comments;
 use App\Event;
+use App\File;
 use App\Task;
 use Carbon\Carbon;
 use Illuminate\Http\Request;
+use Illuminate\Support\Facades\Input;
 use Session;
 use App\Http\Requests;
 use Illuminate\Support\Facades\Auth;
@@ -86,7 +89,7 @@ class EventController extends Controller
     }
 
     /**
-     * Display the specified resource.
+     * Musestra la tarea en detalle.
      *
      * @param  int  $id
      * @return \Illuminate\Http\Response
@@ -196,8 +199,6 @@ class EventController extends Controller
     }
 //        
 
-
-
     /**
      * Cargar datos del trabajador en la ventana modal en el calendario por ajax
      */
@@ -229,5 +230,77 @@ class EventController extends Controller
         json_encode($data);
         return $data;
     }
+
+
+
+    /**
+     * Mostrar vista para cargar archivos a la tarea.
+     *
+     * @param  int  $id
+     * @return \Illuminate\Http\Response
+     */
+    public function getFileUpload($id)
+    {
+        $event=\App\Event::findOrFail($id);
+        return view('tasks.events.fileUp',compact('event'));
+    }
+
+
+    /**
+     * Guarda comentarios y archivos para el evento
+     * @param Request $request
+     * @return mixed
+     */
+    public function postFileUpload(Request $request)
+    {
+        $user=$request->user();
+
+        $event=$request->input('event_id');
+
+
+        if ($request->input('body')){
+            $comment=new Comments;
+            $comment->title=$request->input('title');
+            $comment->body=$request->input('body');
+            $comment->user()->associate($user);
+            $comment->event()->associate($event);
+            $comment->save();
+        }
+
+        $files = Input::file('file');
+        $file_count = count($files);
+        // contador de archivos a subir
+        $uploadcount = 0;
+        if ($request->hasFile('file')) {
+            foreach($files as $file) {
+                $archivo=new File();
+                $name = 'requerimiento_' . time() . '.' . $file->getClientOriginalExtension();
+                $path = public_path() . '/files/events/';//ruta donde se guardara
+                $upload_success = $file->move($path, $name);//lo copio a $path con el nombre $name
+                $archivo->name = $name;//ahora se guarda  en el atributo foto_ced la imagen
+                $archivo->event()->associate($event);
+                $archivo->save();
+                $uploadcount ++;
+            }
+
+            if($uploadcount == $file_count){
+                Session::flash('message', 'Subida de archivos satisfactoria');
+                return redirect()->route('user.profile.tasks');
+            }
+            else {
+                Session::flash('message_danger','Error en la subida de archivos');
+                return redirect()->back();
+            }
+        }
+        return redirect()->route('user.profile.tasks');
+    }
+
+    public function downloadFile(Request $request, $file)
+    {
+        $pathtoFile = public_path().'/files/events/'.$file;
+        return response()->download($pathtoFile);
+
+    }
+
 
 }

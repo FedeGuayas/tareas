@@ -103,15 +103,7 @@ class TaskController extends Controller
                     $repeats = $request->input('repeats');
                     $weekday = date('N', strtotime($request->input('start_day')));
                     $task->area_id = $request->input('area_id');
-
-                    if ($request->hasFile('file')) {
-                        $file = $request->file('file');
-                        $name = 'requerimiento_' . time() . '.' . $file->getClientOriginalExtension();
-                        $path = public_path() . '/dist/files/';//ruta donde se guardara
-                        $file->move($path, $name);//lo copio a $path con el nombre $name
-                        $task->file = $name;//ahora se guarda  en el atributo foto_ced la imagen
-                    }
-
+                    
                     if (!$repeats) {
                         // El usuario no marcó checkbox tarea no recurrente
                         $task->repeats = 0;
@@ -255,38 +247,27 @@ class TaskController extends Controller
     public function edit($id)
     {
 
-//        $horarios=[] + Horario::select(DB::raw('CONCAT(start_time, " - ", end_time) AS horario'), 'id')->lists('horario','id')->all();
-
-
-            $task = Task::findOrFail($id);
-//        $users->each(function ($user) {
-//            $user->getFullNameAttribute();
-//        });
-
+        $task = Task::findOrFail($id);
         $users=$task->users->pluck('full_name','id');
-//            $users = [] + User::where('id', $task->users)->select(DB::raw('CONCAT(first_name, " ", last_name) AS name'),'id')->
-//                pluck('name', 'id')->all();
+        $areas_coll = Area::all();
+        $areas = $areas_coll->pluck('area', 'id');
 
-
-        
-            $areas_coll = Area::all();
-            $areas = $areas_coll->pluck('area', 'id');
-            return view('tasks.edit', compact('task', 'areas','users'));
-
-
+        return view('tasks.edit', compact('task', 'areas','users'));
     }
 
 
     /**
      * 
-     * Actualiza la tarea en la bd
+     * Actualiza la tarea en la bd, solo se actualizan la tareas no recurrentes, las recurrentes es el calendario
      * @param Request $request
      * @param $id
      * @return mixed
      */
     public function update(Request $request, $id)
     {
+
         $task = Task::findOrFail($id);
+
         if(Auth::user()->hasRole(['supervisor','administrador'])){//verificamos los roles
 //        if(Auth::user()->hasRole(['supervisor'])){
         try {
@@ -299,46 +280,27 @@ class TaskController extends Controller
 //            $task->end_day = null;
 //            $task->state = false;//no terminada
 //            $task->color = "#286090";//tarea recien creada
-            $repeats = $request->input('repeats');
+//            $repeats = $request->input('repeats');
             $weekday = date('N', strtotime($request->input('start_day')));
             $task->area_id = $request->input('area_id');
+            $task->weekday = $weekday;
 
-            if (!$repeats) {
-                // El usuario no marcó checkbox tarea no recurrente
-                $task->repeats = 0;
-                $task->repeats_freq = 0;
-                $task->weekday = $weekday;
-                $task->allDay = true; //resize en calendario
-                $task->update();
-                $event=\App\Event::where('task_id',$id)->first();
-                $event->title = $task->task;
-                $event->start= $task->start_day;
-                $event->end = $task->performance_day;
-                $event->end_day= $task->end_day;
-                $event->state = $task->state;
-                $event->allDay = $task->allDay;
+            $task->update();
 
-                $event->task()->associate($task);
-                $event->update();
+            $event=\App\Event::where('task_id',$id)->first();
 
+            $event->start= $request->input('start_day');
+            $event->end= $request->input('performance_day');
+            $event->title =$request->input('task');
+
+            $event->task()->associate($task);
+
+            $event->update();
+            if ($request->input('user_id')){
+                $usersId = $request->input('user_id');//Usuarios a los k se les asigno la tarea
+                $task->users()->sync($usersId);
             }
 
-            //Usuarios a los k se les asigno la tarea
-            $usersId = $request->input('user_id');
-            $task->users()->attach($usersId);
-
-
-
-
-            /*******/
-            ////
-
-//            $event->start =$task->start_day;
-//            $event->end=$task->performance_day;
-//            $event->title =$task->task;
-//            $task->update();
-//            $event->task()->associate($task);
-//            $event->update();
 
             DB::commit();
 

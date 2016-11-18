@@ -17,22 +17,26 @@
                        data-order='[[ 1, "asc" ]]' style="display: none">
                     <thead>
                     <tr>
-                        {{--<th>id</th>--}}
+
                         <th>Tarea</th>
                         <th>Fecha Inicio</th>
                         <th>Fecha Termino Planificada</th>
                         <th>Fecha Termino Real</th>
+                        <th>Adjunto</th>
+                        <th>Comentarios</th>
                         <th>Estado</th>
                         <th>Acción</th>
                     </tr>
                     </thead>
                     <tfoot>
                     <tr>
-                        {{--<th>id</th>--}}
+
                         <th>Tarea</th>
                         <th>Fecha Inicio</th>
                         <th>Fecha Termino Planificada</th>
                         <th>Fecha Termino Real</th>
+                        <th>Adjunto</th>
+                        <th>Comentarios</th>
                         <th>Estado</th>
                         <th>Acción</th>
                     </tr>
@@ -45,6 +49,20 @@
                             <td>{{$event->end}}</td>
                             <td>{{$event->end_day}}</td>
                             <td>
+                                @foreach($event->files as $file)
+                                    <a href="{{route('task.download.file',$file->name)}}">
+                                        {{$file->name}}<br>
+                                    </a>
+                                @endforeach
+                            </td>
+                            <td>
+                                @foreach($event->comments as $coment)
+                                    <a href="#!">
+                                        {{$coment->title}}<br>
+                                    </a>
+                                @endforeach
+                            </td>
+                            <td>
                                 @if ($event->state==0)
                                     <span class="label label-warning">Pendiente</span>
                                 @else
@@ -52,6 +70,8 @@
                                 @endif
                             </td>
                             <td>
+                                <a href="{{route('user.task.getFileUpload', $event->id)}}" class="btn btn-xs btn-success" data-placement="top" title="Archivo"><i class="fa fa-file-archive-o" aria-hidden="true"></i>
+                                </a>
                                 @if ($event->state==0)
                                     {{--</a>--}}
                                     {{--<a href="" data-target="#modal-coment-{{ $task->id }}" data-toggle="modal" class="btn btn-xs btn-primary" data-placement="top" title="Terminada"><i class="fa fa-hand-o-left" aria-hidden="true"></i>--}}
