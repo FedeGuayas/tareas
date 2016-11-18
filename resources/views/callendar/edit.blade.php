@@ -184,11 +184,9 @@
 
                 eventAfterRender: function (event, element, view) {
                     var hoy = new Date();
-                    var perf_day = event.performance_day.date;
-                    var start_day = event.start_day.date;
 
-                    if (event.end_day) {
-                        var end_day =event.end_day.date;
+                    if (event.end_day) {//performance_day
+                        var end_day =event.end_day;
                     } else {
                         var end_day  = "NULL";
                     }
@@ -201,7 +199,7 @@
 
                     var back=event.color;
                     var area=event.area;
-                    var resp=event.user_id;
+                    var resp=event.users;
                     var repeat=event.repeats;
                     var repeat_freq=event.repeats_freq;
                     var start = (event.start.format("YYYY-MM-DD HH:mm"));
@@ -212,17 +210,17 @@
                         element.css('background-color', '#d9534f');
                     }
 
-                    if ((event.start < hoy && event.end < hoy) && ( (Date.parse(end_day)<=Date.parse(perf_day)) )){
+                    if ((event.start < hoy && event.end < hoy) &&  (Date.parse(end_day)<=Date.parse(end))){
                         //Concluído OK success paso el tiempo y se cumplio
                         //event.color = "#77DD77";
                         element.css('background-color', '#3c763d');
                     }
 
-                    if ((event.start<=hoy && event.end>=hoy) && (Date.parse(end_day)<=Date.parse(perf_day)))  {
+                    if ((event.start<hoy && event.end>hoy) && (Date.parse(end_day)<Date.parse(end)))  {
                         //terminada en tiempo success
                         element.css('background-color', '#3c763d');
                         //event.color = "#FFB347"; //n curso
-                    } else if ((event.start<=hoy && event.end>=hoy)  ) {
+                    }  if ((event.start<hoy && event.end>hoy)  ) {
 //                        //en curso info
                         element.css('background-color', '#46b8da');
 //                        //event.color = "#FFB347";
@@ -234,7 +232,7 @@
                         //event.color = "#FFB347"; //n curso
                     }
 
-                   if ((event.start < hoy && event.end < hoy) && (Date.parse(end_day)>Date.parse(perf_day))) {
+                   if ((event.start < hoy && event.end < hoy) && (Date.parse(end_day)>=Date.parse(end))) {
                         //Concluído fuera de termino warning
                         //event.color = "#AEC6CF";
                         element.css('background-color', '#ec971f');
@@ -244,23 +242,22 @@
 
                 //actualiza en la bd al editar en el calendario un evento al cambiar su tamaño, llama al metodo update del controler
                 eventResize: function (event, delta, revertFunc) {
-                    var start = event.start.format("YYYY-MM-DD HH:MM");//inicio del evento = task sino es repetitivo
-                    var task_id = event.task_id; //task_id identifica a la tarea si no es repetitivo
-                    var id = event.id; //id del evento
-                    var start_day = event.start_day; //inicio de tarea= inicio de evento  sino es repetitivo
-                    var performance_day = event.performance_day; //fin de tarea
+                    var start = event.start.format("YYYY-MM-DD HH:MM");
+                    var task_id = event.task_id;
+                    var id = event.id;
+                    var start_day = event.start_day;
+                    var performance_day = event.performance_day;
 
                     if (!event.allDay) {
                         var allDay = false;
                         defaultTimedEventDuration: "00:30:00";
                     } else {
                         var allDay = true;
-                        defaultTimedEventDuration: "08:00:00";
+                        defaultTimedEventDuration: "00:30:00";
                     }
 
-                    var title = event.title; //igual al titulo de la tarea task
-                    var repeats = event.repeats; //para saber si es evento recurrente
-
+                    var title = event.title;
+                    var repeats = event.repeats;
 
                     //compruebo si el evento tiene fecha de fin, sino da error el hacer resize
                     if (event.end) {
@@ -273,7 +270,7 @@
                         task_id: task_id,
                         id: id,
                         end: end,
-                        strat_day: start_day,
+                        start_day: start_day,
                         performance_day: performance_day,
                         title: title,
                         repeats: repeats,
@@ -297,31 +294,58 @@
                     });
                 },
                 /*actualiza en la bd el evento al arrastarlo y cambiandolo de fecha dentro del calendario*/
-                eventDrop: function (event, delta) {
-                    var start = event.start.format("YYYY-MM-DD HH:MM");//inicio del evento = task sino es repetitivo
-                    var task_id = event.task_id; //task_id identifica a la tarea si no es repetitivo
+                eventDrop: function (event) {
+                    if (!event.allDay) {
+                        var allDay = false;
+                        defaultTimedEventDuration: "00:30:00";
+                    } else {
+                        var allDay = true;
+                        defaultTimedEventDuration: "00:30:00";
+                    }
+
                     var id = event.id; //id del evento
-//                    var end=event.end; //fin evento = al performances_day si no es repetitivo
-                    var start_day = event.start_day; //inicio de tarea= inicio de evento  sino es repetitivo
-                    var performance_day = event.performance_day; //fin de tarea
-                    var allDay = event.allDay;
-                    var title = event.title; //igual al titulo de la tarea task
-                    var repeats = event.repeats; //para saber si es evento recurrente
+                    var start = event.start.format("YYYY-MM-DD HH:MM:SS");
 
                     if (event.end) {
-                        var end = event.end.format("YYYY-MM-DD HH:MM");
+                    var end = event.end.format("YYYY-MM-DD HH:MM:SS");
                     } else {
                         var end = "NULL";
                     }
+
+                    var title = event.title;
+                    var task_id = event.task_id;
+                    var state = event.estado;
+                    var end_day = event.end_day;
+
+                    var color = event.color;
+                    var task=event.task;//task title
+                    var description=event.description;//task
+                    var start_day=event.start_day;//task
+                    var performance_day=event.performance_day;//task
+                    var users=event.users;//task users
+                    var repeats = event.repeats; //task
+                    var repeats_freq = event.repeats_freq; //task
+                    var area = event.area; //task
+
                     var datos = {
                         start: start,
                         task_id: task_id,
                         id: id,
                         end: end,
-                        start_day: start_day,
-                        performance_day: performance_day,
+                        end_day: end_day,
                         title: title,
-                        repeats: repeats
+                        repeats: repeats,
+                        state:state,
+                        allDay:allDay,
+                        task:task,
+                        description:description,
+                        start_day:start_day,
+                        performance_day:performance_day,
+                        users:users,
+                        repeats : repeats,
+                        repeats_freq:repeats_freq,
+                        area:area,
+                        color:color
                     }
 
                     crsfToken = document.getElementsByName("_token")[0].value;
@@ -349,7 +373,16 @@
                 },
                 //mostrar informacion del evento en un tooltip al pasar el mouse por encima
                 eventMouseover: function (event, jsEvent, view) {
-                    var start = (event.start.format("YYYY-MM-DD HH:mm"));
+
+                    if (!event.allDay) {
+                        var allDay = false;
+                        defaultTimedEventDuration: "00:30:00";
+                    } else {
+                        var allDay = true;
+                        defaultTimedEventDuration: "00:30:00";
+                    }
+
+                    var start = (event.start.format("YYYY-MM-DD HH:MM"));
                     var back = event.color;
                     var area = event.area;
                     var resp = event.user_id;
@@ -357,7 +390,7 @@
                     var repeat_freq = event.repeats_freq;
 
                     if (event.end) {
-                        var end = event.end.format("YYYY-MM-DD HH:mm");
+                      var end= event.end.format("YYYY-MM-DD HH:MM");
                     } else {
                         var end = "No definido";
                     }
@@ -374,11 +407,8 @@
                     } else {
                         var freq = '';
                     }
-//                    if(event.allDay){
-//                        var allDay = "Si";
-//                    }else{var allDay="No";
-//                    }
-                    var tooltip = '<div class="tooltipevent" style="padding:10px;border-radius: 10px 10px 10px 10px; width:auto;height:auto;color:#030414;background:' + back + ';position:absolute; placement:top;z-index:10001;">' +
+
+                    var tooltip = '<div class="tooltipevent" style="padding:10px;border-radius: 10px 10px 10px 10px; width:auto;height:auto;color:rgba(251, 246, 250, 0.91);background:' + back + ';position:absolute; placement:top;z-index:10001;">' +
                             '' + '<b><center> ' + event.title + ' </center></b>' +
                             '' + 'Area: ' + area + '<br>' +
                             '' + 'Inicio: ' + start + '<br>' +
@@ -403,7 +433,6 @@
                 },
                 //evento para eliminar una tarea al dar click sobre ella
                 eventClick: function (event, jsEvent, view) {
-
                     crsfToken = document.getElementsByName("_token")[0].value;
                     var con = confirm("Esta seguro que desea eliminar el evento");
 
@@ -435,41 +464,11 @@
                 /*end funciones*/
             });
 
-            /* AGREGANDO EVENTOS AL PANEL  izquierdo del calendario*/
-            var currColor = "#3c8dbc"; //Red by default
-            //Color chooser button
-            var colorChooser = $("#color-chooser-btn");
-            $("#color-chooser > li > a").click(function (e) {
-                e.preventDefault();
-                //Save color
-                currColor = $(this).css("color");
-                //Add color effect to button
-                $('#add-new-event').css({"background-color": currColor, "border-color": currColor});
-            });
-            $("#add-new-event").click(function (e) {
-                e.preventDefault();
-                //Get value and make sure it is not null
-                var val = $("#new-event").val();
-                if (val.length == 0) {
-                    return;
-                }
 
-                //Create events
-                var event = $("<div />");
-                event.css({
-                    "background-color": currColor,
-                    "border-color": currColor,
-                    "color": "#fff"
-                }).addClass("external-event");
-                event.html(val);
-                $('#external-events').prepend(event);
 
-                //Add draggable funtionality
-                ini_events(event);
 
-                //Remove event from text input
-                $("#new-event").val("");
-            });
+
+
         });
     </script>
 @endsection

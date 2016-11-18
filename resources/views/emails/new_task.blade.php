@@ -20,7 +20,7 @@
             Fecha termino{{$task->performance_day}}<br>
         </p>
 
-            <a href="{{route('home')}}">Entrar</a>
+            <a href="{{route('user.profile')}}">Entrar</a>
         </div>
 
         Atentamente, Dpto Administrativo.

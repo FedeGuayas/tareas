@@ -83,7 +83,17 @@ Route::group(['prefix'=>'user'],function(){
         Route::post('/tasks/fileUpload', ['uses' => 'EventController@postFileUpload','as' => 'user.task.postFileUpload']);
 
         //descarga de archivos
-        Route::get('/tasks/download/{file}' ,['uses' => 'EventController@downloadFile','as' => 'task.download.file']); 
+        Route::get('/tasks/download/{file}' ,['uses' => 'EventController@downloadFile','as' => 'task.download.file']);
+
+        //mostrar comentarios
+        Route::get('/tasks/{event}/comments/' ,['uses' => 'CommentController@getComment','as' => 'task.show.comment']);
+        //cargar formulario para editar comentario
+        Route::get('/tasks/edit/comment/{id}' ,['uses' => 'CommentController@edit','as' => 'task.edit.comment']);
+        //guaradr comentario editado
+        Route::put('/tasks/edit/comment/{id}' ,['uses' => 'CommentController@update','as' => 'task.update.comment']);
+        //eliminar comentario editado
+        Route::delete('/tasks/delete/comment/{id}' ,['uses' => 'CommentController@destroy','as' => 'task.delete.comment']);
+        
 
         //el usuario solicita termino de tarea
         Route::post('/tasks/end-sol/{id?}', ['uses'=>'TaskController@userTaskEnd',

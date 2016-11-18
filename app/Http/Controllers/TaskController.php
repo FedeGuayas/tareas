@@ -345,13 +345,23 @@ class TaskController extends Controller
      */
     public function userTaskEnd(Request $request){
 
-        $id=$request->get('datos');
+      $id=$request->get('datos');
 
         if ($request->ajax()){
 
-            $task=Task::findOrFail($id);
-            $task->end_day=Carbon::now();
-            $task->update();
+            $event=Event::findOrFail($id);
+            $event->end_day=Carbon::now();
+
+            $task=$event->task;
+            if ($task->repeats==0){
+                $task->end_day=$event->end_day;
+
+                $task->update();
+            }
+            $event->update();
+
+
+
 
             //$roles=Role::with('users')->where('name', 'supervisor')->get();
             //usuarios con rol de supervisor
@@ -388,22 +398,42 @@ class TaskController extends Controller
 
         if ($request->ajax()){
 
-            $task=Task::findOrFail($id);
-            $task->state=1;
-            $task->update();
+            $event=Event::findOrFail($id);
+            $event->state=1;
+            $event->update();
 
-            $user_id=$task->user_id;
-            $receiver=User::findOrFail($user_id);
+            $task=$event->task;
+
+            if ($task->repeats==0){
+                $task->state=1;
+                $task->update();
+            }
+
+            $users=$task->users;
+
+            $receivers=$users;
             $sender=$request->user();
 
-            //notificacion del sistema
-            \Notifynder::category('tasks.end.aprob')
+//            //notificacion del sistema
+//            \Notifynder::category('tasks.end.aprob')
+//                ->from($sender)
+//                ->to($receiver)
+//                ->url('/user/tasks')
+//                ->extra(['message' => 'Aprobada la finalizacion de la tarea'])
+//                ->expire(Carbon::now()->addDays(7))
+//                ->send();
+
+            //notificacion multiple a todos los responsables de la tarea
+            \Notifynder::loop($receivers, function(\Fenos\Notifynder\Builder\Builder $builder, $receiver) use ($sender) {
+                $builder->category('tasks.end.aprob')// definir la categoria de notificacion a enviar
                 ->from($sender)
-                ->to($receiver)
-                ->url('/user/tasks')
-                ->extra(['message' => 'Aprobada la finalizacion de la tarea'])
-                ->expire(Carbon::now()->addDays(7))
-                ->send();
+                    ->to($receiver)
+                    ->url('/user/tasks')
+                    ->extra(['message' => 'Aprobada la finalizacion de la tarea'])
+                    ->expire(Carbon::now()->addDays(7));
+            })->send();
+
+
 
             return response()->json(["message"=>"Aprobación enviada"]);
         }

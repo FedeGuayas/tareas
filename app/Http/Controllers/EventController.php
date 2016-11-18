@@ -35,30 +35,33 @@ class EventController extends Controller
 
         $events->each(function ($events)  {
             $events->task;
-
+           $events->task->users;
         });
 
         $data = [];
         foreach ($events as $event) {
             $data[] = [
                 'id' => $event->id,
+                'start'=>$event->start,
+                'end'=>$event->end,
+                'title'=>$event->title,
+                'task_id'=>$event->task_id,
+                'estado' => $event->state,
+                'end_day' => $event->end_day,
+                'allDay' => $event->allDay,
+
                 'task' => $event->task->task,
                 'description' => $event->task->description,
                 'start_day' => $event->task->start_day,
                 'performance_day' => $event->task->performance_day,
-                'end_day' => $event->task->end_day,
-                'state' => $event->task->state,
-                'user_id' => $event->task->user->getFullNameAttribute(),
-                'allDay' => $event->task->allDay,
+
+                'users' => $event->task->users,
                 'color' => $event->task->color,
                 'weekday' => $event->task->weekday,
                 'repeats'=>$event->task->repeats,
                 'repeats_freq'=>$event->task->repeats_freq,
-                'area'=>$event->task->user->area->area,
-                'task_id'=>$event->task_id,
-                'title'=>$event->title,
-                'start'=>$event->start,
-                'end'=>$event->end,
+                'area'=>$event->task->area->area,
+
                 "url" => "getEvents" . "/" . $event->id,
             ];
         }
@@ -67,37 +70,6 @@ class EventController extends Controller
         return $data;
     }
 
-    /**
-     * Show the form for creating a new resource.
-     *
-     * @return \Illuminate\Http\Response
-     */
-    public function create()
-    {
-        //
-    }
-
-    /**
-     * Store a newly created resource in storage.
-     *
-     * @param  \Illuminate\Http\Request  $request
-     * @return \Illuminate\Http\Response
-     */
-    public function store(Request $request)
-    {
-        //
-    }
-
-    /**
-     * Musestra la tarea en detalle.
-     *
-     * @param  int  $id
-     * @return \Illuminate\Http\Response
-     */
-    public function show($id)
-    {
-        //
-    }
 
     /**
      * Show the form for editing the specified resource.
@@ -122,16 +94,19 @@ class EventController extends Controller
         
         if ($request->ajax()) {
 
+
             if (Auth::user()->can('edit-task')) {
 
                 $event_id = $request->get('id');//ok
-                $start_event = $request->get('start');//ok
-                $start_day = $request->get('start_day');//ok
+                $start = $request->get('start');//ok
                 $task_id = $request->get('task_id');//ok
                 $end = $request->get('end');//ok
-                $performance_day = $request->get('performance_day');//ok
+                $end_day = $request->get('end_day');//ok
                 $title = $request->get('title');//ok
                 $repeats = $request->get('repeats');//ok
+                $state = $request->get('state');//ok
+                $allDay= $request->get('allDay');//ok
+
 //        $id = $_POST['id'];
 //        $title = $_POST['title'];
 //        $start = $_POST['start'];
@@ -139,33 +114,26 @@ class EventController extends Controller
 //        $task_id = $_POST['task_id'];
 
                 $event = Event::findOrFail($event_id);
+
                 if($end=="NULL"){
-                $event->end="NULL"; //NULL sin comillas es para postgres
+                $event->end="NULL"; //Para Postgres se pone NULL sin comillas por compatibilidad
                 }else{
                     $event->end=$end;
                 }
 
-                if ($repeats == 0) { //tarea unica sin evento recurrente
+                $task = Task::findOrFail($task_id);
+                $task->start_day =$start;
+                $task->end_day = $end;
+//                 $task->performance_day =$end_day;
+                $weekday = date('N', strtotime($start));
+                $task->weekday=$weekday;
+                $task->update();
 
-                    $task = Task::findOrFail($task_id);
-
-                    $task->start_day = $start_day;
-                    $task->performance_day =$performance_day;
-
-                    $task->update();
-                    $event->start = $start_event;
-                    $event->end = $end;
-                    $event->updated_at = Carbon::now();
-                    $event->update();
-
-                } else {//evento recurrente
-
-                    $event->start = $start_event;
-                    $event->task_id = $task_id;
-                    $event->title = $title;
-                    $event->end = $end;
-                    $event->update();
-                }
+                $event->start = $start;
+                $event->end = $end;
+                $event->allDay = $allDay;
+                $event->updated_at = Carbon::now();
+                $event->update();
 
             }else{
                 Session::flash('message_danger','No tien permisos para realizar esta acción');
@@ -188,6 +156,11 @@ class EventController extends Controller
 
             $id = $_POST['id'];
             $event = Event::findOrFail($id);
+            $task=$event->task;
+
+            if ($task->repeats==0){
+                $task->delete();
+            }
 
             $event->delete();
 //        return redirect()->route('admin.calendar.edit');
@@ -231,8 +204,6 @@ class EventController extends Controller
         return $data;
     }
 
-
-
     /**
      * Mostrar vista para cargar archivos a la tarea.
      *
@@ -244,7 +215,6 @@ class EventController extends Controller
         $event=\App\Event::findOrFail($id);
         return view('tasks.events.fileUp',compact('event'));
     }
-
 
     /**
      * Guarda comentarios y archivos para el evento
@@ -295,12 +265,21 @@ class EventController extends Controller
         return redirect()->route('user.profile.tasks');
     }
 
+
+    /**
+     * descargar los archivos adjuntos
+     * @param Request $request
+     * @param $file
+     * @return mixed
+     */
     public function downloadFile(Request $request, $file)
     {
         $pathtoFile = public_path().'/files/events/'.$file;
         return response()->download($pathtoFile);
-
     }
+
+
+   
 
 
 }

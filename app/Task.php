@@ -32,7 +32,7 @@ class Task extends Model
      * @var array
      */
     protected $fillable = [
-        'task', 'description', 'start_day','performance_day','end_day','state','allDay','color','weekday','repeats','repeats_freq','file','area_id'
+        'task', 'description', 'start_day','performance_day','end_day','state','allDay','color','weekday','repeats','repeats_freq','area_id'
 
     ];
 

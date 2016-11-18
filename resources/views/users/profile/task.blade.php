@@ -47,7 +47,11 @@
                             <td>{{$event->title}}</td>
                             <td>{{$event->start}}</td>
                             <td>{{$event->end}}</td>
-                            <td>{{$event->end_day}}</td>
+                            <td>
+                                @if ($event->state==1)
+                                    {{$event->end_day}}
+                                @endif
+                            </td>
                             <td>
                                 @foreach($event->files as $file)
                                     <a href="{{route('task.download.file',$file->name)}}">
@@ -56,11 +60,11 @@
                                 @endforeach
                             </td>
                             <td>
-                                @foreach($event->comments as $coment)
-                                    <a href="#!">
-                                        {{$coment->title}}<br>
+                                @if(count($event->comments)>0)
+                                    <a href="{{route('task.show.comment',$event)}}" class="btn btn-primary">
+                                        Comentarios<span class="badge">{{$event->comments->count()}}</span>
                                     </a>
-                                @endforeach
+                                @endif
                             </td>
                             <td>
                                 @if ($event->state==0)
@@ -70,13 +74,12 @@
                                 @endif
                             </td>
                             <td>
-                                <a href="{{route('user.task.getFileUpload', $event->id)}}" class="btn btn-xs btn-success" data-placement="top" title="Archivo"><i class="fa fa-file-archive-o" aria-hidden="true"></i>
-                                </a>
                                 @if ($event->state==0)
+                                    <a href="{{route('user.task.getFileUpload', $event->id)}}" class="btn btn-xs btn-success" data-placement="top" title="Archivo"><span class="glyphicon glyphicon-paperclip" aria-hidden="true"></span></a>
                                     {{--</a>--}}
                                     {{--<a href="" data-target="#modal-coment-{{ $task->id }}" data-toggle="modal" class="btn btn-xs btn-primary" data-placement="top" title="Terminada"><i class="fa fa-hand-o-left" aria-hidden="true"></i>--}}
                                     {{--</a>--}}
-                                    <a href="#!" id="{{$event->id}}" class="solEndTask btn btn-xs btn-primary" data-placement="top" title="Terminar"><i class="fa fa-hand-o-left" aria-hidden="true"></i>
+                                    <a href="#!" id="{{$event->id}}" class="solEndTask btn btn-xs btn-primary"  data-placement="top" title="Terminar"><i class="fa fa-hand-o-left" aria-hidden="true"></i>
                                     </a>
                                 @endif
                             </td>

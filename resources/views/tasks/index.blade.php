@@ -64,7 +64,11 @@
                             <td>{{$event->task->area->area}}</td>
                             <td>{{$event->start}}</td>
                             <td>{{$event->end}}</td>
-                            <td>{{$event->end_day}}</td>
+                            <td>
+                                @if ($event->state==1)
+                                    {{$event->end_day}}
+                                @endif
+                            </td>
                             <td>
                                 @foreach($event->files as $file)
                                     <a href="{{route('task.download.file',$file->name)}}">
@@ -73,11 +77,11 @@
                                 @endforeach
                             </td>
                             <td>
-                                @foreach($event->comments as $coment)
-                                    <a href="#!">
-                                        {{$coment->title}}<br>
+                                @if(count($event->comments)>0)
+                                    <a href="{{route('task.show.comment',$event)}}" class="btn btn-primary">
+                                        Comentarios<span class="badge">{{$event->comments->count()}}</span>
                                     </a>
-                                @endforeach
+                                @endif
                             </td>
                             <td>
                                 @if ($event->state==0)
@@ -111,6 +115,7 @@
 
                         </tr>
                         @include('tasks.modal-task')
+                        @include('tasks.modal-event')
                     @endforeach
                     </tbody>
                 </table>
