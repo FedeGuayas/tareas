@@ -110,7 +110,7 @@
 //                weekends: false, // will hide Saturdays and Sundays
 
                 events: {
-                    url:"getEvents"
+                    url:"getUserEvents"
                 },
 
 //                eventRender: function (event, element, view)
@@ -123,11 +123,9 @@
 //                },
                 eventAfterRender: function (event, element, view) {
                     var hoy = new Date();
-                    var perf_day = event.performance_day.date;
-                    var start_day = event.start_day.date;
 
                     if (event.end_day) {
-                        var end_day =event.end_day.date;
+                        var end_day =event.end_day.format("YYYY-MM-DD HH:mm");
                     } else {
                         var end_day  = "NULL";
                     }
@@ -138,11 +136,6 @@
                         var end = "NULL";
                     }
 
-                    var back=event.color;
-                    var area=event.area;
-                    var resp=event.user_id;
-                    var repeat=event.repeats;
-                    var repeat_freq=event.repeats_freq;
                     var start = (event.start.format("YYYY-MM-DD HH:mm"));
 
                     if ((event.start < hoy && event.end < hoy) && (end_day==='NULL') ) {
@@ -151,17 +144,17 @@
                         element.css('background-color', '#d9534f');
                     }
 
-                    if ((event.start < hoy && event.end < hoy) && ( (Date.parse(end_day)<=Date.parse(perf_day)) )){
+                    if ((event.start < hoy && event.end < hoy) &&  (Date.parse(end_day)<=Date.parse(end))){
                         //Concluído OK success paso el tiempo y se cumplio
                         //event.color = "#77DD77";
                         element.css('background-color', '#3c763d');
                     }
 
-                    if ((event.start<=hoy && event.end>=hoy) && (Date.parse(end_day)<=Date.parse(perf_day)))  {
+                    if ((event.start<hoy && event.end>hoy) && (Date.parse(end_day)<Date.parse(end)))  {
                         //terminada en tiempo success
                         element.css('background-color', '#3c763d');
                         //event.color = "#FFB347"; //n curso
-                    } else if ((event.start<=hoy && event.end>=hoy)  ) {
+                    }  if ((event.start<=hoy && event.end>=hoy)  ) {
 //                        //en curso info
                         element.css('background-color', '#46b8da');
 //                        //event.color = "#FFB347";
@@ -173,11 +166,12 @@
                         //event.color = "#FFB347"; //n curso
                     }
 
-                    if ((event.start < hoy && event.end < hoy) && (Date.parse(end_day)>Date.parse(perf_day))) {
+                    if ((event.start < hoy && event.end < hoy) && (Date.parse(end_day)>=Date.parse(end))) {
                         //Concluído fuera de termino warning
                         //event.color = "#AEC6CF";
                         element.css('background-color', '#ec971f');
                     }
+
 
                 },
 
@@ -188,39 +182,34 @@
                 //mostrar informacion del evento en un tooltip al pasar el mouse por encima
                 eventMouseover: function( event, jsEvent, view ) {
                     var start = (event.start.format("YYYY-MM-DD HH:mm"));
-                    var back=event.color;
-                    var area=event.area;
-                    var resp=event.user_id;
-                    var repeat=event.repeats;
-                    var repeat_freq=event.repeats_freq;
-
+                    var back="#5bc0de";
                     if(event.end){
                         var end = event.end.format("YYYY-MM-DD HH:mm");
                     }else{
                         var end="No definido";
                     }
 
-                    if (repeat>0){ var recurrent='SI'; }else{var recurrent='NO'; }
-                    if (repeat_freq==7){var freq='Semanal';}else if (repeat_freq==30){var freq='Mensual';} else {var freq='';}
+                    if (!event.allDay) {
+                        var allDay = false;
+                        defaultTimedEventDuration: "00:30:00";
+                    } else {
+                        var allDay = true;
+                        defaultTimedEventDuration: "00:30:00";
+                    }
 
-
-
+                    var title = event.title;
                     var tooltip = '<div class="tooltipevent" style="padding:10px;border-radius: 10px 10px 10px 10px; width:auto;height:auto;color:#030414;background:'+back+';position:absolute; placement:top;z-index:10001;">' +
                             ''+'<b><center> '+ event.title +' </center></b>'+
-                            ''+ 'Area: '+area+'<br>' +
                             ''+ 'Inicio: '+start+'<br>' +
-                            ''+ 'Fin: '+ end +'<br>' +
-                            ''+ 'Recurrente: '+ recurrent +'<br>' +
-                            ''+ 'Frecuencia: '+ freq +'<br>' +
-                            ''+'Responsable: '+'<b>'+resp+'</b></div>';
+                            ''+ 'Fin: '+ end +'<br></div>';
                     $("body").append(tooltip);
                     $(this).mouseover(function(e) {
                         $(this).css('z-index', 10000);
                         $('.tooltipevent').fadeIn('500');
                         $('.tooltipevent').fadeTo('10', 1.9);
                     }).mousemove(function(e) {
-                        $('.tooltipevent').css('top', e.pageY - 170);
-                        $('.tooltipevent').css('left', e.pageX -170);
+                        $('.tooltipevent').css('top', e.pageY - 100);
+                        $('.tooltipevent').css('left', e.pageX -100);
                     });
                 },
                 //evento al retirar el mouse se cierra el toolpit
@@ -229,58 +218,58 @@
                     $('.tooltipevent').remove();
                 },
                 //evento para mostrar info en ventana modal
-                eventClick: function (event, jsEvent, view) {
-                    var start = (event.start.format("YYYY-MM-DD HH:mm"));
-                    var back=event.color;
-                    var area=event.area;
-                    var resp=event.user_id;
-
-                    if(event.end){
-                        var end = event.end.format("YYYY-MM-DD HH:mm");
-                    }else{var end="No definido";
-                    }
-
-                    //limpio los datos de la tabla
-                    $("#asignadas").empty();
-                    $("#terminadas").empty();
-                    $("#pendientes").empty();
-                    $("#cumplimiento").empty();
-//                    $('#terminadas ').html('<h3 id="terminadas"><span class="label label-success"></span></h3>');
-//                    //set the values and open the modal
-                    $('#modalTitle').html(event.title);
-                    $('#area_id').val(area);
-                    $('#start').val(start);
-                    $('#end').val(end);
-                    $('#person_id').val(resp);
-
-                    $("#modalInfo").modal()
-                    crsfToken = document.getElementsByName("_token")[0].value;
-                    $.ajax({
-                        url: 'getDataModal',
-                        dataType: 'json',
-                        data: 'id=' + event.id,
-                        headers: {
-                            "X-CSRF-TOKEN": crsfToken
-                        },
-                        type: "POST",
-                        success: function (data) {
-//                            console.log(data.asignada);//no funciona asi
-                            console.log(data);
-                            var asignadas=data[0].asignadas,
-                                    terminadas=data[0].terminadas,
-                                    pendientes=data[0].pendientes,
-                                    cumplimiento=data[0].cumplimiento;
-                            $("#asignadas").text(asignadas);
-                            $("#terminadas").text(terminadas);
-                            $("#pendientes").text(pendientes);
-                            $("#cumplimiento").text(cumplimiento);
-                        },
-                        error: function(json){
-                            console.log("Error en conexion");
-                        }
-                    });
-                    return false;
-                },
+//                eventClick: function (event, jsEvent, view) {
+//                    var start = (event.start.format("YYYY-MM-DD HH:mm"));
+//                    var back=event.color;
+//                    var area=event.area;
+//                    var resp=event.user_id;
+//
+//                    if(event.end){
+//                        var end = event.end.format("YYYY-MM-DD HH:mm");
+//                    }else{var end="No definido";
+//                    }
+//
+//                    //limpio los datos de la tabla
+//                    $("#asignadas").empty();
+//                    $("#terminadas").empty();
+//                    $("#pendientes").empty();
+//                    $("#cumplimiento").empty();
+////                    $('#terminadas ').html('<h3 id="terminadas"><span class="label label-success"></span></h3>');
+////                    //set the values and open the modal
+//                    $('#modalTitle').html(event.title);
+//                    $('#area_id').val(area);
+//                    $('#start').val(start);
+//                    $('#end').val(end);
+//                    $('#person_id').val(resp);
+//
+//                    $("#modalInfo").modal()
+//                    crsfToken = document.getElementsByName("_token")[0].value;
+//                    $.ajax({
+//                        url: 'getDataModal',
+//                        dataType: 'json',
+//                        data: 'id=' + event.id,
+//                        headers: {
+//                            "X-CSRF-TOKEN": crsfToken
+//                        },
+//                        type: "POST",
+//                        success: function (data) {
+////                            console.log(data.asignada);//no funciona asi
+//                            console.log(data);
+//                            var asignadas=data[0].asignadas,
+//                                    terminadas=data[0].terminadas,
+//                                    pendientes=data[0].pendientes,
+//                                    cumplimiento=data[0].cumplimiento;
+//                            $("#asignadas").text(asignadas);
+//                            $("#terminadas").text(terminadas);
+//                            $("#pendientes").text(pendientes);
+//                            $("#cumplimiento").text(cumplimiento);
+//                        },
+//                        error: function(json){
+//                            console.log("Error en conexion");
+//                        }
+//                    });
+//                    return false;
+//                },
                 //entra en determinado dia al dar click en el calendario
 
                 dayClick: function(date, jsEvent, view) {

@@ -131,7 +131,7 @@
                                                     <i class="fa fa-gear"></i>  <span class="caret"></span>
                                                 </button>
                                                 <ul class="dropdown-menu" role="menu">
-                                                    <li><a href="#">Comentar</a>
+                                                    <li><a href="{{route('user.task.getFileUpload', $event)}}">Comentar</a>
                                                     </li>
                                                     <li class="divider"></li>
                                                     @if (is_null($event->end_day) )

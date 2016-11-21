@@ -59,6 +59,8 @@ class TaskController extends Controller
         });
         return view('tasks.index', ['events' => $events,'areas' => $areas]);
     }
+    
+    
 
     /**
      * Muestra formulario para crear tareas

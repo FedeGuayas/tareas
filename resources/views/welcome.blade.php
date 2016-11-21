@@ -253,9 +253,10 @@
                 var hoy = new Date();
                 var perf_day = event.performance_day.date;
                 var start_day = event.start_day.date;
+                var start = (event.start.format("YYYY-MM-DD HH:mm"));
 
                 if (event.end_day) {
-                    var end_day =event.end_day.date;
+                    var end_day =event.end_day.format("YYYY-MM-DD HH:mm");
                 } else {
                     var end_day  = "NULL";
                 }
@@ -279,17 +280,17 @@
                     element.css('background-color', '#d9534f');
                 }
 
-                if ((event.start < hoy && event.end < hoy) && ( (Date.parse(end_day)<=Date.parse(perf_day)) )){
+                if ((event.start < hoy && event.end < hoy) &&  (Date.parse(end_day)<=Date.parse(end))){
                     //Concluído OK success paso el tiempo y se cumplio
                     //event.color = "#77DD77";
                     element.css('background-color', '#3c763d');
                 }
 
-                if ((event.start<=hoy && event.end>=hoy) && (Date.parse(end_day)<=Date.parse(perf_day)))  {
+                if ((event.start<hoy && event.end>hoy) && (Date.parse(end_day)<Date.parse(end)))  {
                     //terminada en tiempo success
                     element.css('background-color', '#3c763d');
                     //event.color = "#FFB347"; //n curso
-                } else if ((event.start<=hoy && event.end>=hoy)  ) {
+                }  if ((event.start<=hoy && event.end>=hoy)  ) {
 //                        //en curso info
                     element.css('background-color', '#46b8da');
 //                        //event.color = "#FFB347";
@@ -301,7 +302,7 @@
                     //event.color = "#FFB347"; //n curso
                 }
 
-                if ((event.start < hoy && event.end < hoy) && (Date.parse(end_day)>Date.parse(perf_day))) {
+                if ((event.start < hoy && event.end < hoy) && (Date.parse(end_day)>=Date.parse(end))) {
                     //Concluído fuera de termino warning
                     //event.color = "#AEC6CF";
                     element.css('background-color', '#ec971f');
@@ -330,8 +331,7 @@
                         ''+'<b><center> '+ event.title +' </center></b>'+
                         ''+ 'Area: '+area+'<br>' +
                         ''+ 'Inicio: '+start+'<br>' +
-                        ''+ 'Fin: '+ end +'<br>' +
-                        ''+'Responsable: '+'<b>'+resp+'</b></div>';
+                        ''+ 'Fin: '+ end +'<br></div>';
                 $("body").append(tooltip);
                 $(this).mouseover(function(e) {
                     $(this).css('z-index', 10000);
@@ -348,61 +348,61 @@
                 $('.tooltipevent').remove();
             },
             //evento para cargar en una modal los datos de la tarea
-            eventClick: function (event, jsEvent, view) {
-                var start = (event.start.format("YYYY-MM-DD HH:mm"));
-                var back=event.color;
-                var area=event.area;
-                var resp=event.user_id;
-
-                if(event.end){
-                    var end = event.end.format("YYYY-MM-DD HH:mm");
-                }else{var end="No definido";
-                }
-                //limpio los datos de la tabla de la ventana modal
-                $("#asignadas").empty();
-                $("#terminadas").empty();
-                $("#pendientes").empty();
-                $("#cumplimiento").empty();
-//                    $('#terminadas ').html('<h3 id="terminadas"><span class="label label-success"></span></h3>');
-//                    //set the values and open the modal
-                $('#modalTitle').html(event.title);
-                $('#area_id').val(area);
-                $('#start').val(start);
-                $('#end').val(end);
-                $('#person_id').val(resp);
-
-                $("#modalInfo").modal()
-                crsfToken = document.getElementsByName("_token")[0].value;
-                $.ajax({
-                    url: 'getDataModal',
-                    dataType: 'json',
-                    data: 'id=' + event.id,
-                    headers: {
-                        "X-CSRF-TOKEN": crsfToken
-                    },
-                    type: "POST",
-                    success: function (data) {
+//            eventClick: function (event, jsEvent, view) {
+//                var start = (event.start.format("YYYY-MM-DD HH:mm"));
+//                var back=event.color;
+//                var area=event.area;
+//                var resp=event.user_id;
 //
-//                            console.log(data.asignada);//no funciona asi
-                        var asignadas=data[0].asignadas,
-                                terminadas=data[0].terminadas,
-                                pendientes=data[0].pendientes,
-                                cumplimiento=data[0].cumplimiento;
-                        $("#asignadas").text(asignadas);
-                        $("#terminadas").text(terminadas);
-                        $("#pendientes").text(pendientes);
-                        $("#cumplimiento").text(cumplimiento);
-
-
-                    },
-                    error: function(json){
-                        console.log("Error en conexion");
-                    }
-                });
+//                if(event.end){
+//                    var end = event.end.format("YYYY-MM-DD HH:mm");
+//                }else{var end="No definido";
+//                }
+//                //limpio los datos de la tabla de la ventana modal
+//                $("#asignadas").empty();
+//                $("#terminadas").empty();
+//                $("#pendientes").empty();
+//                $("#cumplimiento").empty();
+////                    $('#terminadas ').html('<h3 id="terminadas"><span class="label label-success"></span></h3>');
+////                    //set the values and open the modal
+//                $('#modalTitle').html(event.title);
+//                $('#area_id').val(area);
+//                $('#start').val(start);
+//                $('#end').val(end);
+//                $('#person_id').val(resp);
 //
-                return false;
+//                $("#modalInfo").modal()
+//                crsfToken = document.getElementsByName("_token")[0].value;
+//                $.ajax({
+//                    url: 'getDataModal',
+//                    dataType: 'json',
+//                    data: 'id=' + event.id,
+//                    headers: {
+//                        "X-CSRF-TOKEN": crsfToken
+//                    },
+//                    type: "POST",
+//                    success: function (data) {
+////
+////                            console.log(data.asignada);//no funciona asi
+//                        var asignadas=data[0].asignadas,
+//                                terminadas=data[0].terminadas,
+//                                pendientes=data[0].pendientes,
+//                                cumplimiento=data[0].cumplimiento;
+//                        $("#asignadas").text(asignadas);
+//                        $("#terminadas").text(terminadas);
+//                        $("#pendientes").text(pendientes);
+//                        $("#cumplimiento").text(cumplimiento);
 //
-            },
+//
+//                    },
+//                    error: function(json){
+//                        console.log("Error en conexion");
+//                    }
+//                });
+////
+//                return false;
+////
+//            },
             //entra en determinado dia al dar click en el calendario
 
             dayClick: function(date, jsEvent, view) {

@@ -62,7 +62,7 @@ class EventController extends Controller
                 'repeats_freq'=>$event->task->repeats_freq,
                 'area'=>$event->task->area->area,
 
-                "url" => "getEvents" . "/" . $event->id,
+//                "url" => "getEvents" . "/" . $event->id,
             ];
         }
 
@@ -70,6 +70,65 @@ class EventController extends Controller
         return $data;
     }
 
+
+    /**
+     * Cargo todos los datos para el usuario logueado en un json para mostrarlos en el calendario  home por Ajax
+     *
+     * @return \Illuminate\Http\Response
+     */
+    public function userEvents()
+    {
+        $user=Auth::user();
+
+        $events=\App\Event::
+        join('task_user as t','t.task_id','=','e.task_id',' as e')
+            ->join('users as u','u.id','=','t.user_id')
+            ->select('e.id','e.task_id','e.start','e.end','e.title','e.end_day','e.state','e.created_at','e.updated_at','t.user_id','t.task_id','u.area_id','u.first_name','u.last_name','u.phone','u.email')
+            ->where('t.user_id',$user->id)
+            ->get();
+
+        $events->each(function ($events) {
+            $events->tasks;
+
+        });
+
+//dd($events);
+
+        $data = [];
+        foreach ($events as $event) {
+
+            $data[] = [
+                'id' => $event->id,
+                'start'=>$event->start,
+                'end'=>$event->end,
+                'title'=>$event->title,
+                'task_id'=>$event->task_id,
+                'estado' => $event->state,
+                'end_day' => $event->end_day,
+                'allDay' => $event->allDay,
+//                tasks
+//                'task' => $event->task->task,
+//                'description' => $event->description,
+//                'start_day' => $event->start_day,
+//                'performance_day' => $event->performance_day,
+//                'users' => $event->task->user,
+//                'color' => $event->color,
+//                'weekday' => $event->weekday,
+//                'repeats'=>$event->repeats,
+//                'repeats_freq'=>$event->repeats_freq,
+//                'area'=>$event->task->area->area,
+
+//                "url" => "getEvents" . "/" . $event->id,
+            ];
+        }
+
+       json_encode($data);
+
+        return $data;
+    }
+    
+    
+    
 
     /**
      * Show the form for editing the specified resource.

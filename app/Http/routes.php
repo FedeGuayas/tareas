@@ -29,8 +29,12 @@ Route::get('/callendar',function(){
     return view('callendar.index');
 });
 
-//obtener json con los eventos
+//obtener json con los eventos para todos los usuarios (calendario front-end y editable)
 Route::get('getEvents{id?}',['uses'=>'EventController@index','as' => 'events.index'
+]);
+
+//obtener json con los eventos para el usuario logueado (calendario home)
+Route::get('getUserEvents{id?}',['uses'=>'EventController@userEvents','as' => 'events.users.index'
 ]);
 
 //obtener json con datos para cargar en ventana modal en calendario

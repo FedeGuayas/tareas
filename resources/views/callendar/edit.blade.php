@@ -414,8 +414,7 @@
                             '' + 'Inicio: ' + start + '<br>' +
                             '' + 'Fin: ' + end + '<br>' +
                             '' + 'Recurrente: ' + recurrent + '<br>' +
-                            '' + 'Frecuencia: ' + freq + '<br>' +
-                            '' + 'Responsable: ' + '<b>' + resp + '</b></div>';
+                            '' + 'Frecuencia: ' + freq + '<br></div>';
                     $("body").append(tooltip);
                     $(this).mouseover(function (e) {
                         $(this).css('z-index', 10000);

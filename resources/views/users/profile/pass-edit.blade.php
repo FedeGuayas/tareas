@@ -10,7 +10,7 @@
                 @include('alert.request')
                 <div class="form-group">
                     {!! form::label('password','Contraseña anterior:*') !!}
-                    {!! Form::password('password',['class'=>'form-control', 'placeholder'=>'******']) !!}
+                    {!! Form::password('password',['class'=>'form-control']) !!}
                 </div>
                 <div class="form-group">
                     {!! form::label('password_new','Nueva contraseña:') !!}
