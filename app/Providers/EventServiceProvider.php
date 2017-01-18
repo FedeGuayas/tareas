@@ -19,6 +19,9 @@ class EventServiceProvider extends ServiceProvider
         'App\Events\TaskCreated' => [
             'App\Listeners\NewTaskNotificationEmail',
         ],
+        'App\Events\TaskFinished' => [
+            'App\Listeners\EndTaskNotificationEmail',
+        ],
     ];
 
     /**

@@ -17,7 +17,7 @@ class CreateCommentsTable extends Migration
             $table->integer('user_id')->unsigned();
             $table->integer('event_id')->unsigned();
             $table->string('title',100);
-            $table->text('body');
+            $table->longText('body');
             $table->timestamps();
 
             $table->foreign('event_id')->references('id')->on('events')

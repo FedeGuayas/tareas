@@ -4,18 +4,17 @@ namespace App\Events;
 
 use App\Events\Event;
 use App\Task;
-use App\User;
 use Illuminate\Queue\SerializesModels;
 use Illuminate\Contracts\Broadcasting\ShouldBroadcast;
 
-class TaskCreated extends Event
+class TaskFinished extends Event
 {
     use SerializesModels;
 
     public $receivers;
     public $sender;
     public $task;
-    
+
     /**
      * Create a new event instance.
      *

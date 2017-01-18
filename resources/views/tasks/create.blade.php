@@ -19,7 +19,7 @@
                     <div class="form-group">
                         {!! Form::label('task','Tarea:') !!}
                         {!! Form::text('task',null,['class'=>'form-control','placeholder'=>'Nombre de la tarea','required']) !!}
-                        <p class="help-block">Ejemplo: Crear este sistema</p>
+                        <p class="help-block">Ejemplo: Crear manual de usuario</p>
                     </div>
                 </div>
                 <div class="form-group">

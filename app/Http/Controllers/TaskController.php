@@ -5,6 +5,7 @@ namespace App\Http\Controllers;
 use App\Event;
 
 use App\Events\TaskCreated;
+use App\Events\TaskFinished;
 use App\Role;
 use App\Task;
 use App\User;
@@ -105,6 +106,7 @@ class TaskController extends Controller
                     $repeats = $request->input('repeats');
                     $weekday = date('N', strtotime($request->input('start_day')));
                     $task->area_id = $request->input('area_id');
+                    $task->created_by = $request->user();
                     
                     if (!$repeats) {
                         // El usuario no marcó checkbox tarea no recurrente
@@ -355,6 +357,9 @@ class TaskController extends Controller
             $event->end_day=Carbon::now();
 
             $task=$event->task;
+            $user_id=$task->created_by;
+            
+            
             if ($task->repeats==0){
                 $task->end_day=$event->end_day;
 
@@ -363,15 +368,18 @@ class TaskController extends Controller
             $event->update();
 
 
-
-
             //$roles=Role::with('users')->where('name', 'supervisor')->get();
             //usuarios con rol de supervisor
-            $receivers = User::whereHas('roles', function($q){
-                $q->where('name', 'supervisor');
-            })->get();
+           // $receivers = User::whereHas('roles', function($q){
+             //   $q->where('name', 'supervisor');
+            //})->get();
 
+            $receivers = User::where('id',$user_id)->get();
+
+
+            //correo de notificacion
             $sender=$request->user();
+            event(new TaskFinished($sender,$task,$receivers));
 
 //            //notificacion multiple a todos los supervisores
         \Notifynder::loop($receivers, function(\Fenos\Notifynder\Builder\Builder $builder, $receiver) use ($sender) {
@@ -389,7 +397,7 @@ class TaskController extends Controller
 
 
     /**
-     * Aprovacion de terminio de tarea por parte del supervisor
+     * Aprobacion de terminio de tarea por parte del supervisor
      * @param Request $request
      * @param $id
      */
@@ -459,13 +467,36 @@ class TaskController extends Controller
              'email'=>$receiver->email
          ];
         }
-        $array=array_flatten($correos);
+        $array=array_flatten($correos);//convierte el array multidimensional en una dimension
 
         Mail::send('emails.new_task', ['sender' => $sender,'receivers'=>$receivers,'task'=>$task], function ($message) use ($array){
             $message->from('admin@fedeguayas.com.ec', 'Gestion de Tareas');
             $message->subject('Nueva Tarea asignada');
              $message->to($array);
 
+        });
+
+    }
+
+    /**
+     * Correo de notificacion por email de solicitud de fin de tarea por el usuario
+     * @param $user
+     * @param $pass
+     */
+    public function sendEndTaskMail($sender,$task,$receivers){
+
+        $correos=[];
+        foreach ($receivers as $receiver) {
+            $correos[]= [
+                'email'=>$receiver->email
+            ];
+        }
+        $array=array_flatten($correos);
+
+        Mail::send('emails.sol_end_task', ['sender' => $sender,'receivers'=>$receivers,'task'=>$task], function ($message) use ($array){
+            $message->from('admin@fedeguayas.com.ec', 'Gestion de Tareas');
+            $message->subject('Solicitud Finalización de Tarea');
+            $message->to($array);
         });
 
     }

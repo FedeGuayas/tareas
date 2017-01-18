@@ -63,10 +63,10 @@
                                 </a>
                                 <a href="" data-target="#modal-delete-{{ $user->id }}" data-toggle="modal" class="btn btn-xs btn-danger tip"  data-placement="top" title="Elimminar"><i class="fa fa-trash" aria-hidden="true"></i>
                                 </a>
-                                {{--@permission('admin-roles')--}}
+                                @permission('admin-roles')
                                 <a href="{{ route('admin.users.roles', $user->id )}}" class="btn btn-xs btn-warning tip" data-placement="top" title="Roles"><i class="fa fa-key" aria-hidden="true"></i>
                                 </a>
-                                {{--@endpermission--}}
+                                @endpermission
                             </td>
                         </tr>
                         @include('users.modal')
