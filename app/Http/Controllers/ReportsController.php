@@ -20,6 +20,11 @@ class ReportsController extends Controller
         $this->middleware(['role:supervisor|administrador']);
     }
 
+    /**
+     *  Reporte de tareas  por trabajadores
+     * @param Request $request
+     * @return mixed
+     */
     public function index_users(Request $request){
 
         $trabajadores=[] + User::select(DB::raw('CONCAT(first_name, " ", last_name) AS usuario'), 'id')->lists('usuario','id')->all();
@@ -33,7 +38,7 @@ class ReportsController extends Controller
 
 
     /**
-     * Cargar el resultado de la busqeudad en un vista
+     * Cargar el resultado de la busqueda en una vista
      * @param Request $request
      * @return mixed
      */
@@ -130,7 +135,7 @@ class ReportsController extends Controller
 
 
     /**
-     * Listado de todas las tareas
+     * Listado de todas las tareas para Informe Excell
      * @param Request $request
      */
     public function indexTasks(Request $request){
@@ -138,23 +143,18 @@ class ReportsController extends Controller
         $start = trim($request->get('start'));
         $end = trim($request->get('end'));
 
-        $tasks = Task::
-        where('start_day','>=',$start)
+        $tasks = Task::with('users','area')
+            ->where('start_day','>=',$start)
             ->where('performance_day','<=',$end)
             ->orderBy('created_at')
-            ->get();;
-        
-        $areas=Area::all();
+            ->get();
 
-        $tasks->each(function ($tasks) {
-            $tasks->user;
-        });
+//        $tasks->each(function ($tasks) {
+//            $tasks->users;
+//            $tasks->area;
+//        });
 
-        $areas->each(function ($areas)  {
-            $areas->tasks;
-        });
-
-        return view('reports.index-task',compact('tasks','start','end','areas'));
+        return view('reports.index-task',compact('tasks','start','end'));
     }
 
 
@@ -164,34 +164,29 @@ class ReportsController extends Controller
         $start = trim($request->get('start'));
         $end = trim($request->get('end'));
 
-        $tasks = Task::
-            where('start_day','>=',$start)
+        $tasks = Task::with('users','area')
+            ->where('start_day','>=',$start)
             ->where('performance_day','<=',$end)
-            ->orderBy('task')
-            ->get();;
+            ->orderBy('created_at')
+            ->get();
 
-        $areas=Area::all();
-
-        $tasks->each(function ($tasks) {
-            $tasks->user;
-        });
-
-        $areas->each(function ($areas)  {
-            $areas->tasks;
-        });
-
-        $taskArray[] = ['Trabajador','Area','Tarea', 'Inicio Tarea','Fin Planificado','Fin Real','Estado','Descripción'];
+        $taskArray[] = ['Tarea','Trabajador','Area', 'Inicio Tarea','Fin Planificado','Fin Real','Estado','Descripción'];
 
         foreach ($tasks as $task) {
             if($task->state==0){
                 $estado='Activa';
             }  else{
                 $estado='Terminada';}
+
+
+            foreach ($task->users as $user){
+                $trabajador=$user->getFullNameAttribute();
+            }
             
             $taskArray[] = [
-                'trabajador' => $task->user->getFullNameAttribute(),
-                'area'=> $task->user->area->area,
-                'tarea'=>   $task->task,
+                'tarea'=>$task->task,
+                'trabajador' => $trabajador,
+                'area'=> $task->area->area,
                 'inicio'=>$task->start_day,
                 'fin_p'=>$task->performance_day,
                 'fin_r'=>$task->end_day,

@@ -33,7 +33,7 @@
                 <div class="input-group">
                     {!! Form::select('trabajador',$trabajadores,$trabajador,['placeholder'=>'Seleccione trabajador','class'=>'form-control','id'=>'trabajador']) !!}
                     <span class="input-group-btn">
-                        <a href="#!" id="search" class="btn btn-primary" title="Buscar"><i class="fa fa-search" aria-hidden="true"></i>
+                        <a href="" id="search" class="btn btn-primary" title="Buscar"><i class="fa fa-search" aria-hidden="true"></i>
                         </a>
                     </span>
                 </div><!-- /input-group -->
@@ -90,19 +90,21 @@
 
         });
 
-        $(function () {
+//        $(function () {
         $("#search").click(function(){
 
             var token = document.getElementsByName("_token")[0].value;
-            var start=$("#start").val();
+            var start=$("#start").val(); //aaaa-mm-dd
             var end=$("#end").val( );
-            var trabajador = $("#trabajador option:selected").val();
+            var trabajador = $("#trabajador option:selected").val();//id del trabajador
             var datos={
                 start:start,
                 end:end,
                 trabajador:trabajador
             };
+
             var route= "{{route('admin.tasks.reports.users')}}";
+
             $.ajax({
                 url: route,
                 type: "POST",
@@ -110,10 +112,11 @@
                 contentType: 'application/x-www-form-urlencoded',
                 data: { start:start, end:end, trabajador:trabajador},
                 success: function(data) {
+                    console.log(data)
                     $("#list-user").empty().html(data);
                 },
                 error: function(data){
-
+                    console.log('data')
                 }
             });
         });
@@ -145,7 +148,7 @@
             {{--});--}}
 //        });
 
-        });
+//        });
 
     </script>
 @endsection

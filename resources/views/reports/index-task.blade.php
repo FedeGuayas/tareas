@@ -10,16 +10,16 @@
             <div class="col-sm-3">
                 <div class="form-group pull-right">
                     {{--{!! Form::label('export','Exportar') !!}--}}
-                        @include('reports.export-tasks')
-                        {{--<a href="{{route('admin.tasks.reports.users.excel')}}"  class="btn btn-success" title="exportar"><i class="fa fa-file-excel-o" aria-hidden="true"></i>--}}
-                        {{--</a>--}}
+                    @include('reports.export-tasks')
+                    {{--<a href="{{route('admin.tasks.reports.users.excel')}}"  class="btn btn-success" title="exportar"><i class="fa fa-file-excel-o" aria-hidden="true"></i>--}}
+                    {{--</a>--}}
                 </div>
             </div>
             <div class="row">
 
                 <div class="col-lg-12">
                     <table id="tasks_table" class="table table-striped table-bordered" cellspacing="0" width="100%"
-                           data-order='[[ 1, "asc" ]]' style="display: none">
+                           data-order='[[ 3, "asc" ]]' style="display: none">
                         <thead>
                         <tr>
                             {{--<th>id</th>--}}
@@ -49,19 +49,20 @@
                             <tr>
                                 {{--<td>{{$area->id}}</td>--}}
                                 <td>{{$task->task}}</td>
-                                <td>{{$task->user->getFullNameAttribute()}}</td>
                                 <td>
-                                    @foreach($areas as $area)
-                                        {{-- $task->user->area_id //area del usuario--}}
-                                        @if ($task->user->area_id==$area->id)
-                                            {{$area->area}}<br>
-                                        @endif
+                                    @foreach($task->users as $user )
+                                        {{$user->getFullNameAttribute()}}<br>
                                     @endforeach
+                                </td>
+                                <td>
+                                    {{--$task->user->area_id //area del usuario--}}
+                                    {{$task->area->area}}
                                 </td>
                                 <td>{{$task->start_day}}</td>
                                 <td>{{$task->performance_day}}</td>
                                 <td>{{$task->end_day}}</td>
-                            @endforeach
+                            </tr>
+                        @endforeach
                         </tbody>
                     </table>
                 </div>
@@ -78,20 +79,21 @@
 @section('script')
 
     <script type="text/javascript">
+
         $(function () {
             $('#start_datetimepicker').datetimepicker({
-                showClear:true,
-                showClose:true,
-                locale:'es',
-                format:'YYYY-MM-DD'
+                showClear: true,
+                showClose: true,
+                locale: 'es',
+                format: 'YYYY-MM-DD'
 
             });
             $('#end_datetimepicker').datetimepicker({
                 useCurrent: false,
-                showClear:true,
-                showClose:true,
-                locale:'es',
-                format:'YYYY-MM-DD'
+                showClear: true,
+                showClose: true,
+                locale: 'es',
+                format: 'YYYY-MM-DD'
 
             });
             $("#start_datetimepicker").on("dp.change", function (e) {
@@ -103,7 +105,7 @@
             });
         });
 
-        var table =  $('#tasks_table').DataTable({
+        var table = $('#tasks_table').DataTable({
             "lengthMenu": [[5, 7, 10, 25], [5, 7, 10, 25]],
             "processing": true,
 //            "serverSide": false,
@@ -119,36 +121,34 @@
 //                {data:'time'},
 //            ],
 //            select: true
-            "language":{
-                "decimal":        "",
-                "emptyTable":     "No se encontraron datos en la tabla",
-                "info":           "Mostrando _START_ a _END_ de _TOTAL_ registros",
-                "infoEmpty":      "Mostrando 0 a 0 de 0 registros",
-                "infoFiltered":   "(filtrados de un total _MAX_ registros)",
-                "infoPostFix":    "",
-                "thousands":      ",",
-                "lengthMenu":     "Mostrar _MENU_ registros",
+            "language": {
+                "decimal": "",
+                "emptyTable": "No se encontraron datos en la tabla",
+                "info": "Mostrando _START_ a _END_ de _TOTAL_ registros",
+                "infoEmpty": "Mostrando 0 a 0 de 0 registros",
+                "infoFiltered": "(filtrados de un total _MAX_ registros)",
+                "infoPostFix": "",
+                "thousands": ",",
+                "lengthMenu": "Mostrar _MENU_ registros",
                 "loadingRecords": "Cargando...",
-                "processing":     "Procesando...",
-                "search":         "Buscar:",
-                "zeroRecords":    "No se encrontraron coincidencias",
+                "processing": "Procesando...",
+                "search": "Buscar:",
+                "zeroRecords": "No se encrontraron coincidencias",
                 "paginate": {
-                    "first":      "Primero",
-                    "last":       "Ultimo",
-                    "next":       "Siguiente",
-                    "previous":   "Anterior"
+                    "first": "Primero",
+                    "last": "Ultimo",
+                    "next": "Siguiente",
+                    "previous": "Anterior"
                 },
                 "aria": {
-                    "sortAscending":  ": Activar para ordenar ascendentemente",
+                    "sortAscending": ": Activar para ordenar ascendentemente",
                     "sortDescending": ": Activar para ordenar descendentemente"
                 }
             },
-            "fnInitComplete":function(){
+            "fnInitComplete": function () {
                 $('#tasks_table').fadeIn();
             }
         });
-
-
 
 
     </script>
