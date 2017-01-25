@@ -10,6 +10,7 @@ use Illuminate\Http\Request;
 use DB;
 use App\Http\Requests;
 use Maatwebsite\Excel\Facades\Excel;
+use Session;
 
 
 class ReportsController extends Controller
@@ -25,112 +26,97 @@ class ReportsController extends Controller
      * @param Request $request
      * @return mixed
      */
-    public function index_users(Request $request){
+    public function indexUsersTask(Request $request)
+    {
 
-        $trabajadores=[] + User::select(DB::raw('CONCAT(first_name, " ", last_name) AS usuario'), 'id')->lists('usuario','id')->all();
+        $trabajadores = [] + User::select(DB::raw('CONCAT(first_name, " ", last_name) AS usuario'), 'id')->lists('usuario', 'id')->all();
 
-        $trabajador= trim($request->get('trabajador'));
+        $trabajador = trim($request->get('trabajador'));
         $start = trim($request->get('start'));
         $end = trim($request->get('end'));
 
-        return view('reports.user-task',compact('trabajadores','trabajador','end','start'));
+        if ($trabajador) {
+            $user = User::with('area', 'tasks')->where('id', $trabajador)->first();
+
+            $tareas = $user->tasks()
+                ->where('start_day', '>=', $start)
+                ->where('performance_day', '<=', $end)->get();
+
+            $cumplidas = $tareas
+                ->where('state', 1)->count();
+
+            $incumplidas = $tareas
+                ->where('state', 0)->count();
+        } else {
+            $user = 0;
+        }
+//dd($tareas);
+        return view('reports.user-task', compact('trabajadores', 'trabajador', 'end', 'start', 'user', 'cumplidas', 'incumplidas', 'tareas'));
     }
 
 
     /**
-     * Cargar el resultado de la busqueda en una vista
+     * Exportar reporte de tareas del usuario a excel
      * @param Request $request
      * @return mixed
      */
-    public function getUsersTask(Request $request){
+    public function exportUsersTask(Request $request)
+    {
 
-        if ($request->ajax()){
+        $trabajadores = [] + User::select(DB::raw('CONCAT(first_name, " ", last_name) AS usuario'), 'id')->lists('usuario', 'id')->all();
 
-            $trabajadores=[] + User::select(DB::raw('CONCAT(first_name, " ", last_name) AS usuario'), 'id')->lists('usuario','id')->all();
+        $trabajador = trim($request->get('trabajador'));
+        $start = trim($request->get('start'));
+        $end = trim($request->get('end'));
 
-            $trabajador= trim($request->get('trabajador'));
-            $start = trim($request->get('start'));
-            $end = trim($request->get('end'));
+        if ($trabajador) {
+            $user = User::with('area', 'tasks')->where('id', $trabajador)->first();
 
-            $user=User::where('id',$trabajador)->first();
+            $tareas = $user->tasks()
+                ->where('start_day', '>=', $start)
+                ->where('performance_day', '<=', $end)->get();
 
-            $tareas= Task::where('user_id', $user['id'])
-                ->where('start_day','>=',$start)
-                ->where('performance_day','<=',$end)
-                ->get();
+            $cumplidas = $tareas
+                ->where('state', 1)->count();
 
-            $cumplidas= Task::where('user_id', $user['id'])
-                ->where('start_day','>=',$start)
-                ->where('performance_day','<=',$end)
-                ->where('state','=','1')->count();
-            $incumplidas= Task::where('user_id', $user['id'])
-                ->where('start_day','>=',$start)
-                ->where('performance_day','<=',$end)
-                ->where('state','=','0')->count();
-
-        }
-
-        return view('reports.listUserTask',compact('trabajadores','trabajador','end','start','user','cumplidas','incumplidas','tareas'));
-    }
+            $incumplidas = $tareas
+                ->where('state', 0)->count();
 
 
-    /**
-     * Exportar reporte del usuario a excel
-     */
-
-    public function exportUsersTask(Request $request){
-
-//        if ($request->ajax()){
-
-            $trabajadores=[] + User::select(DB::raw('CONCAT(first_name, " ", last_name) AS usuario'), 'id')->lists('usuario','id')->all();
-
-            $trabajador= trim($request->get('trabajador'));
-            $start = trim($request->get('start'));
-            $end = trim($request->get('end'));
-
-            $user=User::where('id',$trabajador)->first();
-
-            $tareas= Task::where('user_id', $user['id'])
-                ->where('start_day','>=',$start)
-                ->where('performance_day','<=',$end)
-                ->get();
-
-            $cumplidas= Task::where('user_id', $user['id'])
-                ->where('start_day','>=',$start)
-                ->where('performance_day','<=',$end)
-                ->where('state','=','1')->count();
-            $incumplidas= Task::where('user_id', $user['id'])
-                ->where('start_day','>=',$start)
-                ->where('performance_day','<=',$end)
-                ->where('state','=','0')->count();
-
-        $data[] = ['Trabajador ', 'Fecha Inicio T', 'Fecha Termino T', ];
+        $data[] = ['Trabajador ', 'Tarea','Estado', 'Inicio Planificado','Fin Planificado','Fin Real','Cumplida','Incumplida'];
 
         foreach ($tareas as $task) {
-
+            if ($task->state == 0) {
+                $estado = 'Activa';
+            } else {
+                $estado = 'Terminada';
+            }
             $data[] = [
-                'trabajadores' => $trabajadores,
-                'trabajador' => $trabajador,
-                'end' => $end,
-                'start' => $start,
-                'user' => $user,
+                'trabajador' => $user->getFullNameAttribute(),
+                'tarea' => $task->task,
+                'estado'=>$estado,
+                'inicio' => $task->start_day,
+                'fin_p' => $task->performance_day,
+                'fin_r' => $task->end_day,
                 'cumplidas' => $cumplidas,
                 'incumplidas' => $incumplidas,
-                'tareas' => $tareas,
             ];
 
         }
-            Excel::create('Reporte', function ($excel) use ($data) {
+        Excel::create('Reporte', function ($excel) use ($data) {
 
-                $excel->sheet('Inscripciones', function ($sheet) use ($data) {
+            $excel->sheet('Inscripciones', function ($sheet) use ($data) {
 
-                    $sheet->fromArray($data);
+                $sheet->fromArray($data);
 
-                });
-            })->export('xlsx');
-//        }
+            });
+        })->export('xlsx');
 
-        return view('reports.user-task',compact('trabajadores','trabajador','end','start','user','cumplidas','incumplidas','tareas'));
+        return view('reports.user-task', compact('trabajadores', 'trabajador', 'end', 'start', 'user', 'cumplidas', 'incumplidas', 'tareas'));
+        } else {
+            Session::flash('message','No existen datos para exportar');
+            return redirect()->route('admin.tasks.reports.users');
+        }
     }
 
 
@@ -138,14 +124,15 @@ class ReportsController extends Controller
      * Listado de todas las tareas para Informe Excell
      * @param Request $request
      */
-    public function indexTasks(Request $request){
+    public function indexTasks(Request $request)
+    {
 
         $start = trim($request->get('start'));
         $end = trim($request->get('end'));
 
-        $tasks = Task::with('users','area')
-            ->where('start_day','>=',$start)
-            ->where('performance_day','<=',$end)
+        $tasks = Task::with('users', 'area')
+            ->where('start_day', '>=', $start)
+            ->where('performance_day', '<=', $end)
             ->orderBy('created_at')
             ->get();
 
@@ -154,68 +141,65 @@ class ReportsController extends Controller
 //            $tasks->area;
 //        });
 
-        return view('reports.index-task',compact('tasks','start','end'));
+        return view('reports.index-task', compact('tasks', 'start', 'end'));
     }
 
 
-
-    public function exportTasks(Request $request){
+    public function exportTasks(Request $request)
+    {
 
         $start = trim($request->get('start'));
         $end = trim($request->get('end'));
 
-        $tasks = Task::with('users','area')
-            ->where('start_day','>=',$start)
-            ->where('performance_day','<=',$end)
+        $tasks = Task::with('users', 'area')
+            ->where('start_day', '>=', $start)
+            ->where('performance_day', '<=', $end)
             ->orderBy('created_at')
             ->get();
 
-        $taskArray[] = ['Tarea','Trabajador','Area', 'Inicio Tarea','Fin Planificado','Fin Real','Estado','Descripción'];
+        $taskArray[] = ['Tarea', 'Trabajador', 'Area', 'Inicio Tarea', 'Fin Planificado', 'Fin Real', 'Estado', 'Descripción'];
 
         foreach ($tasks as $task) {
-            if($task->state==0){
-                $estado='Activa';
-            }  else{
-                $estado='Terminada';}
-
-
-            foreach ($task->users as $user){
-                $trabajador=$user->getFullNameAttribute();
+            if ($task->state == 0) {
+                $estado = 'Activa';
+            } else {
+                $estado = 'Terminada';
             }
-            
+
+            foreach ($task->users as $user) {
+                $trabajador = $user->getFullNameAttribute();
+            }
+
             $taskArray[] = [
-                'tarea'=>$task->task,
+                'tarea' => $task->task,
                 'trabajador' => $trabajador,
-                'area'=> $task->area->area,
-                'inicio'=>$task->start_day,
-                'fin_p'=>$task->performance_day,
-                'fin_r'=>$task->end_day,
-                'estado'=> $estado,
-                'descripcion'=>$task->description,
+                'area' => $task->area->area,
+                'inicio' => $task->start_day,
+                'fin_p' => $task->performance_day,
+                'fin_r' => $task->end_day,
+                'estado' => $estado,
+                'descripcion' => $task->description,
             ];
         }
 
-        Excel::create('Tareas_Excel - '.Carbon::now().'', function ($excel) use ($taskArray) {
+        Excel::create('Tareas_Excel - ' . Carbon::now() . '', function ($excel) use ($taskArray) {
 
             $excel->sheet('Tareas', function ($sheet) use ($taskArray) {
 
 
-                $sheet->cells('A1:H1', function($cells){
+                $sheet->cells('A1:H1', function ($cells) {
 //                   $cells->setBackground('#B2B2B2');
                     $cells->setFontWeight('bold');
                     $cells->setAlignment('center');
                     $cells->setBorder('solid', 'solid', 'solid', 'solid');
                 });
 
-                $sheet->fromArray($taskArray,null,'A1',false,false);
+                $sheet->fromArray($taskArray, null, 'A1', false, false);
 
             });
         })->export('xlsx');
 
     }
-    
-    
-
 
 
 }

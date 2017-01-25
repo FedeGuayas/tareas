@@ -1,5 +1,5 @@
 @extends ('layouts.dashboard')
-@section('page_heading','Reportes Tareas')
+@section('page_heading','Reportes General Tareas')
 
 @section('section')
 

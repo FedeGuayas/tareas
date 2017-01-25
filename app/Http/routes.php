@@ -134,21 +134,17 @@ Route::group(['prefix'=>'admin'],function() {
 
     //cargar reportes de tareas por usuarios
     Route::get('/tasks/reports/users',[
-        'uses'=>'ReportsController@index_users',
+        'uses'=>'ReportsController@indexUsersTask',
         'as'=>'admin.tasks.reports.users'
     ]);
-    //buscar reportes de tareas por usuarios
-    Route::post('/tasks/reports/users/{data?}',[
-        'uses'=>'ReportsController@getUsersTask',
-        'as'=>'admin.tasks.reports.users'
-    ]);
-    
+        
     //exportar a excel reporte de un usuario
     Route::get('/tasks/reports/users/excel/',[
         'uses'=>'ReportsController@exportUsersTask',
         'as'=>'admin.tasks.reports.users.excel'
     ]);
 
+    //cargar reportes de tareas generales por fecha
     Route::get('/tasks/reports/index/',[
         'uses'=>'ReportsController@indexTasks',
         'as'=>'admin.reports.index'
