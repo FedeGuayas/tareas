@@ -99,23 +99,20 @@
                                 @role(['supervisor','administrador'])
                                 @if ($event->task->repeats==0)<!--Tarea no recurrente-->
                                     <a href="{{ route('admin.tasks.edit', $event->task_id )}}" class="btn btn-xs btn-warning" data-placement="top" title="Editar"><i class="fa fa-pencil" aria-hidden="true"></i></a>
-                                    <a href="" data-target="#modal-delete-{{ $event->task_id }}" data-toggle="modal-task" class="btn btn-xs btn-danger" data-placement="top" title="Elimminar"><i class="fa fa-trash" aria-hidden="true"></i></a>
+                                    <a href="" data-target="#modal-delete-task-{{ $event->task_id }}" data-toggle="modal" class="btn btn-xs btn-danger" data-placement="top" title="Eliminar"><i class="fa fa-trash" aria-hidden="true"></i></a>
                                 @else <!--Recurrente editar en calendario-->
                                     <a href="{{ route('admin.calendar.edit', $event->id)}}" class="btn btn-xs btn-warning" data-placement="top" title="Editar"><i class="fa fa-calendar" aria-hidden="true"></i></a>
-                                    <a href="" data-target="#modal-delete-{{ $event->id }}" data-toggle="modal-event" class="btn btn-xs btn-danger" data-placement="top" title="Elimminar"><i class="fa fa-trash" aria-hidden="true"></i></a>
+                                    {{--<a href="" data-target="#modal-delete-{{ $event->id }}" data-toggle="modal" class="btn btn-xs btn-danger" data-placement="top" title="Elimminar"><i class="fa fa-trash" aria-hidden="true"></i></a>--}}
                                 @endif
-
                                 @if (!is_null($event->end_day) && ($event->state==0))
                                 <a href="" id="{{$event->id}}" class="btn btn-xs btn-primary aprobEndTask" data-placement="top" title="Aprobar"><i class="fa fa-thumbs-up" aria-hidden="true"></i>
                                 </a>
                                 @endif
                                 @endrole
                             </td>
-
-
                         </tr>
-                        @include('tasks.modal-task')
-                        @include('tasks.modal-event')
+                        @include('tasks.modalTask')
+                        @include('tasks.modalEvent')
                     @endforeach
                     </tbody>
                 </table>
@@ -180,7 +177,10 @@
 
 
             $(function () {
-                $(".tip1").tooltip()
+                $(".tip").tooltip({
+                            selector: '[rel=tooltip]'
+                        }
+                )
             });
         });
 

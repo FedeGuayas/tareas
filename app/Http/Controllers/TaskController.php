@@ -330,6 +330,7 @@ class TaskController extends Controller
      */
     public function destroy($id)
     {
+        
         $task=Task::findOrFail($id);
         if(Auth::user()->hasRole(['supervisor','administrador'])){
         $task->delete();

@@ -1,5 +1,5 @@
 <div class="modal fade modal-slide-in-right" aria-hidden="true"
-     role="dialog" tabindex="-1" id="modal-delete-{{ $event->task_id }}">
+     role="dialog" tabindex="-1" id="modal-delete-task-{{ $event->task_id }}">
     {{Form::open(['route'=>['admin.tasks.destroy',$event->task_id],'method'=>'DELETE'])}}
 
     <div class="modal-dialog">

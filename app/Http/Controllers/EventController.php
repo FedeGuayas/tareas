@@ -211,8 +211,7 @@ class EventController extends Controller
     public function destroy()
     {
         if (Auth::user()->can('delete-task')) {
-
-
+            
             $id = $_POST['id'];
             $event = Event::findOrFail($id);
             $task=$event->task;
