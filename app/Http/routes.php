@@ -61,8 +61,8 @@ Route::post('eliminaEvento',[
 
 
 //obtener el id de las personas por area para select dinamico
+//Route::get('/admin/tasks/users/{id}','AreasController@getUsers');//al subir al hosting 
 Route::get('/users/{id}','AreasController@getUsers');
-
 
 
 Route::group(['prefix'=>'user'],function(){

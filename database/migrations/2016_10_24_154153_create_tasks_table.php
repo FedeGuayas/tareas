@@ -15,7 +15,7 @@ class CreateTasksTable extends Migration
         Schema::create('tasks', function (Blueprint $table) {
             $table->increments('id');
             $table->integer('area_id')->unsigned();
-            $table->string('task',100);
+            $table->string('task');
             $table->longText('description')->nullable();
             $table->integer('created_by')->unsigned();
             $table->integer('weekday')->nullable();//1 Lun , 2 Martes etc.  0 si se repite el evento diario, por lo k no importaria en dia de la semana de comienzo del evento.

@@ -20,8 +20,17 @@
     </div>
 </div>
 
+<div class="col-sm-2">
+    <div class="form-group">
+        {!! Form::label('buscar','Buscar') !!}
+        <div class="input-group">
+            {!! Form::select('area',$areas,$area,['placeholder'=>'Seleccione area','class'=>'form-control','id'=>'area']) !!}
+        </div><!-- /input-group -->
+    </div>
+</div><!-- /.col-lg-3 -->
+
 {{--<div class="clearfix"></div>--}}
-<div class="col-sm-3">
+<div class="col-sm-2">
 {!! Form::submit('Buscar',['class'=>'btn btn-primary']) !!}
 </div>
 {{--<div class="col-sm-3">--}}

@@ -7,7 +7,7 @@
 
         <div class="row">
             @include('reports.task-search')
-            <div class="col-sm-3">
+            <div class="col-sm-2">
                 <div class="form-group pull-right">
                     {{--{!! Form::label('export','Exportar') !!}--}}
                     @include('reports.export-tasks')
@@ -15,6 +15,7 @@
                     {{--</a>--}}
                 </div>
             </div>
+        </div>
             <div class="row">
 
                 <div class="col-lg-12">
@@ -29,6 +30,7 @@
                             <th>Inicio</th>
                             <th>Termino P</th>
                             <th>Termino R</th>
+                            <th>Coment</th>
 
                         </tr>
                         </thead>
@@ -41,6 +43,7 @@
                             <th>Inicio</th>
                             <th>Termino P</th>
                             <th>Termino R</th>
+                            <th>Coment</th>
 
                         </tr>
                         </tfoot>
@@ -61,6 +64,13 @@
                                 <td>{{$task->start_day}}</td>
                                 <td>{{$task->performance_day}}</td>
                                 <td>{{$task->end_day}}</td>
+                                <td>
+                                    @foreach($task->events as $event )
+                                            @foreach($event->comments as $coment)
+                                            {{$coment->body }}<br>
+                                            @endforeach
+                                    @endforeach
+                                </td>
                             </tr>
                         @endforeach
                         </tbody>
@@ -73,7 +83,7 @@
         </div>
 
 
-    </div>
+
 @endsection
 
 @section('script')

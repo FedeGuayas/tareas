@@ -22,7 +22,7 @@
         <div class="row">
             <div class="col-lg-12">
 
-                <table id="task_table" class="table table-striped table-bordered" cellspacing="0" width="100%" data-order='[[ 3, "asc"]]' style="display: none">
+                <table id="task_table" class="table table-striped table-bordered" cellspacing="0" width="100%" data-order='[[ 3, "desc"]]' style="display: none">
                     <thead>
                         <tr>
                             <th>Tarea</th>

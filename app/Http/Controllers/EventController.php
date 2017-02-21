@@ -220,6 +220,10 @@ class EventController extends Controller
                 $task->delete();
             }
 
+            if ($task->repeats==1 && count($task->events)==1){
+                $task->delete();
+            }
+
             $event->delete();
 //        return redirect()->route('admin.calendar.edit');
             return response()->json(["message"=>"Se elimino el evento"]);

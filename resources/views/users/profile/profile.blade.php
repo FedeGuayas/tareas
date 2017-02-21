@@ -98,6 +98,7 @@
                     <ul class="timeline">
                         @foreach($eventsAll as $event )
                             @if ($event->state==1)
+                                {{--Terminadas, a la derecha--}}
                                 <li class="timeline-inverted">
                                     <div class="timeline-badge success"><i class="fa fa-check"></i>
                                     </div>
@@ -113,19 +114,23 @@
                                     </div>
                                 </li>
                            @else
-                                <li >
-                                    <div class="timeline-badge warning"><i class="fa fa-minus"></i>
-                                    </div>
+                                {{--Sin terminar, a la izquierda--}}
+                                <li class="terminadas">
+                                    <div class="timeline-badge warning"><i class="fa fa-minus"></i></div>
                                     <div class="timeline-panel">
                                         <div class="timeline-heading">
                                             <h4 class="timeline-title">{{$event->title}}</h4>
                                             <p><small><i class="fa fa-star"></i>Inicio: {{$event->start}}</small></p>
                                             <p><small class="text-muted"><i class="fa fa-clock-o"></i> {{$event->created_at->diffForHumans()}}</small>
                                             </p>
+                                            @if ($event->end_day)
+                                                <p><b class="text-info">Solicitud de termino enviada {{ Carbon\Carbon::parse($event->end_day)->diffForHumans()}}</b> <a href="{{route('user.profile')}}"><i class="fa fa-refresh" aria-hidden="true"></i></a></p>
+                                            @endif
                                         </div>
                                         <div class="timeline-body">
                                             <p>{{$event->description}}</p>
-
+                                            {{--Sino se ha solicitado el termino--}}
+                                            @if (is_null($event->end_day) )
                                             <div class="btn-group">
                                                 <button type="button" class="btn btn-warning btn-sm dropdown-toggle" data-toggle="dropdown">
                                                     <i class="fa fa-gear"></i>  <span class="caret"></span>
@@ -134,15 +139,11 @@
                                                     <li><a href="{{route('user.task.getFileUpload', $event)}}">Comentar</a>
                                                     </li>
                                                     <li class="divider"></li>
-                                                    @if (is_null($event->end_day) )
-                                                    <li><a href="#!" class="solEndTask" id="{{$event->task_id}}">Terminar</a>
+                                                    <li><a href="#!" class="solEndTask" id="{{$event->id}}">Terminar</a>
                                                     </li>
-                                                        @else
-                                                        <li><a href="#!" class="bg-success">Solicitud enviada</a>
-                                                        </li>
-                                                    @endif
                                                 </ul>
                                             </div>
+                                            @endif
                                         </div>
                                     </div>
                                 </li>
@@ -197,32 +198,36 @@
 @section('script')
 
     <script>
+        $(document).ready(function () {
 
-        $(".solEndTask").click(function(){
-            var token = document.getElementsByName("_token")[0].value;
-            var datos=this.id;
-            var route="{{route('user.task.end')}}";
-            $.ajax({
-                url: route,
-                type: "POST",
-                headers: {'X-CSRF-TOKEN': token},
-                contentType: 'application/x-www-form-urlencoded',
-                data: {datos},
-                success: function(json) {
-                    console.log(json);
-                    $("#send").html(json.message);
-                    $("#msg-send").fadeIn();
-                },
-                error: function(json){
-                    console.log("Error al enviar id");
-                }
+            $(".solEndTask").click(function(){
+                var token = document.getElementsByName("_token")[0].value;
+                var datos=this.id;
+                var route="{{route('user.task.end')}}";
+                //                location.reload();
+                $.ajax({
+                    url: route,
+                    type: "POST",
+                    headers: {'X-CSRF-TOKEN': token},
+                    contentType: 'application/x-www-form-urlencoded',
+                    data: {datos},
+                    success: function(json) {
+                        console.log(json);
+//                        self.parent.location.reload();
+                        $("#send").html(json.message);
+                        $("#msg-send").fadeIn();
+//                        $('.terminadas')
+                        window.setTimeout(function(){location.reload()},1000)
+                    },
+                    error: function(json){
+                        console.log(json);
+                    }
+                });
+                return false;
             });
+
         });
 
-//        function solEndTask(tak){
-//            $('meta[name=_token]').attr('content')
-
-//        }
 
     </script>
 

@@ -24,8 +24,8 @@ class TaskStoreRequest extends Request
     public function rules()
     {
         return [
-            'task'=>'required|max:100',
-            'description'=>'max:150',
+            'task'=>'required',
+//            'description'=>'max:150',
             'start_day'=>'required',
             'performance_day'=>'required',
             'area_id'=>'required',

@@ -32,7 +32,7 @@ class TaskController extends Controller
 //        $this->middleware(['role:supervisor|administrador'],['except'=>['index','userTaskEnd']]);
 
     }
-    
+
     /**
      * Colores de estado de la tarea
      * "bg-primary"=>#337ab7
@@ -49,19 +49,18 @@ class TaskController extends Controller
     public function index()
     {
         $events = Event::all();
-        $areas=Area::all();
+        $areas = Area::all();
 
         $events->each(function ($events) {
             $events->task;
         });
 
-        $areas->each(function ($areas)  {
+        $areas->each(function ($areas) {
             $areas->events;
         });
-        return view('tasks.index', ['events' => $events,'areas' => $areas]);
+        return view('tasks.index', ['events' => $events, 'areas' => $areas]);
     }
-    
-    
+
 
     /**
      * Muestra formulario para crear tareas
@@ -70,9 +69,9 @@ class TaskController extends Controller
     public function create()
     {
 //        if(Auth::user()->can('create-task')){
-            $areas_coll = Area::all();
-            $list_areas = $areas_coll->pluck('area', 'id');
-            return view('tasks.create', ['areas' => $list_areas]);
+        $areas_coll = Area::all();
+        $list_areas = $areas_coll->pluck('area', 'id');
+        return view('tasks.create', ['areas' => $list_areas]);
 //        }else{
 //            Session::flash('message_danger','No tiene permisos para crear tareas');
 //            return redirect()->back();
@@ -81,7 +80,7 @@ class TaskController extends Controller
 
 
     /**
-     * 
+     *
      * Almacena la nueva tarea en la bd, notifica al usuario en el sistema y le envia correo
      *
      * @param TaskStoreRequest $request
@@ -91,124 +90,124 @@ class TaskController extends Controller
     {
 
 //        hacemos uso de las funciones para verificar el rol del usuario
-            if (Auth::user()->hasRole(['supervisor', 'administrador'])) {
-                try {
-                    DB::beginTransaction();
+        if (Auth::user()->hasRole(['supervisor', 'administrador'])) {
+            try {
+                DB::beginTransaction();
 
-                    $task = new Task;
-                    $task->task = $request->input('task');
-                    $task->description = $request->input('description');
-                    $task->start_day = $request->input('start_day');
-                    $task->performance_day = $request->input('performance_day');
-                    $task->end_day = null;
-                    $task->state = false;//no terminada
-                    $task->color = "#286090";//tarea recien creada
+                $task = new Task;
+                $task->task = $request->input('task');
+                $task->description = $request->input('description');
+                $task->start_day = $request->input('start_day');
+                $task->performance_day = $request->input('performance_day');
+                $task->end_day = null;
+                $task->state = false;//no terminada
+                $task->color = "#286090";//tarea recien creada
+                $repeats = $request->input('repeats');
+                $weekday = date('N', strtotime($request->input('start_day')));
+                $task->area_id = $request->input('area_id');
+                $task->created_by = $request->user()->id;
+
+                if (!$repeats) {
+                    // El usuario no marcó checkbox tarea no recurrente
+                    $task->repeats = 0;
+                    $task->repeats_freq = 0;
+                    $task->weekday = $weekday;
+                    $task->allDay = true; //resize en calendario
+                    $task->save();
+                    $event = new Event([
+                        'title' => $task->task,
+                        'start' => $task->start_day,
+                        'end' => $task->performance_day,
+                        'end_day' => $task->end_day,
+                        'state' => $task->state,
+                        'allDay' => $task->allDay
+                    ]);
+                    $event->task()->associate($task);
+                    $event->save();
+
+                } else {
+                    // El usuario marcó checkbox tarea recurrente
+                    $start_day = $request->input('start_day');
+                    $performance_day = $request->input('performance_day');
                     $repeats = $request->input('repeats');
-                    $weekday = date('N', strtotime($request->input('start_day')));
-                    $task->area_id = $request->input('area_id');
-                    $task->created_by = $request->user();
-                    
-                    if (!$repeats) {
-                        // El usuario no marcó checkbox tarea no recurrente
-                        $task->repeats = 0;
-                        $task->repeats_freq = 0;
-                        $task->weekday = $weekday;
-                        $task->allDay = true; //resize en calendario
-                        $task->save();
-                        $event = new Event([
-                            'title' => $task->task,
-                            'start' => $task->start_day,
-                            'end' => $task->performance_day,
-                            'end_day' => $task->end_day,
-                            'state' => $task->state,
-                            'allDay' => $task->allDay
-                        ]);
-                        $event->task()->associate($task);
-                        $event->save();
-
-                    } else {
-                        // El usuario marcó checkbox tarea recurrente
-                        $start_day = $request->input('start_day');
-                        $performance_day = $request->input('performance_day');
-                        $repeats = $request->input('repeats');
-                        $repeats_freq = $request->input('repeat-freq');
-                        $task->allDay = true;
+                    $repeats_freq = $request->input('repeat-freq');
+                    $task->allDay = true;
 //            $until = (365/$repeats_freq);
 //            if ($repeats_freq == 1){ //diario
 //                $weekday = 0;
 //            }
-                        if ($repeats_freq == 7) {
-                            //convierto el start_day en objeto carbon
-                            $inicio = new Carbon($start_day);
-                            $fin = new Carbon($performance_day);
-                            //le adiciono 1 año y calculo la diferencia de semanas, esto me da las semanas del año
-                            $until = $inicio->diffInWeeks($inicio->copy()->addYear());
-                            $task->repeats = $repeats;
-                            $task->repeats_freq = $repeats_freq;
-                            $task->weekday = $weekday;
-                            $task->save();
-                            $start_week = $inicio;
-                            $end_week = $fin;
-                            for ($i = 0; $i < $until; $i++) {
-                                $event = new Event([
-                                    'title' => $task->task,
-                                    'start' => $start_week,
-                                    'end' => $end_week,
-                                    'end_day' => null,
-                                    'state' => false,
-                                    'allDay' => true
-                                ]);
-                                $event->task()->associate($task);
-                                $event->save();
-                                $start_week = $inicio->addWeek();
-                                $end_week = $fin->addWeek();
-                            }
-                        }
-                        if ($repeats_freq == 30) {
-                            $inicio = new Carbon($start_day);
-                            $fin = new Carbon($performance_day);
-                            //le adiciono 1 año y calculo la diferencia de meses, esto me da los meses del año
-                            $until = $inicio->diffInMonths($inicio->copy()->addYear());
-
-                            $task->repeats = $repeats;
-                            $task->repeats_freq = $repeats_freq;
-                            $task->weekday = $weekday;
-                            $task->save();
-                            $start_month = $inicio;
-                            $end_month = $fin;
-
-                            for ($i = 0; $i < $until; $i++) {
-                                $event = new Event([
-                                    'title' => $task->task,
-                                    'start' => $start_month,
-                                    'end' => $end_month,
-                                    'end_day' => null,
-                                    'state' => false,
-                                    'allDay' => true
-                                ]);
-                                $event->task()->associate($task);
-                                $event->save();
-                                $start_month = $inicio->addMonth();
-                                $end_month = $fin->addMonth();
-                            }
+                    if ($repeats_freq == 7) {
+                        //convierto el start_day en objeto carbon
+                        $inicio = new Carbon($start_day);
+                        $fin = new Carbon($performance_day);
+                        //le adiciono 1 año y calculo la diferencia de semanas, esto me da las semanas del año
+                        $until = $inicio->diffInWeeks($inicio->copy()->addYear());
+                        $task->repeats = $repeats;
+                        $task->repeats_freq = $repeats_freq;
+                        $task->weekday = $weekday;
+                        $task->save();
+                        $start_week = $inicio;
+                        $end_week = $fin;
+                        for ($i = 0; $i < $until; $i++) {
+                            $event = new Event([
+                                'title' => $task->task,
+                                'start' => $start_week,
+                                'end' => $end_week,
+                                'end_day' => null,
+                                'state' => false,
+                                'allDay' => true
+                            ]);
+                            $event->task()->associate($task);
+                            $event->save();
+                            $start_week = $inicio->addWeek();
+                            $end_week = $fin->addWeek();
                         }
                     }
-                    //Usuarios a los k se les asigno la tarea
-                    $usersId = $request->input('user_id');
-                    $task->users()->attach($usersId);
+                    if ($repeats_freq == 30) {
+                        $inicio = new Carbon($start_day);
+                        $fin = new Carbon($performance_day);
+                        //le adiciono 1 año y calculo la diferencia de meses, esto me da los meses del año
+                        $until = $inicio->diffInMonths($inicio->copy()->addYear());
 
-                    DB::commit();
-                } catch (\Exception $e) {
-                    DB::rollback();
+                        $task->repeats = $repeats;
+                        $task->repeats_freq = $repeats_freq;
+                        $task->weekday = $weekday;
+                        $task->save();
+                        $start_month = $inicio;
+                        $end_month = $fin;
 
-                    Session::flash('message_danger', 'Error' . $e->getMessage());
-                    return redirect()->route('admin.tasks.create');
+                        for ($i = 0; $i < $until; $i++) {
+                            $event = new Event([
+                                'title' => $task->task,
+                                'start' => $start_month,
+                                'end' => $end_month,
+                                'end_day' => null,
+                                'state' => false,
+                                'allDay' => true
+                            ]);
+                            $event->task()->associate($task);
+                            $event->save();
+                            $start_month = $inicio->addMonth();
+                            $end_month = $fin->addMonth();
+                        }
+                    }
                 }
+                //Usuarios a los k se les asigno la tarea
+                $usersId = $request->input('user_id');
+                $task->users()->attach($usersId);
 
-            } else {
-//            //si el usuario no cumple con los requisitos, retornamos un error 403
-                return abort(403);
+                DB::commit();
+            } catch (\Exception $e) {
+                DB::rollback();
+
+                Session::flash('message_danger', 'Error' . $e->getMessage());
+                return redirect()->route('admin.tasks.create');
             }
+
+        } else {
+//            //si el usuario no cumple con los requisitos, retornamos un error 403
+            return abort(403);
+        }
 
 //        $receiver=User::findOrFail($task->user_id);
         //notificacion del sistema a un usuario
@@ -220,15 +219,15 @@ class TaskController extends Controller
 //        ->expire(Carbon::now()->addDays(7))//expirara a la semana
 //        ->send();
 
-        $receivers=User::findOrFail($usersId);
+        $receivers = User::findOrFail($usersId);
 
         //correo de notificacion
-        $sender=$request->user();
-        event(new TaskCreated($sender,$task,$receivers));
+        $sender = $request->user();
+        event(new TaskCreated($sender, $task, $receivers));
 
 
         //notificacion multiple a todos los usuarios de la tarea
-        \Notifynder::loop($receivers, function(\Fenos\Notifynder\Builder\Builder $builder, $receiver) use ($sender) {
+        \Notifynder::loop($receivers, function (\Fenos\Notifynder\Builder\Builder $builder, $receiver) use ($sender) {
             $builder->category('task.new')// definir la categoria de notificacion a enviar
             ->from($sender)
                 ->to($receiver)
@@ -244,7 +243,7 @@ class TaskController extends Controller
 
 
     /**
-     * Carga formulario para Editar la tarea 
+     * Carga formulario para Editar la tarea
      * @param $id
      * @return mixed
      */
@@ -252,16 +251,16 @@ class TaskController extends Controller
     {
 
         $task = Task::findOrFail($id);
-        $users=$task->users->pluck('full_name','id');
+        $users = $task->users->pluck('full_name', 'id');
         $areas_coll = Area::all();
         $areas = $areas_coll->pluck('area', 'id');
 
-        return view('tasks.edit', compact('task', 'areas','users'));
+        return view('tasks.edit', compact('task', 'areas', 'users'));
     }
 
 
     /**
-     * 
+     *
      * Actualiza la tarea en la bd, solo se actualizan la tareas no recurrentes, las recurrentes es el calendario
      * @param Request $request
      * @param $id
@@ -272,53 +271,53 @@ class TaskController extends Controller
 
         $task = Task::findOrFail($id);
 
-        if(Auth::user()->hasRole(['supervisor','administrador'])){//verificamos los roles
+        if (Auth::user()->hasRole(['supervisor', 'administrador'])) {//verificamos los roles
 //        if(Auth::user()->hasRole(['supervisor'])){
-        try {
-            DB::beginTransaction();
+            try {
+                DB::beginTransaction();
 
-            $task->task = $request->input('task');
-            $task->description = $request->input('description');
-            $task->start_day = $request->input('start_day');
-            $task->performance_day = $request->input('performance_day');
+                $task->task = $request->input('task');
+                $task->description = $request->input('description');
+                $task->start_day = $request->input('start_day');
+                $task->performance_day = $request->input('performance_day');
 //            $task->end_day = null;
 //            $task->state = false;//no terminada
 //            $task->color = "#286090";//tarea recien creada
 //            $repeats = $request->input('repeats');
-            $weekday = date('N', strtotime($request->input('start_day')));
-            $task->area_id = $request->input('area_id');
-            $task->weekday = $weekday;
+                $weekday = date('N', strtotime($request->input('start_day')));
+                $task->area_id = $request->input('area_id');
+                $task->weekday = $weekday;
 
-            $task->update();
+                $task->update();
 
-            $event=\App\Event::where('task_id',$id)->first();
+                $event = \App\Event::where('task_id', $id)->first();
 
-            $event->start= $request->input('start_day');
-            $event->end= $request->input('performance_day');
-            $event->title =$request->input('task');
+                $event->start = $request->input('start_day');
+                $event->end = $request->input('performance_day');
+                $event->title = $request->input('task');
 
-            $event->task()->associate($task);
+                $event->task()->associate($task);
 
-            $event->update();
-            if ($request->input('user_id')){
-                $usersId = $request->input('user_id');//Usuarios a los k se les asigno la tarea
-                $task->users()->sync($usersId);
+                $event->update();
+                if ($request->input('user_id')) {
+                    $usersId = $request->input('user_id');//Usuarios a los k se les asigno la tarea
+                    $task->users()->sync($usersId);
+                }
+
+
+                DB::commit();
+
+            } catch (\Exception $e) {
+                DB::rollback();
+
+                Session::flash('message_danger', 'Error' . $e->getMessage());
+                return redirect()->route('admin.tasks.edit');
             }
 
-
-            DB::commit();
-
-        }catch (\Exception $e) {
-            DB::rollback();
-
-            Session::flash('message_danger','Error'.$e->getMessage());
-            return redirect()->route('admin.tasks.edit');
-        }
-
-        Session::flash('message', 'Tarea actualizada correctamente');
-        return redirect()->route('admin.tasks.index');
-        } else{
-            Session::flash('message_danger','No tiene permisos para actualizar tareas');
+            Session::flash('message', 'Tarea actualizada correctamente');
+            return redirect()->route('admin.tasks.index');
+        } else {
+            Session::flash('message_danger', 'No tiene permisos para actualizar tareas');
             return redirect()->back();
         }
     }
@@ -330,14 +329,14 @@ class TaskController extends Controller
      */
     public function destroy($id)
     {
-        
-        $task=Task::findOrFail($id);
-        if(Auth::user()->hasRole(['supervisor','administrador'])){
-        $task->delete();
-        Session::flash('message_danger','Tarea eliminada');
-        return redirect()->route('admin.tasks.index');
-        }else{
-            Session::flash('message_danger','No estas autorizado para eliminar tareas');
+
+        $task = Task::findOrFail($id);
+        if (Auth::user()->hasRole(['supervisor', 'administrador'])) {
+            $task->delete();
+            Session::flash('message_danger', 'Tarea eliminada');
+            return redirect()->route('admin.tasks.index');
+        } else {
+            Session::flash('message_danger', 'No estas autorizado para eliminar tareas');
             return redirect()->back();
         }
     }
@@ -348,22 +347,22 @@ class TaskController extends Controller
      * @param Request $request
      * @param $id
      */
-    public function userTaskEnd(Request $request){
+    public function userTaskEnd(Request $request)
+    {
 
-      $id=$request->get('datos');
+        $id = $request->get('datos');
 
-        if ($request->ajax()){
+        if ($request->ajax()) {
 
-            $event=Event::findOrFail($id);
-            $event->end_day=Carbon::now();
+            $event = Event::findOrFail($id);
+            $event->end_day = Carbon::now();
 
-            $task=$event->task;
-            $user_id=$task->created_by;
+            $task = $event->task;
             
-            
-            if ($task->repeats==0){
-                $task->end_day=$event->end_day;
+            $user_id = $task->created_by; //supervisor que creo la tarea
 
+            if ($task->repeats == 0) {
+                $task->end_day = $event->end_day;
                 $task->update();
             }
             $event->update();
@@ -371,28 +370,28 @@ class TaskController extends Controller
 
             //$roles=Role::with('users')->where('name', 'supervisor')->get();
             //usuarios con rol de supervisor
-           // $receivers = User::whereHas('roles', function($q){
-             //   $q->where('name', 'supervisor');
+            // $receivers = User::whereHas('roles', function($q){
+            //   $q->where('name', 'supervisor');
             //})->get();
 
-            $receivers = User::where('id',$user_id)->get();
+            $receivers = User::where('id', $user_id)->get();//supervisor que creo la tarea k recivira el correo
 
 
             //correo de notificacion
-            $sender=$request->user();
-            event(new TaskFinished($sender,$task,$receivers));
+            $sender = $request->user();
+            event(new TaskFinished($sender, $task, $receivers));
 
 //            //notificacion multiple a todos los supervisores
-        \Notifynder::loop($receivers, function(\Fenos\Notifynder\Builder\Builder $builder, $receiver) use ($sender) {
-            $builder->category('task.end.sol')// definir la categoria de notificacion a enviar
-            ->from($sender)
-                ->to($receiver)
-                ->url('/admin/tasks')
-                ->extra(['message' => 'Solicitud finalizar tarea'])
-                ->expire(Carbon::now()->addDays(7));
-        })->send();
+            \Notifynder::loop($receivers, function (\Fenos\Notifynder\Builder\Builder $builder, $receiver) use ($sender) {
+                $builder->category('task.end.sol')// definir la categoria de notificacion a enviar
+                ->from($sender)
+                    ->to($receiver)
+                    ->url('/admin/tasks')
+                    ->extra(['message' => 'Solicitud finalizar tarea'])
+                    ->expire(Carbon::now()->addDays(7));
+            })->send();
 
-            return response()->json(["message"=>"Solicitud de termino de tarea enviada"]);
+            return response()->json(["message" => "Solicitud de termino de tarea enviada"]);
         }
     }
 
@@ -402,28 +401,29 @@ class TaskController extends Controller
      * @param Request $request
      * @param $id
      */
-    public function taskEndAprob(Request $request){
+    public function taskEndAprob(Request $request)
+    {
 
-        if(Auth::user()->hasRole('supervisor')){
-        $id=$request->get('datos');
+        if (Auth::user()->hasRole('supervisor')) {
+            $id = $request->get('datos');
 
-        if ($request->ajax()){
+            if ($request->ajax()) {
 
-            $event=Event::findOrFail($id);
-            $event->state=1;
-            $event->update();
+                $event = Event::findOrFail($id);
+                $event->state = 1;//evento terminado
+                $event->update();
 
-            $task=$event->task;
+                $task = $event->task;
 
-            if ($task->repeats==0){
-                $task->state=1;
-                $task->update();
-            }
+                if ($task->repeats == 0) {
+                    $task->state = 1;
+                    $task->update();
+                }
 
-            $users=$task->users;
+                $users = $task->users;
 
-            $receivers=$users;
-            $sender=$request->user();
+                $receivers = $users;
+                $sender = $request->user();
 
 //            //notificacion del sistema
 //            \Notifynder::category('tasks.end.aprob')
@@ -434,46 +434,46 @@ class TaskController extends Controller
 //                ->expire(Carbon::now()->addDays(7))
 //                ->send();
 
-            //notificacion multiple a todos los responsables de la tarea
-            \Notifynder::loop($receivers, function(\Fenos\Notifynder\Builder\Builder $builder, $receiver) use ($sender) {
-                $builder->category('tasks.end.aprob')// definir la categoria de notificacion a enviar
-                ->from($sender)
-                    ->to($receiver)
-                    ->url('/user/tasks')
-                    ->extra(['message' => 'Aprobada la finalizacion de la tarea'])
-                    ->expire(Carbon::now()->addDays(7));
-            })->send();
+                //notificacion multiple a todos los responsables de la tarea
+                \Notifynder::loop($receivers, function (\Fenos\Notifynder\Builder\Builder $builder, $receiver) use ($sender) {
+                    $builder->category('tasks.end.aprob')// definir la categoria de notificacion a enviar
+                    ->from($sender)
+                        ->to($receiver)
+                        ->url('/user/tasks')
+                        ->extra(['message' => 'Aprobada la finalizacion de la tarea'])
+                        ->expire(Carbon::now()->addDays(7));
+                })->send();
 
 
-
-            return response()->json(["message"=>"Aprobación enviada"]);
-        }
-        }else{
-            return response()->json(["message"=>"No estas autorizado para aprobar finalizacion de tareas"]);
+                return response()->json(["message" => "Aprobación enviada"]);
+            }
+        } else {
+            return response()->json(["message" => "No estas autorizado para aprobar finalizacion de tareas"]);
         }
     }
 
-   
+
     /**
      * Correo de notificacion por email de nueva tarea
      * @param $user
      * @param $pass
      */
 
-    public function sendNewTaskMail($sender,$task,$receivers){
+    public function sendNewTaskMail($sender, $task, $receivers)
+    {
 
-        $correos=[];
+        $correos = [];
         foreach ($receivers as $receiver) {
-         $correos[]= [
-             'email'=>$receiver->email
-         ];
+            $correos[] = [
+                'email' => $receiver->email
+            ];
         }
-        $array=array_flatten($correos);//convierte el array multidimensional en una dimension
+        $array = array_flatten($correos);//convierte el array multidimensional en una dimension
 
-        Mail::send('emails.new_task', ['sender' => $sender,'receivers'=>$receivers,'task'=>$task], function ($message) use ($array){
+        Mail::send('emails.new_task', ['sender' => $sender, 'receivers' => $receivers, 'task' => $task], function ($message) use ($array) {
             $message->from('admin@fedeguayas.com.ec', 'Gestion de Tareas');
             $message->subject('Nueva Tarea asignada');
-             $message->to($array);
+            $message->to($array);
 
         });
 
@@ -484,23 +484,24 @@ class TaskController extends Controller
      * @param $user
      * @param $pass
      */
-    public function sendEndTaskMail($sender,$task,$receivers){
+    public function sendEndTaskMail($sender, $task, $receivers)
+    {
 
-        $correos=[];
+        $correos = [];
         foreach ($receivers as $receiver) {
-            $correos[]= [
-                'email'=>$receiver->email
+            $correos[] = [
+                'email' => $receiver->email
             ];
         }
-        $array=array_flatten($correos);
+        $array = array_flatten($correos);
 
-        Mail::send('emails.sol_end_task', ['sender' => $sender,'receivers'=>$receivers,'task'=>$task], function ($message) use ($array){
+        Mail::send('emails.sol_end_task', ['sender' => $sender, 'receivers' => $receivers, 'task' => $task], function ($message) use ($array) {
             $message->from('admin@fedeguayas.com.ec', 'Gestion de Tareas');
             $message->subject('Solicitud Finalización de Tarea');
             $message->to($array);
         });
 
     }
-    
-    
+
+
 }
