@@ -20,7 +20,7 @@ class CreateTasksTable extends Migration
             $table->integer('created_by')->unsigned();
             $table->integer('weekday')->nullable();//1 Lun , 2 Martes etc.  0 si se repite el evento diario, por lo k no importaria en dia de la semana de comienzo del evento.
             $table->dateTime('start_day');
-            $table->dateTime('performance_day');//dia planificado de tterminar la tarea
+            $table->dateTime('performance_day');//dia planificado de terminar la tarea
             $table->dateTime('end_day')->nullable()->default(null);//dia real de terminacion
             $table->boolean('state')->default(false);//estado de la tarea cumplida 1, no cumplida 0
             $table->boolean('allDay')->nullable();

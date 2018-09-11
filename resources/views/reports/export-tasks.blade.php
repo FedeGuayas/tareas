@@ -12,7 +12,8 @@
             </div>
 
             <div class="input-group">
-                {!! Form::select('area',$areas,$area,['placeholder'=>'Seleccione area','class'=>'form-control','id'=>'area']) !!}
+{{--                {!! Form::select('area',$areas,$area,['placeholder'=>'Seleccione area','class'=>'form-control','id'=>'area']) !!}--}}
+                {!! Form::select('areas_id[]',$areas,$areasID,['class'=>'form-control chosen-area','id'=>'areas_id', 'multiple'=>'multiple','data-placeholder'=>'Seleccione areas']) !!}
             </div><!-- /input-group -->
         </div>
     {!! Form::submit('Exp-XLS',['class'=>'btn  btn-success pull-right']) !!}

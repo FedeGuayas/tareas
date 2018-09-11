@@ -41,7 +41,7 @@
                     <br>
                     {!! Form::submit('Salvar',['class'=>'btn btn-success','type'=>'button']) !!}
                     {!! Form::reset('Limpiar',['class'=>'btn btn-danger']) !!}
-                    <a href="{{route('user.profile.tasks')}}" >
+                    <a href="javascript:history.go(-1)">
                         {!! Form::button('Regresar',['class'=>'btn btn-primary']) !!}
                     </a>
                 </div>

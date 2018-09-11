@@ -13,7 +13,8 @@
                     <button type="button" class="close" data-dismiss="alert" aria-label="Close"><span aria-hidden="true">&times;</span></button>
                     <strong id="send"></strong>
                 </div>
-                <div class="col-lg-3 col-md-6">
+                {!! Form::open(['route'=>'user.profile.tasks','method'=>'get']) !!}
+                <div class="col-lg-2 col-md-6">
                     <div class="panel panel-yellow">
                         <div class="panel-heading">
                             <div class="row">
@@ -26,16 +27,18 @@
                                 </div>
                             </div>
                         </div>
-                        {{--<a href="{{route('user.profile.tasks')}}">--}}
-                            {{--<div class="panel-footer">--}}
-                                {{--<span class="pull-left">Ver Detalles</span>--}}
-                                {{--<span class="pull-right"><i class="fa fa-arrow-circle-right"></i></span>--}}
-                                {{--<div class="clearfix"></div>--}}
-                            {{--</div>--}}
-                        {{--</a>--}}
+                        <a href="#" >
+                            <div class="panel-footer">
+                                <span class="pull-left">
+                                    {!! Form::button(' Ver Tareas Pendientes!',['class'=>'btn btn-xs btn-outline','type'=>'submit','name'=>'pendientes','value'=>'pendientes']) !!}
+                                </span>
+                                <span class="pull-right"><i class="fa fa-arrow-circle-right"></i></span>
+                                <div class="clearfix"></div>
+                            </div>
+                        </a>
                     </div>
                 </div>
-                <div class="col-lg-3 col-md-6">
+                <div class="col-lg-2 col-md-6">
                     <div class="panel panel-green">
                         <div class="panel-heading">
                             <div class="row">
@@ -48,16 +51,42 @@
                                 </div>
                             </div>
                         </div>
-{{--                        <a href="{{route('user.profile.tasks')}}">--}}
-                            {{--<div class="panel-footer">--}}
-                                {{--<span class="pull-left">Ver Detalles</span>--}}
-                                {{--<span class="pull-right"><i class="fa fa-arrow-circle-right"></i></span>--}}
-                                {{--<div class="clearfix"></div>--}}
-                            {{--</div>--}}
-                        {{--</a>--}}
+                        <a href="#" >
+                            <div class="panel-footer">
+                                <span class="pull-left">
+                                    {!! Form::button(' Ver Tareas Terminadas!',['class'=>'btn btn-xs btn-outline','type'=>'submit','name'=>'terminadas','value'=>'terminadas']) !!}
+                                </span>
+                                <span class="pull-right"><i class="fa fa-arrow-circle-right"></i></span>
+                                <div class="clearfix"></div>
+                            </div>
+                        </a>
                     </div>
                 </div>
-                <div class="col-lg-3 col-md-6">
+                <div class="col-lg-2 col-md-6">
+                    <div class="panel panel-primary">
+                        <div class="panel-heading">
+                            <div class="row">
+                                <div class="col-xs-3">
+                                    <i class="fa fa-tasks fa-5x"></i>
+                                </div>
+                                <div class="col-xs-9 text-right">
+                                    <div class="huge">{{$total}}</div>
+                                    <div>Todas!</div>
+                                </div>
+                            </div>
+                        </div>
+                        <a href="#">
+                            <div class="panel-footer">
+                                <span class="pull-left">
+                                    {!! Form::button('Todas!',['class'=>'btn btn-xs btn-outline','type'=>'submit']) !!}
+                                    </span>
+                                <span class="pull-right"><i class="fa fa-arrow-circle-right"></i></span>
+                                <div class="clearfix"></div>
+                            </div>
+                        </a>
+                    </div>
+                </div>
+                <div class="col-lg-2 col-md-6">
                     <div class="panel panel-red">
                         <div class="panel-heading">
                             <div class="row">
@@ -70,16 +99,18 @@
                                 </div>
                             </div>
                         </div>
-                        <a href="{{route('user.profile.tasks')}}">
+                        <a href="#">
                             <div class="panel-footer">
-                                <span class="pull-left">Ver Mes actual!</span>
+                                <span class="pull-left">
+                                    {!! Form::button('Ver Mes actual!',['class'=>'btn btn-xs btn-outline','type'=>'submit','name'=>'mes_actual','value'=>'mes_actual']) !!}
+                                    </span>
                                 <span class="pull-right"><i class="fa fa-arrow-circle-right"></i></span>
                                 <div class="clearfix"></div>
                             </div>
                         </a>
                     </div>
                 </div>
-
+                {!! Form::close() !!}
 
                 <div class="col-lg-3 col-md-6 pull-right">
                     <a href="{{route('user.password.edit')}}">
@@ -210,7 +241,7 @@
                     type: "POST",
                     headers: {'X-CSRF-TOKEN': token},
                     contentType: 'application/x-www-form-urlencoded',
-                    data: {datos},
+                    data: {datos:datos},
                     success: function(json) {
                         console.log(json);
 //                        self.parent.location.reload();

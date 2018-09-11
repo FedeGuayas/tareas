@@ -155,9 +155,29 @@ Route::group(['prefix'=>'admin'],function() {
         'as'=>'admin.tasks.excel'
     ]);
 
+    //cargar reportes de tareas pendientes por fecha
+    Route::get('/tasks/reports/getPending/',[
+        'uses'=>'ReportsController@getPending',
+        'as'=>'admin.reports.getPending'
+    ]);
+
+    Route::get('/tasks/reports/exportPending/',[
+        'uses'=>'ReportsController@exportPending',
+        'as'=>'admin.reports.exportPending'
+    ]);
+
+    //cargar reportes de tareas terminada por fecha
+    Route::get('/tasks/reports/getCompleted/',[
+        'uses'=>'ReportsController@getCompleted',
+        'as'=>'admin.reports.getCompleted'
+    ]);
+
+    Route::get('/tasks/reports/exportCompleted/',[
+        'uses'=>'ReportsController@exportCompleted',
+        'as'=>'admin.reports.exportCompleted'
+    ]);
 
 
-    
 });
 
 

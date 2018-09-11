@@ -26,7 +26,7 @@ class CreateUsersTable extends Migration
             $table->timestamps();
             $table->foreign('area_id')->references('id')->on('areas')
                 ->onUpdate('cascade')->onDelete('set null');
-                        
+
             
         });
     }

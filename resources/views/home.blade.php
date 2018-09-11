@@ -152,6 +152,7 @@
 
                     if ((event.start<hoy && event.end>hoy) && (Date.parse(end_day)<Date.parse(end)))  {
                         //terminada en tiempo success
+
                         element.css('background-color', '#3c763d');
                         //event.color = "#FFB347"; //n curso
                     }  if ((event.start<=hoy && event.end>=hoy)  ) {

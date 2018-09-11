@@ -314,17 +314,15 @@ class EventController extends Controller
                 $archivo->save();
                 $uploadcount ++;
             }
-
-            if($uploadcount == $file_count){
-                Session::flash('message', 'Subida de archivos satisfactoria');
-                return redirect()->route('user.profile.tasks');
-            }
-            else {
-                Session::flash('message_danger','Error en la subida de archivos');
-                return redirect()->back();
-            }
         }
-        return redirect()->route('user.profile.tasks');
+//            if($uploadcount == $file_count){
+//                $message='Subida de archivos satisfactoria';
+//                return redirect()->back()->with('message', $message);
+//            }
+
+        $message='Se realizó la acción correctamenmte';
+        return redirect()->route('user.profile')->with('message', $message);
+
     }
 
 

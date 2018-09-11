@@ -2,22 +2,66 @@
 @section('style')
     <link rel="stylesheet" href="{{ asset("plugins/choosenjs/chosen.min.css") }}" />
 @endsection
-@section('page_heading','Reportes General Tareas')
+@section('page_heading','Tareas Terminadas')
 
 @section('section')
 
     <div class="col-sm-12">
 
         <div class="row">
-            @include('reports.task-search')
-            <div class="col-sm-2">
-                <div class="form-group pull-right">
-                    {{--{!! Form::label('export','Exportar') !!}--}}
-                    @include('reports.export-tasks')
-                    {{--<a href="{{route('admin.tasks.reports.users.excel')}}"  class="btn btn-success" title="exportar"><i class="fa fa-file-excel-o" aria-hidden="true"></i>--}}
-                    {{--</a>--}}
+            {{--Filtrar busqueda--}}
+            {!! Form::open (['route' => 'admin.reports.getCompleted','method' => 'GET' ])!!}
+            <div class='col-sm-3'>
+                <div class="form-group">
+                    {!! Form::label('start','Desde *') !!}
+                    <div class='input-group date' id='start_datetimepicker'>
+                        {!! Form::text('start',$start,['class'=>'form-control']) !!}
+                        <span class="input-group-addon"><span class="glyphicon glyphicon-calendar"></span>
+                        </span>
+                    </div>
                 </div>
             </div>
+            <div class='col-sm-3'>
+                <div class="form-group">
+                    {!! Form::label('end','Hasta *') !!}
+                    <div class='input-group date' id='end_datetimepicker'>
+                        {!! Form::text('end',$end,['class'=>'form-control']) !!}
+                        <span class="input-group-addon"><span class="glyphicon glyphicon-calendar"></span></span>
+                    </div>
+                </div>
+            </div>
+            <div class="col-sm-2">
+                <div class="form-group">
+                    {!! Form::label('buscar','Areas *') !!}
+                    <div class="input-group">
+                        {!! Form::select('areas_id[]',$areas,$areasID,['class'=>'form-control chosen-area','id'=>'areas_id', 'multiple'=>'multiple','data-placeholder'=>'Seleccione areas']) !!}
+                    </div><!-- /input-group -->
+                </div>
+            </div><!-- /.col-lg-3 -->
+
+            {{--<div class="clearfix"></div>--}}
+            <div class="col-sm-2">
+                {!! Form::submit('Filtrar',['class'=>'btn btn-primary']) !!}
+            </div>
+            {!!form::close()!!}
+
+            {{--FIN Filtrar busqueda--}}
+
+            {{--Boton Exportar--}}
+            <div class="col-sm-2">
+                <div class="form-group pull-right">
+                    {!! Form::open (['route' => 'admin.reports.exportCompleted','method' => 'GET'])!!}
+                    <div class="hidden">
+                        {!! Form::text('start',$start,['class'=>'form-control']) !!}
+                        {!! Form::text('end',$end,['class'=>'form-control']) !!}
+                        {!! Form::select('areas_id[]',$areas,$areasID,['class'=>'form-control chosen-area','id'=>'areas_id', 'multiple'=>'multiple',]) !!}
+                    </div>
+                    {!! Form::submit('Exp-XLS',['class'=>'btn  btn-success pull-right']) !!}
+                    {!! Form::close() !!}
+                </div>
+            </div>
+            {{--END Exportar--}}
+
         </div>
             <div class="row">
 
@@ -26,34 +70,31 @@
                            data-order='[[ 3, "asc" ]]' style="display: none">
                         <thead>
                         <tr>
-                            {{--<th>id</th>--}}
                             <th>Tarea</th>
                             <th>Trabajador</th>
                             <th>Area</th>
                             <th>Inicio</th>
                             <th>Termino P</th>
                             <th>Termino R</th>
-                            <th>Coment</th>
+                            <th>Estado</th>
 
                         </tr>
                         </thead>
                         <tfoot>
                         <tr>
-                            {{--<th>id</th>--}}
                             <th>Tarea</th>
                             <th>Trabajador</th>
                             <th>Area</th>
                             <th>Inicio</th>
                             <th>Termino P</th>
                             <th>Termino R</th>
-                            <th>Coment</th>
+                            <th>Estado</th>
 
                         </tr>
                         </tfoot>
                         <tbody>
                         @foreach($tasks as $task)
                             <tr>
-                                {{--<td>{{$area->id}}</td>--}}
                                 <td>{{$task->task}}</td>
                                 <td>
                                     @foreach($task->users as $user )
@@ -67,13 +108,7 @@
                                 <td>{{$task->start_day}}</td>
                                 <td>{{$task->performance_day}}</td>
                                 <td>{{$task->end_day}}</td>
-                                <td>
-                                    @foreach($task->events as $event )
-                                            @foreach($event->comments as $coment)
-                                            {{$coment->body }}<br>
-                                            @endforeach
-                                    @endforeach
-                                </td>
+                                <td>Terminada</td>
                             </tr>
                         @endforeach
                         </tbody>

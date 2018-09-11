@@ -1,5 +1,5 @@
 @extends ('layouts.dashboard')
-@section('page_heading','Sus tareas del mes, '.$user->getFullNameAttribute().' ')
+@section('page_heading','Sus tareas '.$estado.', '.$user->getFullNameAttribute().' ')
 
 @section('section')
 
@@ -17,7 +17,6 @@
                        data-order='[[ 1, "asc" ]]' style="display: none">
                     <thead>
                     <tr>
-
                         <th>Tarea</th>
                         <th>Fecha Inicio</th>
                         <th>Fecha Termino Planificada</th>
@@ -30,7 +29,6 @@
                     </thead>
                     <tfoot>
                     <tr>
-
                         <th>Tarea</th>
                         <th>Fecha Inicio</th>
                         <th>Fecha Termino Planificada</th>
@@ -111,7 +109,7 @@
                 type: "POST",
                 headers: {'X-CSRF-TOKEN': token},
                 contentType: 'application/x-www-form-urlencoded',
-                data: {datos},
+                data: {datos:datos},
                 success: function(json) {
                     console.log(json);
                     $("#send").html(json.message);

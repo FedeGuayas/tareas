@@ -25,6 +25,7 @@ class UsersController extends Controller
     {
         Carbon::setLocale('es');
     }
+
     /**
      * Obtener listado de todos los usuarios , el area k pertenece y sus tareas asignadas
      *
@@ -32,14 +33,14 @@ class UsersController extends Controller
      */
     public function index()
     {
-        $users=User::where('activated',true)->get();
+        $users = User::where('activated', true)->get();
         $users->each(function ($users) {
             $users->area;
             $users->tasks;
         });
 
 
-        return view('users.index',compact('users'));
+        return view('users.index', compact('users'));
     }
 
     /**
@@ -49,15 +50,15 @@ class UsersController extends Controller
      */
     public function create()
     {
-        $areas_coll=Area::all();
+        $areas_coll = Area::all();
         $listado = $areas_coll->pluck('area', 'id');
-        return view('users.create',['areas'=>$listado]);
+        return view('users.create', ['areas' => $listado]);
     }
 
     /**
      * Crear el nuevo trabajador y enviarle correo de activacion de cuenta
      *
-     * @param  \Illuminate\Http\Request  $request
+     * @param  \Illuminate\Http\Request $request
      * @return \Illuminate\Http\Response
      */
     public function store(Request $request)
@@ -65,90 +66,90 @@ class UsersController extends Controller
         try {
             DB::beginTransaction();
 
-            $user=new User();
-            $user->email=$request->input('email');
-            $pass=str_random(6);
-            $user->password=$pass;
-            $user->activated=false;
-            $user->name=$request->input('first_name');
-            $user->first_name=$request->input('first_name');
-            $user->last_name=$request->input('last_name');
-            $user->phone=$request->input('phone');
-            $area_id=$request->input('area_id');
-            $area=Area::findOrFail($area_id);
+            $user = new User();
+            $user->email = $request->input('email');
+            $pass = str_random(6);
+            $user->password = $pass;
+            $user->activated = false;
+            $user->name = $request->input('first_name');
+            $user->first_name = $request->input('first_name');
+            $user->last_name = $request->input('last_name');
+            $user->phone = $request->input('phone');
+            $area_id = $request->input('area_id');
+            $area = Area::findOrFail($area_id);
 
 //            $user->area()->associate($area);
             $area->users()->save($user);//Agrega el id del area al user y lo salva, por las relaciones
-            $role=Role::where('name','empleado')->first();//le asigno el roll de empleado por defecto
+            $role = Role::where('name', 'empleado')->first();//le asigno el roll de empleado por defecto
             $user->attachRole($role);
-            Event::fire(new UserCreated($user,$pass));
+            Event::fire(new UserCreated($user, $pass));
             DB::commit();
 
         } catch (\Exception $e) {
             DB::rollback();
-            return redirect()->back()->with('message_danger','ERROR!! '.$e->getMessage());
+            return redirect()->back()->with('message_danger', 'ERROR!! ' . $e->getMessage());
         }
 
-        Session::flash('message','Trabajador creado, se le ha enviado correo de activación de cuenta');
+        Session::flash('message', 'Trabajador creado, se le ha enviado correo de activación de cuenta');
         return redirect()->route('admin.users.index');
     }
 
-   
+
     /**
      * Muestra el Formulario para editar al trabajador
      *
-     * @param  int  $id
+     * @param  int $id
      * @return \Illuminate\Http\Response
      */
     public function edit($id)
     {
-        $user=User::findOrFail($id);
-        $areas_coll=Area::all();
+        $user = User::findOrFail($id);
+        $areas_coll = Area::all();
         $listado = $areas_coll->pluck('area', 'id');
-        return view('users.edit',['user'=>$user,'areas'=>$listado]);
+        return view('users.edit', ['user' => $user, 'areas' => $listado]);
     }
 
     /**
      * Actualizar los datos del trabajador.
      *
-     * @param  \Illuminate\Http\Request  $request
-     * @param  int  $id
+     * @param  \Illuminate\Http\Request $request
+     * @param  int $id
      * @return \Illuminate\Http\Response
      */
     public function update(Request $request, $id)
     {
-        $user=User::findOrFail($id);
-        $user->email=$request->input('email');
-        $user->name=$request->input('first_name');
-        $user->first_name=$request->input('first_name');
-        $user->last_name=$request->input('last_name');
-        $user->phone=$request->input('phone');
-        $area_id=$request->input('area_id');
-        $area=Area::findOrFail($area_id);
+        $user = User::findOrFail($id);
+        $user->email = $request->input('email');
+        $user->name = $request->input('first_name');
+        $user->first_name = $request->input('first_name');
+        $user->last_name = $request->input('last_name');
+        $user->phone = $request->input('phone');
+        $area_id = $request->input('area_id');
+        $area = Area::findOrFail($area_id);
         $user->area()->associate($area);
         $user->update();//Agrega el id del area al user y lo salva, por las relaciones
 
-        return redirect()->route('admin.users.index')->with('message','Trabajador editado correctamente');
+        return redirect()->route('admin.users.index')->with('message', 'Trabajador editado correctamente');
     }
 
 
     /**
      * Elimina un trabajador, y todas sus notificaciones de la bd.
      *
-     * @param  int  $id
+     * @param  int $id
      * @return \Illuminate\Http\Response
      */
     public function destroy($id)
     {
-        $user=User::findOrFail($id);
-        $notifications=$user->getNotifications();
-        $notifications->each(function($notification){
+        $user = User::findOrFail($id);
+        $notifications = $user->getNotifications();
+        $notifications->each(function ($notification) {
             $notification->delete();
         });
-        $flag=$user->delete();
-        if ($flag){
-            return redirect()->route('admin.users.index')->with('message_danger', 'El usuario '.$user->getFullNameAttribute().' ha sido eliminado');
-        }else{
+        $flag = $user->delete();
+        if ($flag) {
+            return redirect()->route('admin.users.index')->with('message_danger', 'El usuario ' . $user->getFullNameAttribute() . ' ha sido eliminado');
+        } else {
             return redirect()->route('admin.users.index')->with('message_danger', 'Ah ocurrido un error');
         }
 
@@ -171,15 +172,16 @@ class UsersController extends Controller
 
 
     /**
-     * Muestra el perfil del usuario con sus notificaciones, sus tareas  
+     * Muestra el perfil del usuario con sus notificaciones, sus tareas
      * @param Request $request
      * @return mixed
      */
 
-    public function getProfile(Request $request){
+    public function getProfile(Request $request)
+    {
 
-        $dt=Carbon::now();
-        $user=$request->user();
+        $dt = Carbon::now();
+        $user = $request->user();
 
         $notifications = $user->getNotifications(10, 'desc');
 //        $tasks=Task::where('user_id',$user->id)->paginate(5);
@@ -187,40 +189,40 @@ class UsersController extends Controller
 //        $tasksOn=$user->tasks->where('state',0)->count();//tareas pendientes
 //        $tasksOff=$total-$tasksOn;//tareas terminadas
 
-        $inicioMes=$dt->firstOfMonth()->toDateString();
-        $finMes=$dt->lastOfMonth()->toDateString();
+        $inicioMes = $dt->firstOfMonth()->toDateString();
+        $finMes = $dt->lastOfMonth()->toDateString();
 
         //eventos del mes
-        $events=\App\Event::
-            join('task_user as t','t.task_id','=','e.task_id',' as e')
-            ->join('users as u','u.id','=','t.user_id')
+        $events = \App\Event::
+        join('task_user as t', 't.task_id', '=', 'e.task_id', ' as e')
+            ->join('users as u', 'u.id', '=', 't.user_id')
             ->where([
-                ['start', '>=',  $inicioMes],
+                ['start', '>=', $inicioMes],
                 ['start', '<=', $finMes]
             ])
-            ->where('t.user_id',$user->id)
+            ->where('t.user_id', $user->id)
             ->get();
 
         //todos los eventos del usuario paginados para la linea del tiempo
-        $eventsAll=\App\Event::
-        join('task_user as t','t.task_id','=','e.task_id',' as e')
-            ->join('users as u','u.id','=','t.user_id')
-            ->select('e.id','e.task_id','e.start','e.end','e.title','e.end_day','e.state','e.created_at','e.updated_at','t.user_id','t.task_id','u.area_id','u.first_name','u.last_name','u.phone','u.email')
-            ->where('t.user_id',$user->id)
+        $eventsAll = \App\Event::
+        join('task_user as t', 't.task_id', '=', 'e.task_id', ' as e')
+            ->join('users as u', 'u.id', '=', 't.user_id')
+            ->select('e.id', 'e.task_id', 'e.start', 'e.end', 'e.title', 'e.end_day', 'e.state', 'e.created_at', 'e.updated_at', 't.user_id', 't.task_id', 'u.area_id', 'u.first_name', 'u.last_name', 'u.phone', 'u.email')
+            ->where('t.user_id', $user->id)
             ->paginate(5);
 
         //para contarlos
-        $eventsCount=\App\Event::
-        join('task_user as t','t.task_id','=','e.task_id',' as e')
-            ->join('users as u','u.id','=','t.user_id')
-            ->where('t.user_id',$user->id)
+        $eventsCount = \App\Event::
+        join('task_user as t', 't.task_id', '=', 'e.task_id', ' as e')
+            ->join('users as u', 'u.id', '=', 't.user_id')
+            ->where('t.user_id', $user->id)
             ->get();
 
-        $total=$eventsCount->count();
-        $tasksOn=$eventsCount->where('state',0)->count();//tareas pendientes
-        $tasksOff=$total-$tasksOn;//tareas terminadas
+        $total = $eventsCount->count();
+        $tasksOn = $eventsCount->where('state', 0)->count();//tareas pendientes
+        $tasksOff = $total - $tasksOn;//tareas terminadas
 
-        return view('users.profile.profile',compact('user','tasksOn','tasksOff','notifications','events','eventsAll'));
+        return view('users.profile.profile', compact('user', 'tasksOn', 'tasksOff', 'notifications', 'events', 'eventsAll','total'));
     }
 
 
@@ -229,11 +231,12 @@ class UsersController extends Controller
      * @param Request $request
      * @return mixed
      */
-    public function getPasswordEdit(Request $request){
+    public function getPasswordEdit(Request $request)
+    {
 
-        $user=$request->user();
-        
-        return view('users.profile.pass-edit',['user'=>$user]);
+        $user = $request->user();
+
+        return view('users.profile.pass-edit', ['user' => $user]);
     }
 
     /**
@@ -243,43 +246,120 @@ class UsersController extends Controller
      * @param User $user
      * @return mixed
      */
-    public function postPassword(ChangePasswordRequest $request,User $user){
+    public function postPassword(ChangePasswordRequest $request, User $user)
+    {
 
-        $new_pass=$request->password_new;
+        $new_pass = $request->password_new;
         $user->password = $new_pass;
         $user->update();
-        return redirect()->route('user.profile')->with('message','Contraseña Actualizada');
+        return redirect()->route('user.profile')->with('message', 'Contraseña Actualizada');
+    }
+
+    /**
+     * Obtener los eventos del usuario para mostrarlo en la tabla de tareas del usuario
+     *
+     * @param Request $request
+     * @return mixed
+     */
+    public function userTasks(Request $request)
+    {
+        $user = $request->user();
+
+        $pendientes = $request->get('pendientes', false);
+        $terminadas = $request->get('terminadas', false);
+        $mes_actual = $request->get('mes_actual', false);
+
+        if ($pendientes) {
+            return $this->userTaskPendientes($user);
+        }else if ($terminadas) {
+            return $this->userTaskTerminadas($user);
+        }else if ($mes_actual) {
+            return $this->userTaskActual($user);
+        }
+
+        //todas
+        $events = \App\Event::
+        join('task_user as t', 't.task_id', '=', 'e.task_id', ' as e')
+            ->join('users as u', 'u.id', '=', 't.user_id')
+            ->select('e.id', 'e.task_id', 'e.start', 'e.end', 'e.title', 'e.end_day', 'e.state', 'e.created_at', 'e.updated_at', 't.user_id', 't.task_id', 'u.area_id', 'u.first_name', 'u.last_name', 'u.phone', 'u.email')
+            ->where('t.user_id', $user->id)
+            ->get();
+
+        $estado = ''; //todas
+
+        return view('users.profile.task', compact('events', 'user', 'estado'));
+
+
+    }
+
+    /**
+     * Todos los eventos pendientes del usuario
+     * @param Request $request
+     */
+    public function userTaskPendientes($user)
+    {
+        $events = \App\Event::
+        join('task_user as t', 't.task_id', '=', 'e.task_id', ' as e')
+            ->join('users as u', 'u.id', '=', 't.user_id')
+            ->select('e.id', 'e.task_id', 'e.start', 'e.end', 'e.title', 'e.end_day', 'e.state', 'e.created_at', 'e.updated_at', 't.user_id', 't.task_id', 'u.area_id', 'u.first_name', 'u.last_name', 'u.phone', 'u.email')
+            ->where('e.state', '=', 0)
+            ->where('t.user_id', $user->id)
+            ->get();
+
+        $estado = 'pendientes';
+
+        return view('users.profile.task', compact('events', 'user', 'estado'));
     }
 
 
     /**
-     * Obtener los eventos del usuario en el mes actual para mostrarlo en la tabla de tareas del usuario
-     * 
+     * Todos los eventos terminados del usuario
      * @param Request $request
-     * @return mixed
      */
-    public function  userTasks(Request $request){
-        $user=$request->user();
-        $dt=Carbon::now();
-        $ano=$dt->year;
-        $mes=$dt->month;
-
-        $inicioMes=$dt->firstOfMonth()->toDateString();
-        $finMes=$dt->lastOfMonth()->toDateString();
-
-        //eventos del mes
-        $events=\App\Event::
-            join('task_user as t','t.task_id','=','e.task_id',' as e')
-            ->join('users as u','u.id','=','t.user_id')
-            ->select('e.id','e.task_id','e.start','e.end','e.title','e.end_day','e.state','e.created_at','e.updated_at','t.user_id','t.task_id','u.area_id','u.first_name','u.last_name','u.phone','u.email')
-            ->where([
-                ['start', '>=',  $inicioMes],
-                ['start', '<=', $finMes]
-            ])
-            ->where('t.user_id',$user->id)
+    public function userTaskTerminadas($user)
+    {
+        $events = \App\Event::
+        join('task_user as t', 't.task_id', '=', 'e.task_id', ' as e')
+            ->join('users as u', 'u.id', '=', 't.user_id')
+            ->select('e.id', 'e.task_id', 'e.start', 'e.end', 'e.title', 'e.end_day', 'e.state', 'e.created_at', 'e.updated_at', 't.user_id', 't.task_id', 'u.area_id', 'u.first_name', 'u.last_name', 'u.phone', 'u.email')
+            ->where('e.state', '=', 1)
+            ->where('t.user_id', $user->id)
             ->get();
 
-        return view('users.profile.task',compact('events','user'));
+        $estado = 'terminadas';
+
+        return view('users.profile.task', compact('events', 'user', 'estado'));
+    }
+
+    /**
+     * Todos los eventos del mes actual del usuario
+     * @param Request $request
+     */
+    public function userTaskActual($user)
+    {
+
+        $dt = Carbon::now();
+        $ano = $dt->year;
+        $mes = $dt->month;
+
+        $inicioMes = $dt->firstOfMonth()->toDateString();
+        $finMes = $dt->lastOfMonth()->toDateString();
+
+        //eventos del mes
+        $events = \App\Event::
+        join('task_user as t', 't.task_id', '=', 'e.task_id', ' as e')
+            ->join('users as u', 'u.id', '=', 't.user_id')
+            ->select('e.id', 'e.task_id', 'e.start', 'e.end', 'e.title', 'e.end_day', 'e.state', 'e.created_at', 'e.updated_at', 't.user_id', 't.task_id', 'u.area_id', 'u.first_name', 'u.last_name', 'u.phone', 'u.email')
+            ->where([
+                ['start', '>=', $inicioMes],
+                ['start', '<=', $finMes]
+            ])
+            ->where('t.user_id', $user->id)
+            ->get();
+
+        $estado = 'del mes actual'; //terminadas y sin terminar
+
+        return view('users.profile.task', compact('events', 'user', 'estado'));
     }
 
     /**
@@ -287,14 +367,14 @@ class UsersController extends Controller
      * @param $id
      * @return mixed
      */
-    public  function roles($id)
+    public function roles($id)
     {
-        $user=User::findOrFail($id);
+        $user = User::findOrFail($id);
 //        dd($user);
-        $nombre=$user->first_name.' '.$user->last_name ;
+        $nombre = $user->first_name . ' ' . $user->last_name;
 //        $roles= [''=>'Seleccione roles'] + Role::lists('display_name', 'id')->all();
-        $roles=Role::all();
-        return view('users.access.set-roles',compact('user','roles','nombre'));
+        $roles = Role::all();
+        return view('users.access.set-roles', compact('user', 'roles', 'nombre'));
     }
 
     /**
@@ -303,10 +383,10 @@ class UsersController extends Controller
      * $id de usuario
      *
      */
-    public  function setRoles(Request $request, $id)
+    public function setRoles(Request $request, $id)
     {
-        $user=User::findOrFail($id);
-        $roles=$request->get('roles');
+        $user = User::findOrFail($id);
+        $roles = $request->get('roles');
 
         if ($roles) {
             $user->roles()->sync($roles);
@@ -317,5 +397,5 @@ class UsersController extends Controller
         }
         return redirect()->route('admin.users.index');
     }
-    
+
 }

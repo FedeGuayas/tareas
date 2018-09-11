@@ -24,7 +24,9 @@
     <div class="form-group">
         {!! Form::label('buscar','Buscar') !!}
         <div class="input-group">
-            {!! Form::select('area',$areas,$area,['placeholder'=>'Seleccione area','class'=>'form-control','id'=>'area']) !!}
+            {!! Form::select('areas_id[]',$areas,$areasID,['class'=>'form-control chosen-area','id'=>'areas_id', 'multiple'=>'multiple','data-placeholder'=>'Seleccione areas']) !!}
+
+            {{--{!! Form::select('area',$areas,$area,['placeholder'=>'Seleccione area','class'=>'form-control','id'=>'area']) !!}--}}
         </div><!-- /input-group -->
     </div>
 </div><!-- /.col-lg-3 -->

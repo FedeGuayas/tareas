@@ -211,8 +211,19 @@
                                     <li>
                                         <a href="{{route('admin.reports.index')}}">Informe Excel</a>
                                     </li>
+                                    <li>
+                                        <!-- /.nav-second-level -->
+                                        <a href="#!"><i class="fa fa-archive" aria-hidden="true"></i> Por Estado <span class="fa arrow"></span></a>
+                                        <ul class="nav nav-third-level">
+                                            <li>
+                                                <a href="{{route('admin.reports.getCompleted')}}"><i class="fa fa-check" aria-hidden="true"></i> Terminadas</a>
+                                            </li>
+                                            <li>
+                                                <a href="{{route('admin.reports.getPending')}}"><i class="fa fa-ban" aria-hidden="true"></i> Pendientes</a>
+                                            </li>
+                                        </ul>
+                                    </li>
                                 </ul>
-                                <!-- /.nav-second-level -->
                             </li>
 
                             <li>
